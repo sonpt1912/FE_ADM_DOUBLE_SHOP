@@ -1,0 +1,37 @@
+p {
+  margin: 27px;
+  font-size: 13px;
+  font-weight: bold;
+  color: rgb(22, 23, 23);
+}
+.menu-item {
+  transition: all 0.3s;
+}
+
+.menu-item.selected {
+  background-color: #f0f0f0;
+  border-left: 4px solid #000000;
+}
+
+.menu-item:hover {
+  background-color: #f0f0f0;
+  border-left: 4px solid #1890ff;
+}
+
+.ant-menu-item-selected {
+  background-color: #f0f0f0;
+}
+
+.ant-menu-item-selected .anticon {
+  color: #1890ff;
+}
+
+.ant-menu-item-selected::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #1890ff;
+}
