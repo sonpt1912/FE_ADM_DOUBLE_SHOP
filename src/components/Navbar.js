@@ -68,9 +68,11 @@ const Navbar = ({ collapsed }) => {
         >
           Khách Hàng
         </Menu.Item>
-        <Menu.Item className="menu-item" key="/sanPham" icon={<SkinOutlined />}>
-          Sản Phẩm
-        </Menu.Item>
+        <SubMenu icon={<SkinOutlined />} title="Sản Phẩm">
+          <Menu.Item key="/pham">Phạm</Menu.Item>
+          <Menu.Item key="/thanh">Thanh</Menu.Item>
+          <Menu.Item key="/son">Sơn</Menu.Item>
+        </SubMenu>
         <Menu.Item className="menu-item" key="/danhGia" icon={<EditOutlined />}>
           Đánh Giá
         </Menu.Item>
