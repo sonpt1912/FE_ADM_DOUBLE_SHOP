@@ -11,6 +11,10 @@ import {
   CommentOutlined,
   NumberOutlined,
 } from "@ant-design/icons";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartSimple } from "@fortawesome/free-solid-svg-icons";
+
 import { Menu, Layout } from "antd";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
@@ -45,6 +49,7 @@ const Navbar = ({ collapsed }) => {
           key="/thongKe"
           icon={<CalendarOutlined />}
         >
+          <FontAwesomeIcon icon={faChartSimple} />
           Thống Kê
         </Menu.Item>
         <Menu.Item
