@@ -9,6 +9,7 @@ import CustomSelect from "../form/SelectField";
 import Checkbox from "../form/CheckboxField";
 import React, { useState } from "react";
 import RadioExample from "../form/RadioField";
+import CollapseCustom from "../form/CollapseCustom";
 import TableComponent from "../form/TableCustom";
 import DatePickerComponent from "../form/DatePickerField";
 const Container = styled.div`
@@ -77,6 +78,44 @@ const ThongKe = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
+
+  const components = [
+    <RadioExample
+      options={options}
+      onChange={handleRadioChange}
+      label="Choose an option:"
+    />,
+    <RadioExample
+      options={options}
+      onChange={handleRadioChange}
+      label="Choose an option:"
+    />,
+    <RadioExample
+      options={options}
+      onChange={handleRadioChange}
+      label="Choose an option:"
+    />,
+    <RadioExample
+      options={options}
+      onChange={handleRadioChange}
+      label="Choose an option:"
+    />,
+    <RadioExample
+      options={options}
+      onChange={handleRadioChange}
+      label="Choose an option:"
+    />,
+    <RadioExample
+      options={options}
+      onChange={handleRadioChange}
+      label="Choose an option:"
+    />,
+    <RadioExample
+      options={options}
+      onChange={handleRadioChange}
+      label="Choose an option:"
+    />,
+  ];
   return (
     <>
       <div>
@@ -150,6 +189,9 @@ const ThongKe = () => {
       </div>
       <br />
       <TableComponent columns={columns} dataSource={dataSource} />
+      <br />
+
+      <CollapseCustom components={components} />
     </>
   );
 };
