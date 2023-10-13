@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import TableComponent from "../form/TableCustom";
+import Tablecbn from "../form/danhGiaTable.js";
 
 const DanhGia = () => {
   const columns = [
@@ -57,7 +57,7 @@ const DanhGia = () => {
   ];
   return (
     <>
-      <TableComponent columns={columns} dataSource={dataSource} />
+      <Tablecbn columns={columns} dataSource={dataSource} />
     </>
   );
 };
