@@ -68,7 +68,8 @@ const TableComponent = ({ columns, dataSource, totalRecord }) => {
               total={totalRecord}
               showSizeChanger
               showQuickJumper
-              showTotal={(total) => `Total ${total} items`}
+              showTotal={(total) => `Total ${total} items`
+            }
             />
           </div>
         )}

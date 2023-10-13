@@ -46,7 +46,7 @@ const StyledTableWrapper = styled.div`
   }
 `;
 
-const Tablecbn = ({ columns, dataSource, totalRecord }) => {
+const TableComponent = ({ columns, dataSource, totalRecord }) => {
   return (
     <StyledTableWrapper>
       <Table
@@ -58,4 +58,4 @@ const Tablecbn = ({ columns, dataSource, totalRecord }) => {
   );
 };
 
-export default Table;
+export default TableComponent;
