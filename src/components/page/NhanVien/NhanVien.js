@@ -115,7 +115,7 @@ const dataSource = [
 
 const NhanVien = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-  const [dataSource, setDataSource] = useState([]); // Khởi tạo dữ liệu của nhân viên với một mảng trống
+  
 
   const showAddModal = () => {
     setIsAddModalVisible(true);
