@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react';
 
-const ContentBanHang = ({ currentTab, tabContents }) => {
+const ContentBanHang = ({ currentTab }) => {
   useEffect(() => {
     // Xử lý khi currentTab thay đổi
     console.log('Current tab:', currentTab);
-    console.log('Content for current tab:', tabContents[currentTab]);
-  }, [currentTab, tabContents]);
 
-  const content = tabContents[currentTab] || 'Không có nội dung cho tab này';
+  }, [currentTab]);
+
+ 
 console.log('Content for current tab:');
   return (
     <div>
       <h2>Content of Tab {currentTab}</h2>
-      <div>{content}</div>
+      <div>{currentTab}</div>
     </div>
   );
 };

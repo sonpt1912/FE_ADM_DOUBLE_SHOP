@@ -59,7 +59,7 @@ const getTextCountsFromLocalStorage = () => {
   const savedTextCounts = JSON.parse(localStorage.getItem('textCounts'));
   return savedTextCounts || {};
 }
-const HeaderBanHang = ({setCurrentTab}) => {
+const HeaderBanHang = ({currentTab, setCurrentTab}) => {
 
   const [tabs, setTabs] = useState(getTabsFromLocalStorage());
   const [nextTabId, setNextTabId] = useState(getNextTabIdFromLocalStorage());
@@ -104,9 +104,9 @@ const HeaderBanHang = ({setCurrentTab}) => {
   };
   
   const handleTabChange = (key) => {
-    setActiveTab(key);
-    setCurrentTab(key); 
-    console.log('Selected tab:', key);
+    setActiveTab(Number(key));
+    setCurrentTab(Number(key)); 
+    console.log('Selected tab:', 1);
   };
   
   

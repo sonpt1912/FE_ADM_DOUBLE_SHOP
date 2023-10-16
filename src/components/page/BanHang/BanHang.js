@@ -1,9 +1,12 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import HeaderBanHang from './BanHang/StructureBanHang/HeaderBanHang';
-import ContentBanHang from './BanHang/StructureBanHang/ContentBanHang';
-import FooterBanHang from './BanHang/StructureBanHang/FooterBanHang';
+import HeaderBanHang from './StructureBanHang/HeaderBanHang';
+import ContentBanHang from './StructureBanHang/ContentBanHang';
+import FooterBanHang from './StructureBanHang/FooterBanHang';
+import NormalSell from './StructureBanHang/NormalSell';
+import ShipperSell from './StructureBanHang/ShipperSell';
 import styled from 'styled-components';
+import { BILL_SELL_TYPE } from './StructureBanHang/constants/tabInfor';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -18,6 +21,7 @@ const ContentWrapper = styled.div`
 
 const BanHang = () => {
   const [currentTab, setCurrentTab] = useState(1); // Thêm state cho currentTab
+  const [sellMethods, setSellMethods] = useState(BILL_SELL_TYPE.NORMAL_SELL)
   console.log("currentTab: " + currentTab);
 
   useEffect(() => {
@@ -29,19 +33,26 @@ const BanHang = () => {
     console.log('catchTabChange', tabId);
     setCurrentTab(tabId);
   };
+  const isNormalSell = useMemo(() => sellMethods === BILL_SELL_TYPE.NORMAL_SELL, [sellMethods])
+  const handlerSellMethodsChange = (type) => {
+    console.log('handlerSellMethodsChange', type);
+    setSellMethods(type)
+  }
 
   return (
     <PageWrapper>
-      <HeaderBanHang setCurrentTab={setCurrentTab} />
+      <HeaderBanHang currentTab={currentTab} setCurrentTab={catchTabChange} />
       <ContentWrapper>
-        <Routes>
+        {/* <Routes>
           <Route
             path="/"
             element={<ContentBanHang currentTab={currentTab} />}
           />
-        </Routes>
+        </Routes> */}
+        { isNormalSell && <NormalSell />}
+        { !isNormalSell && <ShipperSell />}
       </ContentWrapper>
-      <FooterBanHang />
+      <FooterBanHang sellMethods={handlerSellMethodsChange}/>
     </PageWrapper>
   );
 };

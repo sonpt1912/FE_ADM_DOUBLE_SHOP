@@ -1,0 +1,5 @@
+
+export const BILL_SELL_TYPE = {
+  NORMAL_SELL: "NORMAL_SELL",
+  SHIPPER_SELL: "SHIPPER_SELL"
+}
