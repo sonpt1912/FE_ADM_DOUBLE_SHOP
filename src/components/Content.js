@@ -4,7 +4,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { animateScroll as scroll } from "react-scroll";
 import "../styles/Navbar.css";
 
-import BanHang from "./page/BanHang";
+import BanHang from "./page/BanHang/BanHang";
 import ChiTietDonHang from "./page/ChiTietDonHang";
 import DanhGia from "./page/DanhGia";
 import KhachHang from "./page/KhachHang/KhachHang";
@@ -37,7 +37,7 @@ const CustomContent = () => {
       }}
     >
       <Routes>
-        <Route path="/banHang" element={<BanHang />} />
+        <Route path="/banHang/*" element={<BanHang />} />
         <Route path="/chiTietDonHang" element={<ChiTietDonHang />} />
         <Route path="/danhGia" element={<DanhGia />} />
         <Route path="/khachHang" element={<KhachHang />} />
