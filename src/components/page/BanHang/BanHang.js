@@ -20,7 +20,7 @@ const ContentWrapper = styled.div`
 
 
 const BanHang = () => {
-  const [currentTab, setCurrentTab] = useState(1); // Thêm state cho currentTab
+  const [currentTab, setCurrentTab] = useState(1);
   const [sellMethods, setSellMethods] = useState(BILL_SELL_TYPE.NORMAL_SELL)
   console.log("currentTab: " + currentTab);
 
@@ -43,12 +43,12 @@ const BanHang = () => {
     <PageWrapper>
       <HeaderBanHang currentTab={currentTab} setCurrentTab={catchTabChange} />
       <ContentWrapper>
-        {/* <Routes>
+        <Routes>
           <Route
             path="/"
             element={<ContentBanHang currentTab={currentTab} />}
           />
-        </Routes> */}
+        </Routes>
         { isNormalSell && <NormalSell />}
         { !isNormalSell && <ShipperSell />}
       </ContentWrapper>

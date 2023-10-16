@@ -37,7 +37,7 @@ const CustomContent = () => {
       }}
     >
       <Routes>
-        <Route path="/banHang/*" element={<BanHang />} />
+        <Route path="/banHang" element={<BanHang />} />
         <Route path="/chiTietDonHang" element={<ChiTietDonHang />} />
         <Route path="/danhGia" element={<DanhGia />} />
         <Route path="/khachHang" element={<KhachHang />} />
