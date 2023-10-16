@@ -12,11 +12,22 @@ import RadioExample from "../form/RadioField";
 import CollapseCustom from "../form/CollapseCustom";
 import TableComponent from "../form/TableCustom";
 import DatePickerComponent from "../form/DatePickerField";
+import ModalTest from "./Modal/ModalTest";
 const Container = styled.div`
   display: flex;
 `;
 
 const ThongKe = () => {
+  //Modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
   // Table
   const columns = [
     {
@@ -188,9 +199,17 @@ const ThongKe = () => {
         </div>
       </div>
       <br />
-      <TableComponent columns={columns} dataSource={dataSource} />
+      <TableComponent
+        columns={columns}
+        dataSource={dataSource}
+        showModal={showModal}
+      />
       <br />
-
+      <ModalTest
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        isModalVisible={isModalVisible}
+      />
       <CollapseCustom components={components} />
     </>
   );

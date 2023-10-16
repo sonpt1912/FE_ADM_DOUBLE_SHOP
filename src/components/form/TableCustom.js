@@ -46,7 +46,13 @@ const StyledTableWrapper = styled.div`
   }
 `;
 
-const TableComponent = ({ columns, dataSource, totalRecord }) => {
+const TableComponent = ({
+  columns,
+  dataSource,
+  totalRecord,
+  showModal,
+  isModalVisible,
+}) => {
   return (
     <StyledTableWrapper>
       <Table
@@ -56,7 +62,7 @@ const TableComponent = ({ columns, dataSource, totalRecord }) => {
         title={() => (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span>Header</span>
-            <Button type="primary" className="">
+            <Button type="primary" className="" onClick={showModal}>
               <FontAwesomeIcon icon={faFloppyDisk} />
               Thêm mới
             </Button>
@@ -68,8 +74,7 @@ const TableComponent = ({ columns, dataSource, totalRecord }) => {
               total={totalRecord}
               showSizeChanger
               showQuickJumper
-              showTotal={(total) => `Total ${total} items`
-            }
+              showTotal={(total) => `Total ${total} items`}
             />
           </div>
         )}
