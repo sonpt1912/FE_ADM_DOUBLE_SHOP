@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import InputField from '../../../form/InputField';
+import { Input, Tabs, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faBarcode } from '@fortawesome/free-solid-svg-icons';
-import { Routes, Route, Link, useParams } from 'react-router-dom';
-import ContentBanHang from './ContentBanHang'; // Adjust the import path as needed
+const { TabPane } = Tabs;
 
-const Header = styled.div`
-  padding: 20px;
+const HeaderContainer = styled.div`
+  padding: 10px;
   border-bottom: 1px solid #000;
+  display: flex;
+  align-items: center;
+
+  .tabs-container {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 100%;
 `;
 
 const Icon = styled.div`
@@ -22,48 +27,89 @@ const Icon = styled.div`
   cursor: pointer;
 `;
 
-function getTabsFromLocalStorage() {
+const TabWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0 10px 0 20px;
+
+  .ant-tabs-tab {
+    cursor: pointer;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+    &.active {
+      background-color: #000;
+
+    }
+  }
+`;
+
+const getTabsFromLocalStorage = () => {
   const savedTabs = JSON.parse(localStorage.getItem('tabs'));
   return savedTabs || [{ id: 1, title: 'Tab 1' }];
 }
 
-function getNextTabIdFromLocalStorage() {
+const getNextTabIdFromLocalStorage = () => {
   const savedNextTabId = JSON.parse(localStorage.getItem('nextTabId'));
   return savedNextTabId || 2;
 }
 
-function getTextCountsFromLocalStorage() {
+const getTextCountsFromLocalStorage = () => {
   const savedTextCounts = JSON.parse(localStorage.getItem('textCounts'));
   return savedTextCounts || {};
 }
+const HeaderBanHang = ({setCurrentTab}) => {
 
-const HeaderBanHang = () => {
-  const { tabId } = useParams();
   const [tabs, setTabs] = useState(getTabsFromLocalStorage());
   const [nextTabId, setNextTabId] = useState(getNextTabIdFromLocalStorage());
   const [textCounts, setTextCounts] = useState(getTextCountsFromLocalStorage());
+  const [activeTab, setActiveTab] = useState('1');
+  const [tabContents, setTabContents] = useState({});
+
 
   useEffect(() => {
     localStorage.setItem('tabs', JSON.stringify(tabs));
     localStorage.setItem('nextTabId', JSON.stringify(nextTabId));
     localStorage.setItem('textCounts', JSON.stringify(textCounts));
-  }, [tabs, nextTabId, textCounts]);
+    localStorage.setItem('tabContents', JSON.stringify(tabContents));
+  }, [tabs, nextTabId, textCounts, tabContents]);
 
+  const renderTabContent = () => {
+    if (activeTab) {
+      return <div className="content">{tabContents[activeTab]}</div>;
+    }
+    return null;
+  };
+  
   const handleAddTab = () => {
     const newTab = {
-      id: nextTabId,
+      id: String(nextTabId),
       title: `Tab ${nextTabId}`,
     };
-
+  
     setTabs([...tabs, newTab]);
     setNextTabId(nextTabId + 1);
-
     setTextCounts((prevCounts) => ({
       ...prevCounts,
       [newTab.id]: 0,
     }));
+  
+    setActiveTab(newTab.id);
+  
+    setTabContents((prevContents) => ({
+      ...prevContents,
+      [newTab.id]: `Content for ${newTab.title}`,
+    }));
   };
-
+  
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+    setCurrentTab(key); 
+    console.log('Selected tab:', key);
+  };
+  
+  
   const handleDeleteTab = (tabId) => {
     const updatedTabs = tabs.filter((tab) => tab.id !== tabId);
     setTabs(updatedTabs);
@@ -71,54 +117,57 @@ const HeaderBanHang = () => {
       const { [tabId]: deletedCount, ...restCounts } = prevCounts;
       return restCounts;
     });
+  
+    // Remove content for the deleted tab
+    setTabContents((prevContents) => {
+      const { [tabId]: deletedContent, ...restContents } = prevContents;
+      return restContents;
+    });
+  
+    // If the deleted tab was active, set the first tab as active
+    if (activeTab === tabId && updatedTabs.length > 0) {
+      setActiveTab(updatedTabs[0].id);
+    }
   };
-
-  const handleIncrement = (tabId) => {
-    const updatedCounts = {
-      ...textCounts,
-      [tabId]: (textCounts[tabId] || 0) + 1,
-    };
-
-    setTextCounts(updatedCounts);
+  const renderTabs = () => {
+    return tabs.map((tab) => (
+      <TabWrapper
+        key={tab.id}
+        onClick={() => handleTabChange(tab.id)}
+      >
+        <div className="tab-content">
+          {tab.title}
+        </div>
+        <div className="tab-actions">
+          <Button type="link" onClick={() => handleDeleteTab(tab.id)}>
+            x
+          </Button>
+        </div>
+      </TabWrapper>
+    ));
   };
+  
 
   return (
-    <div>
-      <Header>
-        <InputContainer>
-          <InputField
-            placeholder="Tìm kiếm hàng hóa"
-            customStyle={{ flex: 1 }}
-            icon={<FontAwesomeIcon icon={faSearch} />}
-          />
-          <Icon>
-            <FontAwesomeIcon icon={faBarcode} style={{ cursor: 'pointer' }} />
-          </Icon>
-        </InputContainer>
-      </Header>
+    <HeaderContainer>
+      <InputContainer>
+        <Input
+          placeholder="Tìm kiếm hàng hóa"
+          style={{ flex: 1 }}
+          prefix={<FontAwesomeIcon icon={faSearch} />}
+        />
+        <Icon>
+          <FontAwesomeIcon icon={faBarcode} style={{ cursor: 'pointer' }} />
+        </Icon>
+      </InputContainer>
 
-      <ul>
-        {tabs.map((tab) => (
-          <li key={tab.id}>
-            <Link to={`/tab/${tab.id}`}>{tab.title}</Link>
-            <button onClick={() => handleDeleteTab(tab.id)}>x</button>
-          </li>
-        ))}
-        <li>
-          <button onClick={handleAddTab}>+</button>
-        </li>
-      </ul>
-
-      <Routes>
-        {tabs.map((tab) => (
-          <Route
-            key={tab.id}
-            path={`tab/${tab.id}`}
-            element={<ContentBanHang title={tab.title} textCount={textCounts[tab.id] || 0} onIncrement={() => handleIncrement(tab.id)} />}
-          />
-        ))}
-      </Routes>
-    </div>
+      <div className="tabs-container">
+        {renderTabs()}
+        <Button type="link" onClick={handleAddTab}>
+          + Add Tab
+        </Button>
+      </div>
+    </HeaderContainer>
   );
 };
 
