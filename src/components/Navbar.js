@@ -88,12 +88,11 @@ const Navbar = ({ collapsed }) => {
           Khách Hàng
         </Menu.Item>
         <SubMenu icon={<FontAwesomeIcon icon={faShirt} />} title="Sản Phẩm">
-          <Menu.Item key="/Ao">Áo</Menu.Item>
-          <Menu.Item key="/Mau">Màu</Menu.Item>
-          <Menu.Item key="/KichCo">Kích cỡ</Menu.Item>
-          <Menu.Item key="/CoAo">Cổ áo</Menu.Item>
-          <Menu.Item key="/Chatlieu">Chất liệu</Menu.Item>
-          {/* <Menu.Item key="/">Sơn</Menu.Item> */}
+          <Menu.Item key="/sanPham/ao">Áo</Menu.Item>
+          <Menu.Item key="/sanPham/mau">Màu</Menu.Item>
+          <Menu.Item key="/sanPham/kichCo">Kích cỡ</Menu.Item>
+          <Menu.Item key="/sanPham/coAo">Cổ áo</Menu.Item>
+          <Menu.Item key="/sanPham/chatLieu">Chất liệu</Menu.Item>
         </SubMenu>
         <Menu.Item className="menu-item" key="/danhGia" icon={<EditOutlined />}>
           Đánh Giá

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import CollapseComponent from "../form/CollapseCustom";
-import TableComponent from "../form/TableCustom";
+import CollapseCustom from "../../form/CollapseCustom";
+import TableComponent from "../../form/TableCustom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Space } from "antd";
-import InputField from "../form/InputField";
+import InputField from "../../form/InputField";
 
 const components = [
   <InputField
@@ -105,10 +105,10 @@ const dataSource = [
   },
 ];
 
-const SanPham = () => {
+const CoAo = () => {
   return (
     <div>
-      <CollapseComponent components={components} />
+      <CollapseCustom components={components} />
       <div style={{ marginBottom: "30px" }}></div>
       <TableComponent
         columns={columns}
@@ -119,4 +119,4 @@ const SanPham = () => {
   );
 };
 
-export default SanPham;
+export default CoAo;

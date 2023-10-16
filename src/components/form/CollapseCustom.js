@@ -6,7 +6,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const StyledCollapseWrapper = styled.div`
   .ant-collapse {
-    background-color: #fffff;
+    background-color: ffffff;
   }
 
   .btn-search {

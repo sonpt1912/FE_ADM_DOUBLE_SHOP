@@ -14,6 +14,11 @@ import NhanVien from "./page/NhanVien/NhanVien";
 import SanPham from "./page/SanPham";
 import ThongKe from "./page/ThongKe";
 import Voucher from "./page/Voucher";
+import Ao from "./page/SanPham/Ao";
+import ChatLieu from "./page/SanPham/ChatLieu";
+import CoAo from "./page/SanPham/CoAo";
+import KichCo from "./page/SanPham/KichCo";
+import Mau from "./page/SanPham/Mau";
 
 const { Content } = Layout;
 
@@ -37,12 +42,17 @@ const CustomContent = () => {
       }}
     >
       <Routes>
-        <Route path="/banHang/*" element={<BanHang />} />
+        <Route path="/banHang" element={<BanHang />} />
         <Route path="/chiTietDonHang" element={<ChiTietDonHang />} />
         <Route path="/danhGia" element={<DanhGia />} />
         <Route path="/khachHang" element={<KhachHang />} />
         <Route path="/khuyenMai" element={<KhuyenMai />} />
         <Route path="/lienHe" element={<LienHe />} />
+        <Route path="/sanPham/ao" element={<Ao />} />
+        <Route path="/sanPham/chatLieu" element={<ChatLieu />} />
+        <Route path="/sanPham/coAo" element={<CoAo />} />
+        <Route path="/sanPham/kichCo" element={<KichCo />} />
+        <Route path="/sanPham/mau" element={<Mau />} />
         <Route path="/nhanVien" element={<NhanVien />} />
         <Route path="/sanPham" element={<SanPham />} />
         <Route path="/thongKe" element={<ThongKe />} />
