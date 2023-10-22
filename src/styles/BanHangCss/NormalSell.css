@@ -1,0 +1,79 @@
+/* Styles for the container */
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: lightblue;
+}
+
+.right {
+  flex: 1;
+  background-color: lightgray;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.top-left {
+  flex: 7;
+  height: 75%;
+  padding: 20px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.bottom-left {
+  flex: 1;
+  background-color: lightgreen;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Styles for the top-right section */
+.top-right {
+  flex: 7 1;
+  height: 75%;
+  padding: 20px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.top-right h2 {
+  margin-bottom: 10px;
+}
+
+/* Styles for the bottom-right section */
+.bottom-right {
+  flex: 1;
+  background-color: lightgoldenrodyellow;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom-right button {
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.bottom-right button:hover,
+.bottom-left button:hover {
+  background-color: #2980b9;
+}
+
+.top-right::-webkit-scrollbar,
+.top-left::-webkit-scrollbar {
+  width: 0;
+}

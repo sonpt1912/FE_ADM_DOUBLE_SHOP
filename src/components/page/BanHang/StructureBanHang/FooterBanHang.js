@@ -1,24 +1,30 @@
 // FooterBanHang.js
 
 import React from "react";
-import styled from "styled-components";
 import { BILL_SELL_TYPE } from "./constants/tabInfor";
-
-const Footer = styled.div`
-  background-color: #2ecc71;
-  color: #fff;
-  padding: 10px;
-`;
+import "../../../../styles/BanHangCss/FooterBanHang.css";
 
 const FooterBanHang = ({ sellMethods }) => {
   const handerSelectBuyMethods = (type) => {
-    sellMethods(type)
-  }
+    sellMethods(type);
+  };
 
-  return <Footer>
-    <div onClick={() => handerSelectBuyMethods(BILL_SELL_TYPE.NORMAL_SELL)}>ban thuong</div>
-    <div onClick={() => handerSelectBuyMethods(BILL_SELL_TYPE.SHIPPER_SELL)}>ban giao hang</div>
-  </Footer>;
+  return (
+    <div className="FooterBanHang">
+      <div
+        className="sell"
+        onClick={() => handerSelectBuyMethods(BILL_SELL_TYPE.NORMAL_SELL)}
+      >
+        Bán Thường
+      </div>
+      <div
+        className="sell"
+        onClick={() => handerSelectBuyMethods(BILL_SELL_TYPE.SHIPPER_SELL)}
+      >
+        Bán Giao Hàng
+      </div>
+    </div>
+  );
 };
 
 export default FooterBanHang;

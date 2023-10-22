@@ -10,15 +10,17 @@ const App = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <Router>
-      <Layout>
-        <Navbar collapsed={collapsed} />
+    <div className="container">
+      <Router>
         <Layout>
-          <CustomHeader collapsed={collapsed} setCollapsed={setCollapsed} />
-          <CustomContent />
+          <Navbar collapsed={collapsed} />
+          <Layout>
+            <CustomHeader collapsed={collapsed} setCollapsed={setCollapsed} />
+            <CustomContent />
+          </Layout>
         </Layout>
-      </Layout>
-    </Router>
+      </Router>
+    </div>
   );
 };
 
