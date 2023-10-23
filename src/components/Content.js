@@ -6,7 +6,7 @@ import "../styles/Navbar.css";
 
 import BanHang from "./page/BanHang/BanHang";
 import ChiTietDonHang from "./page/ChiTietDonHang";
-import DanhGia from "./page/DanhGia";
+import DanhGia from "./page/DanhGia/DanhGia";
 import KhachHang from "./page/KhachHang/KhachHang";
 import KhuyenMai from "./page/KhuyenMai";
 import LienHe from "./page/LienHe";
@@ -14,6 +14,7 @@ import NhanVien from "./page/NhanVien/NhanVien";
 import SanPham from "./page/SanPham";
 import ThongKe from "./page/ThongKe";
 import Voucher from "./page/Voucher";
+import HangKhachHang from "./page/Hang/HangKhachHang";
 import Ao from "./page/SanPham/Ao";
 import ChatLieu from "./page/SanPham/ChatLieu";
 import CoAo from "./page/SanPham/CoAo";
@@ -57,6 +58,7 @@ const CustomContent = () => {
         <Route path="/sanPham" element={<SanPham />} />
         <Route path="/thongKe" element={<ThongKe />} />
         <Route path="/voucher" element={<Voucher />} />
+        <Route path="/hang" element={<HangKhachHang />} />
       </Routes>
     </Content>
   );

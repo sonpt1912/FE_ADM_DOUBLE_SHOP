@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import Tablecbn from "../form/danhGiaTable.js";
+import Tablecbn from "../DanhGia/table";
 
 const DanhGia = () => {
   const columns = [

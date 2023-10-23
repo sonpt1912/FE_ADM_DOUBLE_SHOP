@@ -1,6 +1,6 @@
 import BanHang from "./page/BanHang";
 import ChiTietDonHang from "./page/ChiTietDonHang";
-import DanhGia from "./page/DanhGia";
+import DanhGia from "./page/DanhGia/DanhGia";
 import KhachHang from "./page/KhachHang";
 import KhuyenMai from "./page/KhuyenMai";
 import LienHe from "./page/LienHe";
@@ -13,6 +13,7 @@ import KichCo from "./page/SanPham/KichCo";
 import Mau from "./page/SanPham/Mau";
 import ThongKe from "./page/ThongKe";
 import Voucher from "./page/Voucher";
+import HangKhachHang from "./page/Hang/HangKhachHang";
 export {
   Ao,
   KichCo,
@@ -29,4 +30,5 @@ export {
   SanPham,
   ThongKe,
   Voucher,
+  HangKhachHang
 };

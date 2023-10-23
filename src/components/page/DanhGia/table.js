@@ -2,8 +2,8 @@ import React from "react";
 import { Table, Pagination, Button } from "antd";
 import styled from "styled-components";
 import _ from "lodash";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 
 const StyledTableWrapper = styled.div`
   .ant-table {
