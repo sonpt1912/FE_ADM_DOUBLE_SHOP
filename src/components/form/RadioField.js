@@ -8,11 +8,11 @@ const StyledLabel = styled.label`
   font-weight: bold;
 `;
 
-const RadioComponent = ({ options, onChange, label }) => {
+const RadioComponent = ({ options, onChange, label, value, name }) => {
   return (
     <div>
       <StyledLabel>{label}</StyledLabel>
-      <Radio.Group onChange={onChange}>
+      <Radio.Group onChange={onChange} value={value} name={name}>
         {options.map((option, index) => (
           <Radio key={index} value={option.value}>
             {option.label}

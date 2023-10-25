@@ -18,7 +18,7 @@ import Ao from "./page/SanPham/Ao";
 import ChatLieu from "./page/SanPham/ChatLieu";
 import CoAo from "./page/SanPham/CoAo";
 import KichCo from "./page/SanPham/KichCo";
-import Mau from "./page/SanPham/Mau";
+import Mau from "./page/SanPham/Mau/Mau";
 
 const { Content } = Layout;
 

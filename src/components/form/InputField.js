@@ -36,11 +36,24 @@ const StyledInput = styled(Input)`
   }
 `;
 
-const InputField = ({ placeholder, value, onChange, label, customStyle }) => {
+const InputField = ({
+  placeholder,
+  value,
+  onChange,
+  label,
+  customStyle,
+  name,
+}) => {
   return (
     <Container>
       {label && <Label>{label}</Label>}
-      <StyledInput placeholder={placeholder} customStyle={customStyle} />
+      <StyledInput
+        placeholder={placeholder}
+        customStyle={customStyle}
+        value={value}
+        onChange={onChange}
+        name={name}
+      />
     </Container>
   );
 };
