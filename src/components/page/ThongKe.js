@@ -199,11 +199,11 @@ const ThongKe = () => {
         </div>
       </div>
       <br />
-      <TableComponent
+      {/* <TableComponent
         columns={columns}
         dataSource={dataSource}
         showModal={showModal}
-      />
+      /> */}
       <br />
       <ModalTest
         visible={isModalVisible}

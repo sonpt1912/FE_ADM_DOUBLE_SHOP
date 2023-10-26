@@ -1,0 +1,31 @@
+.product-list-cart {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(1fr, 1fr)
+  ); /* Sửa grid-template-columns */
+  gap: 20px;
+}
+
+.product-list-cart .product-cart {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  box-sizing: border-box;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background-color: aliceblue;
+}
+
+.product-list-cart .product-cart img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.product-list-cart .product-cart .product-details-cart p:first-child {
+  font-weight: bold;
+}
