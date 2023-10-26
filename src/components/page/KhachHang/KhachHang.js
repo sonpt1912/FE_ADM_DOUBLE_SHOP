@@ -42,10 +42,10 @@ const dataSource = [
     username: "hiepga",
     name: "Vũ Hoàng Hiệp",
     phone: "123-456-7890",
-    gender: "Male",
+    gender: "0",
     rank: "Vàng",
     email: "hiepga@gmail.com",
-    status: "Active",
+    status: "1",
   },
   // Add other customer data as needed
 ];
@@ -108,6 +108,7 @@ const KhachHang = () => {
       title: "Gender",
       dataIndex: "gender",
       key: "gender",
+      render: (text) => (text === "0" ? "Nam" : "Nữ"),
     },
     {
       title: "Rank",
@@ -123,6 +124,7 @@ const KhachHang = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (text) => (text === "0" ? "Hoạt Động" : "Ngừng Hoạt Động"),
     },
     {
       title: "Actions",
