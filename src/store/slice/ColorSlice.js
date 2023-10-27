@@ -67,6 +67,32 @@ export const addColor = createAsyncThunk(
   }
 );
 
+export const updateColor = createAsyncThunk(
+  "colors/updateColor",
+  async (colorData) => {
+    try {
+      const response = await fetch(`http://localhost:8072/color/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(colorData),
+        mode: "cors",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const colorSlice = createSlice({
   name: "colors",
   initialState: {
@@ -123,14 +149,28 @@ const colorSlice = createSlice({
         state.status = "succeeded";
         state.data = action.payload;
         state.totalPages = Math.ceil(state.totalColors / state.pageSize);
-        console.log(
-          "Total pages: " +
-            state.totalPages +
-            " pagesSize: " +
-            state.pageSize +
-            " Data " +
-            state.data.size
+      })
+
+      // update color
+      .addCase(updateColor.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateColor.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const colorToUpdate = action.payload;
+        if (!Array.isArray(state.data)) {
+          state.data = [];
+        }
+        const index = state.data.findIndex(
+          (color) => color.uniqueProperty === colorToUpdate.uniqueProperty
         );
+        if (index !== -1) {
+          state.data[index] = colorToUpdate;
+        }
+      })
+      .addCase(updateColor.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });
