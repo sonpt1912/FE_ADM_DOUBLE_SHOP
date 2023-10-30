@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Pagination, Button } from "antd";
+import { Table, Pagination, Button, Modal } from "antd";
 import styled from "styled-components";
 import _ from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
