@@ -5,7 +5,7 @@ import RadioComponent from "../../../form/RadioField";
 import { useDispatch } from "react-redux";
 import { addColor } from "../../../../store/slice/ColorSlice";
 
-const ModalColor = ({ visible, onCancel }) => {
+const ModalColor = ({ visible, onCancel, onUpdateComplete }) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -44,6 +44,9 @@ const ModalColor = ({ visible, onCancel }) => {
     setName("");
     setDescription("");
     onCancel();
+    if (onUpdateComplete) {
+      onUpdateComplete(); // Gọi hàm callback từ component cha
+    }
   };
 
   return (

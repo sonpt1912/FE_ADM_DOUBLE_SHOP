@@ -15,26 +15,11 @@ export const fetchColors = createAsyncThunk(
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
 
-export const fetchTotalColors = createAsyncThunk(
-  "colors/fetchTotalColors",
-  async () => {
-    try {
-      const response = await fetch("http://localhost:8072/color/get-all", {
-        mode: "cors",
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      return data.length;
+      // Lấy tổng số màu từ data.totalElements
+      const totalColors = data.totalElements || 0;
+
+      return { data, totalColors };
     } catch (error) {
       throw error;
     }
@@ -46,6 +31,32 @@ export const addColor = createAsyncThunk(
   async (colorData) => {
     try {
       const response = await fetch("http://localhost:8072/color/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(colorData),
+        mode: "cors",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const updateColor = createAsyncThunk(
+  "colors/updateColor",
+  async (colorData) => {
+    try {
+      const response = await fetch(`http://localhost:8072/color/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +87,7 @@ const colorSlice = createSlice({
     currentPage: 0,
     pageSize: 5,
     totalPages: 0,
-    totalColor: 0,
+    totalColors: 0,
   },
   reducers: {
     setCurrentPage: (state, action) => {
@@ -114,25 +125,37 @@ const colorSlice = createSlice({
         state.error = action.error.message;
       })
 
-      .addCase(fetchTotalColors.fulfilled, (state, action) => {
-        state.totalColors = action.payload;
-        console.log("Total colors fetched: " + state.totalColors);
-      })
       // Phân Trang
       .addCase(fetchColors.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload;
+        state.data = action.payload.data;
+        state.totalColors = action.payload.totalColors;
         state.totalPages = Math.ceil(state.totalColors / state.pageSize);
-        console.log(
-          "Total pages: " +
-            state.totalPages +
-            " pagesSize: " +
-            state.pageSize +
-            " Data " +
-            state.data.size
+      })
+
+      // update color
+      .addCase(updateColor.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateColor.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const colorToUpdate = action.payload;
+        if (!Array.isArray(state.data)) {
+          state.data = [];
+        }
+        const index = state.data.findIndex(
+          (color) => color.uniqueProperty === colorToUpdate.uniqueProperty
         );
+        if (index !== -1) {
+          state.data[index] = colorToUpdate;
+        }
+      })
+      .addCase(updateColor.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });
+
 export const { setCurrentPage, setPageSize } = colorSlice.actions;
 export default colorSlice;
