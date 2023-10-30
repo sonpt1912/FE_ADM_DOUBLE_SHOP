@@ -1,0 +1,14 @@
+.ContentBanHangContainer {
+  display: flex;
+  flex-direction: column;
+  height: 75vh;
+}
+
+.Content {
+  flex: 1;
+}
+
+.FooterBanHang {
+  background-color: #f0f0f0;
+  padding: 10px;
+}

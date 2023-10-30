@@ -1,7 +1,6 @@
 import React from "react";
 import { Table, Pagination, Button, Modal } from "antd";
 import styled from "styled-components";
-import _ from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 
@@ -22,27 +21,27 @@ const StyledTableWrapper = styled.div`
 
   .custom-pagination {
     margin-top: 10px;
-    text-align: center; /* Canh lề phải */
+    text-align: center;
   }
 
   .ant-pagination-total-text {
-    float: left; /* Canh lề bên trái */
+    float: left;
   }
 
   .ant-pagination-item {
-    display: inline-block; /* Hiển thị trên cùng một dòng */
-    margin: 0 4px; /* Khoảng cách giữa các nút chuyển trang */
+    display: inline-block;
+    margin: 0 4px;
   }
 
   .ant-pagination-jump-prev,
   .ant-pagination-jump-next,
   .ant-pagination-prev,
   .ant-pagination-next {
-    display: inline-block; /* Hiển thị trên cùng một dòng */
+    display: inline-block;
   }
 
   .ant-pagination-options {
-    float: right; /* Canh lề bên phải */
+    float: right;
   }
 `;
 
@@ -51,7 +50,11 @@ const TableComponent = ({
   dataSource,
   totalRecord,
   showModal,
-  isModalVisible,
+  currentPage,
+  totalPages,
+  pageSize,
+  onChange,
+  onShowSizeChange,
 }) => {
   return (
     <StyledTableWrapper>
@@ -62,7 +65,7 @@ const TableComponent = ({
         title={() => (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span>Header</span>
-            <Button type="primary" className="" onClick={showModal}>
+            <Button type="primary" onClick={showModal}>
               <FontAwesomeIcon icon={faFloppyDisk} />
               Thêm mới
             </Button>
@@ -71,10 +74,15 @@ const TableComponent = ({
         footer={() => (
           <div className="custom-pagination">
             <Pagination
+              current={currentPage}
+              pageSize={pageSize}
               total={totalRecord}
               showSizeChanger
               showQuickJumper
               showTotal={(total) => `Total ${total} items`}
+              onChange={onChange}
+              onShowSizeChange={onShowSizeChange}
+              totalPages={totalPages}
             />
           </div>
         )}

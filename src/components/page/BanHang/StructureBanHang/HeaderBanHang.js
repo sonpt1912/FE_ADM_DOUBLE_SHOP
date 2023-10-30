@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { Input, Tabs, Button } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faBarcode } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { Input, Tabs, Button } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch, faBarcode } from "@fortawesome/free-solid-svg-icons";
 const { TabPane } = Tabs;
 
 const HeaderContainer = styled.div`
@@ -40,76 +40,81 @@ const TabWrapper = styled.div`
 
     &.active {
       background-color: #000;
-
     }
   }
 `;
 
 const getTabsFromLocalStorage = () => {
-  const savedTabs = JSON.parse(localStorage.getItem('tabs'));
-  return savedTabs || [{ id: 1, title: 'Tab 1' }];
-}
+  const savedTabs = JSON.parse(localStorage.getItem("tabs"));
+  return savedTabs || [{ id: 1, title: "Tab 1" }];
+};
 
 const getNextTabIdFromLocalStorage = () => {
-  const savedNextTabId = JSON.parse(localStorage.getItem('nextTabId'));
+  const savedNextTabId = JSON.parse(localStorage.getItem("nextTabId"));
   return savedNextTabId || 2;
-}
+};
 
 const getTextCountsFromLocalStorage = () => {
-  const savedTextCounts = JSON.parse(localStorage.getItem('textCounts'));
+  const savedTextCounts = JSON.parse(localStorage.getItem("textCounts"));
   return savedTextCounts || {};
-}
-const HeaderBanHang = ({currentTab, setCurrentTab}) => {
-
+};
+const HeaderBanHang = ({ currentTab, setCurrentTab }) => {
   const [tabs, setTabs] = useState(getTabsFromLocalStorage());
   const [nextTabId, setNextTabId] = useState(getNextTabIdFromLocalStorage());
   const [textCounts, setTextCounts] = useState(getTextCountsFromLocalStorage());
-  const [activeTab, setActiveTab] = useState('1');
+  const [activeTab, setActiveTab] = useState("1");
   const [tabContents, setTabContents] = useState({});
-
+  const [productsByTab, setProductsByTab] = useState({});
 
   useEffect(() => {
-    localStorage.setItem('tabs', JSON.stringify(tabs));
-    localStorage.setItem('nextTabId', JSON.stringify(nextTabId));
-    localStorage.setItem('textCounts', JSON.stringify(textCounts));
-    localStorage.setItem('tabContents', JSON.stringify(tabContents));
+    localStorage.setItem("tabs", JSON.stringify(tabs));
+    localStorage.setItem("nextTabId", JSON.stringify(nextTabId));
+    localStorage.setItem("textCounts", JSON.stringify(textCounts));
+    localStorage.setItem("tabContents", JSON.stringify(tabContents));
   }, [tabs, nextTabId, textCounts, tabContents]);
 
   const renderTabContent = () => {
-    if (activeTab) {
+    if (tabs.length > 0 && activeTab) {
       return <div className="content">{tabContents[activeTab]}</div>;
     }
-    return null;
+
+    return <div>Không có tab nào hoặc tab không tồn tại.</div>;
   };
-  
+
   const handleAddTab = () => {
     const newTab = {
       id: String(nextTabId),
       title: `Tab ${nextTabId}`,
     };
-  
+
     setTabs([...tabs, newTab]);
     setNextTabId(nextTabId + 1);
     setTextCounts((prevCounts) => ({
       ...prevCounts,
       [newTab.id]: 0,
     }));
-  
+
     setActiveTab(newTab.id);
-  
+
+    // Cập nhật danh sách sản phẩm cho tab mới (ban đầu rỗng)
+    setProductsByTab({ ...productsByTab, [newTab.id]: [] });
+
     setTabContents((prevContents) => ({
       ...prevContents,
       [newTab.id]: `Content for ${newTab.title}`,
     }));
   };
-  
+
   const handleTabChange = (key) => {
-    setActiveTab(Number(key));
-    setCurrentTab(Number(key)); 
-    console.log('Selected tab:', 1);
+    setActiveTab(key);
+    setCurrentTab(Number(key));
   };
-  
-  
+
+  const clearCartForTab = (tabId) => {
+    const cartKey = `cart_${tabId}`;
+    localStorage.removeItem(cartKey);
+  };
+
   const handleDeleteTab = (tabId) => {
     const updatedTabs = tabs.filter((tab) => tab.id !== tabId);
     setTabs(updatedTabs);
@@ -117,27 +122,25 @@ const HeaderBanHang = ({currentTab, setCurrentTab}) => {
       const { [tabId]: deletedCount, ...restCounts } = prevCounts;
       return restCounts;
     });
-  
-    // Remove content for the deleted tab
+
     setTabContents((prevContents) => {
       const { [tabId]: deletedContent, ...restContents } = prevContents;
       return restContents;
     });
-  
-    // If the deleted tab was active, set the first tab as active
+
+    // Gọi hàm xóa dữ liệu giỏ hàng của tab tương ứng
+    clearCartForTab(tabId);
+
+    // Kiểm tra và cập nhật activeTab nếu cần
     if (activeTab === tabId && updatedTabs.length > 0) {
       setActiveTab(updatedTabs[0].id);
     }
   };
+
   const renderTabs = () => {
     return tabs.map((tab) => (
-      <TabWrapper
-        key={tab.id}
-        onClick={() => handleTabChange(tab.id)}
-      >
-        <div className="tab-content">
-          {tab.title}
-        </div>
+      <TabWrapper key={tab.id} onClick={() => handleTabChange(tab.id)}>
+        <div className="tab-content">{tab.title}</div>
         <div className="tab-actions">
           <Button type="link" onClick={() => handleDeleteTab(tab.id)}>
             x
@@ -146,7 +149,6 @@ const HeaderBanHang = ({currentTab, setCurrentTab}) => {
       </TabWrapper>
     ));
   };
-  
 
   return (
     <HeaderContainer>
@@ -157,7 +159,7 @@ const HeaderBanHang = ({currentTab, setCurrentTab}) => {
           prefix={<FontAwesomeIcon icon={faSearch} />}
         />
         <Icon>
-          <FontAwesomeIcon icon={faBarcode} style={{ cursor: 'pointer' }} />
+          <FontAwesomeIcon icon={faBarcode} style={{ cursor: "pointer" }} />
         </Icon>
       </InputContainer>
 

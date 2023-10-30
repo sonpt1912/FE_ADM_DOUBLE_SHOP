@@ -20,6 +20,7 @@ const AddKhachHang = ({ visible, onCancel, onAdd }) => {
     status: "0", // Assuming '0' represents 'Active' and '1' represents 'Inactive'
     // Additional fields can be added here
   });
+  
 
   const genderOptions = [
     { label: "Nam", value: "0" },
