@@ -8,7 +8,6 @@ import InputField from "../../../form/InputField";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchColors,
-  fetchTotalColors,
   setCurrentPage,
   setPageSize,
 } from "../../../../store/slice/ColorSlice";
@@ -70,6 +69,7 @@ const Mau = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (text, record) => (record.status === 1 ? "Active" : "Inactive"),
     },
     {
       title: "Action",
@@ -110,7 +110,6 @@ const Mau = () => {
 
   const hideEditModal = () => {
     setIsEditModalVisible(false);
-    dispatch(fetchColors({ page: currentPage, pageSize }));
   };
 
   const handleEdit = (color) => {
@@ -130,12 +129,7 @@ const Mau = () => {
     setIsModalVisible(false);
   };
 
-  useEffect(() => {
-    dispatch(fetchTotalColors());
-  }, [dispatch]);
-
   const onUpdateComplete = () => {
-    // Gọi lại danh sách màu sau khi bạn đã cập nhật màu
     dispatch(fetchColors({ page: currentPage, pageSize }));
   };
 

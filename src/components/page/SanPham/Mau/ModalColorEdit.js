@@ -51,11 +51,19 @@ const ModalColorEdit = ({ visible, onCancel, colors, onUpdateComplete }) => {
   };
 
   const handleDelete = () => {
-    setStatus(2);
+    // Cập nhật trường status thành 2
+    const updatedStatus = 2;
 
     const updatedData = {
       id: id,
-      status: 2,
+      status: updatedStatus,
+      code: codeState,
+      name: nameState,
+      description: descriptionState,
+      updatedTime: currentDateTimeString,
+      createdBy: 1,
+      updated_by: 1,
+      createdTime: currentDateTimeString,
     };
 
     dispatch(updateColor(updatedData));
