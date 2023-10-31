@@ -1,6 +1,6 @@
 import React from "react";
 import ProductComponent from "./ProductComponent";
-import "../../../../styles/BanHangCss/ProductList.css";
+import "../../../../../styles/BanHangCss/ProductList.css";
 
 const ProductList = ({ products, onAddToCart, activeTab }) => {
   return (

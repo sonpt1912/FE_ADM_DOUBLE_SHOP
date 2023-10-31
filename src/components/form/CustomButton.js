@@ -14,6 +14,11 @@ const BaseButton = styled.button`
   border-radius: 5px;
 `;
 
+export const DefaultButton = styled(BaseButton)`
+  background-color: #a3a9ad;
+  border: 2px solid #2980b9;
+`;
+
 export const PrimaryButton = styled(BaseButton)`
   background-color: #3498db;
   border: 2px solid #2980b9;

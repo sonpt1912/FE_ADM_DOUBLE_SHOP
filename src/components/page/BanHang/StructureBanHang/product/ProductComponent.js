@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../../styles/BanHangCss/ProductComponent.css";
+import "../../../../../styles/BanHangCss/ProductComponent.css";
 
 const ProductComponent = ({ product, onAddToCart }) => {
   const { name, code, size, color, price, quantity, image } = product;
