@@ -1,0 +1,17 @@
+.col-payment {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 15px 0px;
+}
+.btn-paying {
+  width: 90%;
+  height: 3rem;
+  position: absolute;
+  bottom: 15px;
+  left: 5%;
+  text-align: center;
+}
+.drawer-title {
+  display: flex;
+  justify-content: space-between;
+}
