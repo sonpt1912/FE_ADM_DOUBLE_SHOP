@@ -7,7 +7,7 @@ const { TabPane } = Tabs;
 
 const HeaderContainer = styled.div`
   padding: 10px;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid #00000036;
   display: flex;
   align-items: center;
 
@@ -62,7 +62,7 @@ const HeaderBanHang = ({ currentTab, setCurrentTab }) => {
   const [tabs, setTabs] = useState(getTabsFromLocalStorage());
   const [nextTabId, setNextTabId] = useState(getNextTabIdFromLocalStorage());
   const [textCounts, setTextCounts] = useState(getTextCountsFromLocalStorage());
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeTab, setActiveTab] = useState({ id: "1", title: "Tab 1" });
   const [tabContents, setTabContents] = useState({});
   const [productsByTab, setProductsByTab] = useState({});
 
@@ -96,7 +96,6 @@ const HeaderBanHang = ({ currentTab, setCurrentTab }) => {
 
     setActiveTab(newTab.id);
 
-    // Cập nhật danh sách sản phẩm cho tab mới (ban đầu rỗng)
     setProductsByTab({ ...productsByTab, [newTab.id]: [] });
 
     setTabContents((prevContents) => ({
@@ -128,10 +127,7 @@ const HeaderBanHang = ({ currentTab, setCurrentTab }) => {
       return restContents;
     });
 
-    // Gọi hàm xóa dữ liệu giỏ hàng của tab tương ứng
     clearCartForTab(tabId);
-
-    // Kiểm tra và cập nhật activeTab nếu cần
     if (activeTab === tabId && updatedTabs.length > 0) {
       setActiveTab(updatedTabs[0].id);
     }

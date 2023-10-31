@@ -4,6 +4,11 @@ import InputField from "../../../form/InputField";
 import RadioComponent from "../../../form/RadioField";
 import { useDispatch } from "react-redux";
 import { updateColor } from "../../../../store/slice/ColorSlice";
+import {
+  DangerButton,
+  PrimaryButton,
+  DefaultButton,
+} from "../../../form/CustomButton";
 
 const ModalColorEdit = ({ visible, onCancel, colors, onUpdateComplete }) => {
   const dispatch = useDispatch();
@@ -79,15 +84,15 @@ const ModalColorEdit = ({ visible, onCancel, colors, onUpdateComplete }) => {
       visible={visible}
       onCancel={onCancel}
       footer={[
-        <Button key="delete" type="danger" onClick={handleDelete}>
+        <DangerButton key="delete" type="danger" onClick={handleDelete}>
           Delete
-        </Button>,
-        <Button key="cancel" onClick={onCancel}>
+        </DangerButton>,
+        <DefaultButton key="cancel" onClick={onCancel}>
           Cancel
-        </Button>,
-        <Button key="ok" type="primary" onClick={handleUpdate}>
+        </DefaultButton>,
+        <PrimaryButton key="ok" type="primary" onClick={handleUpdate}>
           OK
-        </Button>,
+        </PrimaryButton>,
       ]}
     >
       <form>

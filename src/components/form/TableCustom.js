@@ -3,6 +3,7 @@ import { Table, Pagination, Button } from "antd";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+import { PrimaryButton } from "./CustomButton";
 
 const StyledTableWrapper = styled.div`
   .ant-table {
@@ -65,10 +66,10 @@ const TableComponent = ({
         title={() => (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span>Header</span>
-            <Button type="primary" onClick={showModal}>
+            <PrimaryButton type="primary" onClick={showModal}>
               <FontAwesomeIcon icon={faFloppyDisk} />
               Thêm mới
-            </Button>
+            </PrimaryButton>
           </div>
         )}
         footer={() => (

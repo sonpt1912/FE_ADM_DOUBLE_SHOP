@@ -1,48 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { animateScroll as scroll } from "react-scroll";
 import "../../../../styles/BanHangCss/NormalSell.css";
-import ProductList from "./ProductList";
-import ListCartProduct from "./ListCartProduct";
+import ProductList from "./product/ProductList";
+import ListCartProduct from "./product/ListCartProduct";
 import { products } from "./constants/tabInfor";
 import { PrimaryButton } from "../../../form/CustomButton";
+import PaymentDrawer from "./drawer/PaymentDrawer";
 
 const NormalSell = ({ currentTab }) => {
-  const [productsByTab, setProductsByTab] = useState({ [currentTab.id]: [] });
+  // Lưu trữ giỏ hàng cho tab hiện tại
+  const [carts, setCarts] = useState({});
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [cartsByTab, setCartsByTab] = useState({});
 
+  // Thêm giỏ hàng cho tab hiện tại
   useEffect(() => {
-    console.log("Current tab normalSell:", currentTab);
+    setCartsByTab((prevCartsByTab) => ({
+      ...prevCartsByTab,
+      [currentTab.id]: [],
+    }));
   }, [currentTab]);
 
-  // Khởi tạo trạng thái cart từ localStorage khi ứng dụng khởi động
-  const initialCart = JSON.parse(localStorage.getItem("cart")) || [];
-  const [cart, setCart] = useState(initialCart);
-
   const handleAddToCart = (product) => {
-    const updatedCart = [...cart, product];
-    setCart(updatedCart);
+    const tabId = currentTab.id;
 
-    // Lấy danh sách sản phẩm cho tab hiện tại
-    const productsForCurrentTab = productsByTab[currentTab.id];
+    // Lấy giỏ hàng cho tab hiện tại từ trạng thái
+    const currentCart = cartsByTab[tabId] || [];
 
-    // Thêm sản phẩm vào danh sách cho tab hiện tại
-    const updatedProductsForCurrentTab = [...productsForCurrentTab, product];
+    // Sao chép giỏ hàng hiện tại và thêm sản phẩm vào đó
+    const updatedCart = [...currentCart, product];
 
-    // Cập nhật danh sách sản phẩm cho tab hiện tại
-    setProductsByTab({
-      ...productsByTab,
-      [currentTab.id]: updatedProductsForCurrentTab,
+    // Cập nhật giỏ hàng cho tab hiện tại trong trạng thái
+    setCartsByTab({
+      ...cartsByTab,
+      [tabId]: updatedCart,
     });
 
-    // Lưu danh sách sản phẩm trong giỏ hàng vào localStorage
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    // Lưu giỏ hàng vào localStorage cho tab hiện tại
+    localStorage.setItem(`cart_${tabId}`, JSON.stringify(updatedCart));
   };
 
+  const showDrawer = () => {
+    setIsDrawerVisible(true);
+  };
+
+  const onClose = () => {
+    setIsDrawerVisible(false);
+  };
   return (
     <div className="container">
       <div className="left">
         <div className="top-left">
-          <h2>Content of Tab Normal {currentTab}</h2>
-          <ListCartProduct products={cart} activeTab={currentTab} />
+          <h2>Content of Tab Normal {currentTab.title}</h2>
+          <ListCartProduct
+            products={cartsByTab[currentTab.id] || []}
+            activeTab={currentTab}
+          />
         </div>
         <div className="bottom-left">Phần dưới bên trái (1/8 màn hình)</div>
       </div>
@@ -56,8 +69,9 @@ const NormalSell = ({ currentTab }) => {
           />
         </div>
         <div className="bottom-right">
-          <PrimaryButton>Thanh Toán</PrimaryButton>
+          <PrimaryButton onClick={showDrawer}>Thanh Toán</PrimaryButton>
         </div>
+        <PaymentDrawer visible={isDrawerVisible} onClose={onClose} />
       </div>
     </div>
   );

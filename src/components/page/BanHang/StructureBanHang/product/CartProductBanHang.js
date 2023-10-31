@@ -1,5 +1,5 @@
 import React from "react";
-import "../../../../styles/BanHangCss/CartProductBanHang.css";
+import "../../../../../styles/BanHangCss/CartProductBanHang.css";
 
 const CartProductBanHang = ({ product }) => {
   const { name, code, size, color, price, quantity, image } = product;
