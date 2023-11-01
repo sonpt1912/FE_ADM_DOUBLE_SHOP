@@ -3,9 +3,9 @@ import { Modal, Button } from "antd";
 import InputField from "../../../form/InputField";
 import RadioComponent from "../../../form/RadioField";
 import { useDispatch } from "react-redux";
-import { addAo } from "../../../../store/slice/AoSlice";
+import { addChatLieu } from "../../../../store/slice/ChatLieuSlice";
 
-const ModalAo = ({ visible, onCancel, onUpdateComplete }) => {
+const ModalChatLieu= ({ visible, onCancel, onUpdateComplete }) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -39,7 +39,7 @@ const ModalAo = ({ visible, onCancel, onUpdateComplete }) => {
       updatedTime: "",
       status: status,
     };
-    dispatch(addAo(formData));
+    dispatch(addChatLieu(formData));
     setCode("");
     setName("");
     setDescription("");
@@ -51,7 +51,7 @@ const ModalAo = ({ visible, onCancel, onUpdateComplete }) => {
 
   return (
     <Modal
-      title="Modal product"
+      title="Modal material"
       visible={visible}
       onCancel={onCancel}
       footer={[
@@ -66,15 +66,15 @@ const ModalAo = ({ visible, onCancel, onUpdateComplete }) => {
       <form>
         <InputField
           name="code"
-          label="Code product :"
-          placeholder="Enter code product"
+          label="Code material :"
+          placeholder="Enter code material"
           onChange={handleInputChange}
           value={code}
         />
         <InputField
           name="name"
-          label="Name product :"
-          placeholder="Enter name product"
+          label="Name material :"
+          placeholder="Enter name material"
           customStyle={{
             width: "450px",
             marginRight: "10px",
@@ -84,8 +84,8 @@ const ModalAo = ({ visible, onCancel, onUpdateComplete }) => {
         />
         <InputField
           name="description"
-          label="Description product :"
-          placeholder="Enter description product"
+          label="Description material :"
+          placeholder="Enter description material"
           customStyle={{
             width: "450px",
             marginRight: "10px",
@@ -108,4 +108,4 @@ const ModalAo = ({ visible, onCancel, onUpdateComplete }) => {
   );
 };
 
-export default ModalAo;
+export default ModalChatLieu;

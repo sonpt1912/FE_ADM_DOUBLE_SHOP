@@ -10,3 +10,30 @@ export const fetchAllColors = async () => {
     throw error;
   }
 };
+
+export const fetchAllChatLieus = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/color/get-all`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchAllCoAos = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/color/get-all`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchAllKichCos = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/color/get-all`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
