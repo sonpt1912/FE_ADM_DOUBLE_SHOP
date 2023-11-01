@@ -1,35 +1,78 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { BILL_SELL_TYPE } from "./constants/tabInfor";
-import FooterBanHang from "./FooterBanHang";
-import NormalSell from "./NormalSell";
-import ShipperSell from "./ShipperSell";
-import "../../../../styles/BanHangCss/ContentBanHang.css";
+import React, { useState, useEffect } from "react";
+import "../../../../styles/BanHangCss/NormalSell.css";
+import ProductList from "./product/ProductList";
+import ListCartProduct from "./product/ListCartProduct";
+import { products } from "./constants/tabInfor";
+import { PrimaryButton } from "../../../form/CustomButton";
+import PaymentDrawer from "./drawer/PaymentDrawer";
 
 const ContentBanHang = ({ currentTab }) => {
-  const [sellMethods, setSellMethods] = useState(BILL_SELL_TYPE.NORMAL_SELL);
+  // Lưu trữ giỏ hàng cho tab hiện tại
+  const [cartsByTab, setCartsByTab] = useState({});
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
 
+  // Thêm giỏ hàng cho tab hiện tại
   useEffect(() => {
-    console.log("Current tab:", currentTab);
+    setCartsByTab((prevCartsByTab) => ({
+      ...prevCartsByTab,
+      [currentTab.id]: [],
+    }));
   }, [currentTab]);
 
-  const isNormalSell = useMemo(
-    () => sellMethods === BILL_SELL_TYPE.NORMAL_SELL,
-    [sellMethods]
-  );
+  const handleAddToCart = (product) => {
+    const tabId = currentTab.id;
 
-  const handlerSellMethodsChange = (type) => {
-    console.log("handlerSellMethodsChange", type);
-    setSellMethods(type);
+    // Lấy giỏ hàng cho tab hiện tại từ trạng thái
+    const currentCart = cartsByTab[tabId] || [];
+
+    // Sao chép giỏ hàng hiện tại và thêm sản phẩm vào đó
+    const updatedCart = [...currentCart, product];
+
+    // Cập nhật giỏ hàng cho tab hiện tại trong trạng thái
+    setCartsByTab({
+      ...cartsByTab,
+      [tabId]: updatedCart,
+    });
+
+    // Lưu giỏ hàng vào localStorage cho tab hiện tại
+    localStorage.setItem(`cart_${tabId}`, JSON.stringify(updatedCart));
+  };
+
+  const showDrawer = () => {
+    setIsDrawerVisible(true);
+  };
+
+  const onClose = () => {
+    setIsDrawerVisible(false);
   };
 
   return (
-    <>
-      <div className="ContentBanHangContainer ">
-        {isNormalSell && <NormalSell currentTab={currentTab} />}
-        {!isNormalSell && <ShipperSell />}
+    <div className="container">
+      <div className="left">
+        <div className="top-left">
+          <h2>Content of Tab {currentTab}</h2>
+          <ListCartProduct
+            products={cartsByTab[currentTab.id] || []}
+            activeTab={currentTab}
+          />
+        </div>
+        <div className="bottom-left">Phần dưới bên trái (1/8 màn hình)</div>
       </div>
-      <FooterBanHang sellMethods={handlerSellMethodsChange} />
-    </>
+      <div className="right">
+        <div className="top-right">
+          <h2>Danh sách sản phẩm</h2>
+          <ProductList
+            products={products}
+            onAddToCart={handleAddToCart}
+            activeTab={currentTab}
+          />
+        </div>
+        <div className="bottom-right">
+          <PrimaryButton onClick={showDrawer}>Thanh Toán</PrimaryButton>
+        </div>
+        <PaymentDrawer visible={isDrawerVisible} onClose={onClose} />
+      </div>
+    </div>
   );
 };
 

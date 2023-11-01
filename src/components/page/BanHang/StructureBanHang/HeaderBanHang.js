@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Input, Tabs, Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faBarcode } from "@fortawesome/free-solid-svg-icons";
-const { TabPane } = Tabs;
 
 const HeaderContainer = styled.div`
   padding: 10px;
@@ -23,24 +22,17 @@ const InputContainer = styled.div`
 `;
 
 const Icon = styled.div`
-  margin-left: 10px;
+  margin: 0 10px 0 10px;
   cursor: pointer;
 `;
 
-const TabWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 0 10px 0 20px;
-
-  .ant-tabs-tab {
-    cursor: pointer;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-
-    &.active {
-      background-color: #000;
-    }
+const StyledTabs = styled(Tabs)`
+  .ant-tabs .ant-tabs-top .ant-tabs-card {
+    margin-top: -33px;
+    margin-left: 10px !important;
+  }
+  .ant-tabs-nav {
+    margin: 0 0 -10px 0 !important;
   }
 `;
 
@@ -58,92 +50,82 @@ const getTextCountsFromLocalStorage = () => {
   const savedTextCounts = JSON.parse(localStorage.getItem("textCounts"));
   return savedTextCounts || {};
 };
+
 const HeaderBanHang = ({ currentTab, setCurrentTab }) => {
-  const [tabs, setTabs] = useState(getTabsFromLocalStorage());
-  const [nextTabId, setNextTabId] = useState(getNextTabIdFromLocalStorage());
-  const [textCounts, setTextCounts] = useState(getTextCountsFromLocalStorage());
-  const [activeTab, setActiveTab] = useState({ id: "1", title: "Tab 1" });
+  const [activeKey, setActiveKey] = useState("");
+  const [items, setItems] = useState([]);
   const [tabContents, setTabContents] = useState({});
-  const [productsByTab, setProductsByTab] = useState({});
 
-  useEffect(() => {
-    localStorage.setItem("tabs", JSON.stringify(tabs));
-    localStorage.setItem("nextTabId", JSON.stringify(nextTabId));
-    localStorage.setItem("textCounts", JSON.stringify(textCounts));
-    localStorage.setItem("tabContents", JSON.stringify(tabContents));
-  }, [tabs, nextTabId, textCounts, tabContents]);
+  const newTabIndex = useRef(1);
 
-  const renderTabContent = () => {
-    if (tabs.length > 0 && activeTab) {
-      return <div className="content">{tabContents[activeTab]}</div>;
-    }
+  const onChange = (newActiveKey) => {
+    setActiveKey(newActiveKey);
+    setCurrentTab(newActiveKey);
+    updateTabContent(newActiveKey, tabContents[newActiveKey]);
+  };
+  const add = () => {
+    const newActiveKey = `Tab ${newTabIndex.current++}`; // Change "newTab" to "Tab"
+    const newPanes = [...items];
+    newPanes.push({
+      label: newActiveKey,
+      key: newActiveKey,
+    });
+    setItems(newPanes);
 
-    return <div>Không có tab nào hoặc tab không tồn tại.</div>;
+    setActiveKey(newActiveKey);
+    setCurrentTab(newActiveKey);
+    updateTabContent(newActiveKey, `Content of ${newActiveKey}`); // Change "new Tab" to the newActiveKey
   };
 
-  const handleAddTab = () => {
-    const newTab = {
-      id: String(nextTabId),
-      title: `Tab ${nextTabId}`,
-    };
+  const remove = (targetKey) => {
+    let newActiveKey = activeKey;
+    let lastIndex = -1;
+    items.forEach((item, i) => {
+      if (item.key === targetKey) {
+        lastIndex = i - 1;
+      }
+    });
 
-    setTabs([...tabs, newTab]);
-    setNextTabId(nextTabId + 1);
-    setTextCounts((prevCounts) => ({
-      ...prevCounts,
-      [newTab.id]: 0,
-    }));
+    const newPanes = items.filter((item) => item.key !== targetKey);
 
-    setActiveTab(newTab.id);
+    if (newPanes.length === 0) {
+      // Nếu không còn tab nào, thêm một tab mới trống
+      const newActiveKey = `Tab ${newTabIndex.current++}`;
+      newPanes.push({
+        label: newActiveKey,
+        key: newActiveKey,
+      });
 
-    setProductsByTab({ ...productsByTab, [newTab.id]: [] });
+      // Đặt tab mới thêm vào làm tab hoạt động
 
+      setActiveKey(newActiveKey);
+      setCurrentTab(newActiveKey);
+      updateTabContent(newActiveKey, `Content of ${newActiveKey}`);
+    } else if (newActiveKey === targetKey) {
+      if (lastIndex >= 0) {
+        newActiveKey = newPanes[lastIndex].key;
+      } else {
+        newActiveKey = newPanes[0].key;
+      }
+    }
+
+    setItems(newPanes);
+    setActiveKey(newActiveKey);
+  };
+
+  const updateTabContent = (tabId, content) => {
     setTabContents((prevContents) => ({
       ...prevContents,
-      [newTab.id]: `Content for ${newTab.title}`,
+      [tabId]: content,
     }));
   };
 
-  const handleTabChange = (key) => {
-    setActiveTab(key);
-    setCurrentTab(Number(key));
-  };
-
-  const clearCartForTab = (tabId) => {
-    const cartKey = `cart_${tabId}`;
-    localStorage.removeItem(cartKey);
-  };
-
-  const handleDeleteTab = (tabId) => {
-    const updatedTabs = tabs.filter((tab) => tab.id !== tabId);
-    setTabs(updatedTabs);
-    setTextCounts((prevCounts) => {
-      const { [tabId]: deletedCount, ...restCounts } = prevCounts;
-      return restCounts;
-    });
-
-    setTabContents((prevContents) => {
-      const { [tabId]: deletedContent, ...restContents } = prevContents;
-      return restContents;
-    });
-
-    clearCartForTab(tabId);
-    if (activeTab === tabId && updatedTabs.length > 0) {
-      setActiveTab(updatedTabs[0].id);
+  const onEdit = (targetKey, action) => {
+    if (action === "add") {
+      add();
+    } else {
+      remove(targetKey);
     }
-  };
-
-  const renderTabs = () => {
-    return tabs.map((tab) => (
-      <TabWrapper key={tab.id} onClick={() => handleTabChange(tab.id)}>
-        <div className="tab-content">{tab.title}</div>
-        <div className="tab-actions">
-          <Button type="link" onClick={() => handleDeleteTab(tab.id)}>
-            x
-          </Button>
-        </div>
-      </TabWrapper>
-    ));
   };
 
   return (
@@ -158,13 +140,13 @@ const HeaderBanHang = ({ currentTab, setCurrentTab }) => {
           <FontAwesomeIcon icon={faBarcode} style={{ cursor: "pointer" }} />
         </Icon>
       </InputContainer>
-
-      <div className="tabs-container">
-        {renderTabs()}
-        <Button type="link" onClick={handleAddTab}>
-          + Add Tab
-        </Button>
-      </div>
+      <StyledTabs
+        type="editable-card"
+        onChange={onChange}
+        activeKey={activeKey}
+        onEdit={onEdit}
+        items={items}
+      />
     </HeaderContainer>
   );
 };
