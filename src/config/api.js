@@ -10,3 +10,39 @@ export const fetchAllColors = async () => {
     throw error;
   }
 };
+
+export const fetchAllAos = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/ao/get-all`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchAllSizes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/kichCo/get-all`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchAllChatLieus = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/chatLieu/get-all`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchAllCoAos = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/coAo/get-all`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

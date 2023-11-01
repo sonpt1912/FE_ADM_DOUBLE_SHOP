@@ -15,10 +15,10 @@ import SanPham from "./page/SanPham";
 import ThongKe from "./page/ThongKe";
 import Voucher from "./page/Voucher";
 import HangKhachHang from "./page/Hang/HangKhachHang";
-import Ao from "./page/SanPham/Ao";
-import ChatLieu from "./page/SanPham/ChatLieu";
-import CoAo from "./page/SanPham/CoAo";
-import KichCo from "./page/SanPham/KichCo";
+import Ao from "./page/SanPham/Ao/Ao";
+import ChatLieu from "./page/SanPham/ChatLieu/ChatLieu";
+import CoAo from "./page/SanPham/CoAo/CoAo";
+import KichCo from "./page/SanPham/KichCo/KichCo";
 import Mau from "./page/SanPham/Mau/Mau";
 
 const { Content } = Layout;
