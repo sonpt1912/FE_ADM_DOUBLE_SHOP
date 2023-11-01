@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import HeaderBanHang from "./StructureBanHang/HeaderBanHang";
 import ContentBanHang from "./StructureBanHang/ContentBanHang";
@@ -15,26 +15,36 @@ const ContentWrapper = styled.div`
 
 const BanHang = () => {
   const [currentTab, setCurrentTab] = useState(1);
-  console.log("currentTab: " + currentTab);
-
-  useEffect(() => {
-    console.log("Current tab:", currentTab);
-    console.log("Content for current tab:"[currentTab]);
-  }, [currentTab]);
+  const [tabContents, setTabContents] = useState({}); // State to hold tab contents
 
   const catchTabChange = (tabId) => {
-    console.log("catchTabChange", tabId);
     setCurrentTab(tabId);
+  };
+
+  const updateTabContent = (tabId, content) => {
+    setTabContents((prevContents) => ({
+      ...prevContents,
+      [tabId]: content,
+    }));
   };
 
   return (
     <PageWrapper>
-      <HeaderBanHang currentTab={currentTab} setCurrentTab={catchTabChange} />
+      <HeaderBanHang
+        currentTab={currentTab}
+        setCurrentTab={catchTabChange}
+        updateTabContent={updateTabContent}
+      />
       <ContentWrapper>
         <Routes>
           <Route
             path="/"
-            element={<ContentBanHang currentTab={currentTab} />}
+            element={
+              <ContentBanHang
+                currentTab={currentTab}
+                tabContent={tabContents[currentTab]}
+              />
+            }
           />
         </Routes>
       </ContentWrapper>
