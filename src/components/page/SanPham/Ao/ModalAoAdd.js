@@ -3,9 +3,9 @@ import { Modal, Button } from "antd";
 import InputField from "../../../form/InputField";
 import RadioComponent from "../../../form/RadioField";
 import { useDispatch } from "react-redux";
-import { addAo } from "../../../../store/slice/AoSlice";
+import { addColor } from "../../../../store/slice/ColorSlice";
 
-const ModalAo = ({ visible, onCancel }) => {
+const ModalAo = ({ visible, onCancel, onUpdateComplete }) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -39,16 +39,25 @@ const ModalAo = ({ visible, onCancel }) => {
       updatedTime: "",
       status: status,
     };
-    dispatch(addAo(formData));
+    dispatch(addColor(formData));
     setCode("");
     setName("");
     setDescription("");
     onCancel();
+    if (onUpdateComplete) {
+      onUpdateComplete(); // Gọi hàm callback từ component cha
+    }
   };
+
+  /// api get brand
+  /// api get collar
+  /// api get color
+  /// api get size
+  /// api get matterial
 
   return (
     <Modal
-      title="Modal Ao"
+      title="Modal Color"
       visible={visible}
       onCancel={onCancel}
       footer={[
@@ -62,9 +71,16 @@ const ModalAo = ({ visible, onCancel }) => {
     >
       <form>
         <InputField
+          name="code"
+          label="Code Color :"
+          placeholder="Enter code color"
+          onChange={handleInputChange}
+          value={code}
+        />
+        <InputField
           name="name"
-          label="Name ao :"
-          placeholder="Enter name ao"
+          label="Name Color :"
+          placeholder="Enter name color"
           customStyle={{
             width: "450px",
             marginRight: "10px",
@@ -72,7 +88,17 @@ const ModalAo = ({ visible, onCancel }) => {
           onChange={handleInputChange}
           value={name}
         />
-        // 
+        <InputField
+          name="description"
+          label="Description Color :"
+          placeholder="Enter description color"
+          customStyle={{
+            width: "450px",
+            marginRight: "10px",
+          }}
+          onChange={handleInputChange}
+          value={description}
+        />
         <RadioComponent
           name="status"
           options={[
