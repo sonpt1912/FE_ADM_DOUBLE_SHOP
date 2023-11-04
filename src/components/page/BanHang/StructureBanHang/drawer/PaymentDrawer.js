@@ -43,7 +43,6 @@ const PaymentDrawer = ({ visible, onClose }) => {
       visible={visible}
       width={700}
     >
-      <h1>Khách lẻ</h1>
       <div className="col-payment">
         <div className="title-payment">Tổng tiền hàng :</div>
         <div className="price-payment">1.999.999</div>

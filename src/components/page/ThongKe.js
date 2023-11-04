@@ -150,7 +150,6 @@ const ThongKe = () => {
           placeholder="Enter your password"
           customStyle={{
             width: "450px",
-            backgroundColor: "lightgreen",
           }}
         />
       </Container>

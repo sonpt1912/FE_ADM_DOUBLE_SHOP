@@ -1,16 +1,5 @@
 import React from "react";
-import {
-  UserOutlined,
-  CalendarOutlined,
-  DollarOutlined,
-  InfoCircleOutlined,
-  EditOutlined,
-  TeamOutlined,
-  SkinOutlined,
-  GiftOutlined,
-  CommentOutlined,
-  NumberOutlined,
-} from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,7 +22,7 @@ import { Menu, Layout } from "antd";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 
-import Logo from "../assets/logo.png";
+import Logo from "../assets/LogoUrl";
 import { size } from "lodash";
 const { Sider } = Layout;
 const { SubMenu } = Menu;

@@ -20,9 +20,7 @@ const Label = styled.label`
 
 const StyledInput = styled(Input)`
   padding: 10px;
-  border: 2px solid #3498db;
-  border-radius: 5px;
-  flex: 1;
+  border: 1px solid #000000;
 
   ${({ customStyle }) =>
     customStyle &&
