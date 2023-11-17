@@ -130,9 +130,12 @@ const Voucher = () => {
       <div style={{ marginBottom: "30px" }}></div>
       <TableComponent
         columns={columns}
+        current={1}
         dataSource={dataSource}
         totalRecord={100}
         showModal={showModal}
+        pageSize={0}
+        total={100}
       />
       <br />
 
