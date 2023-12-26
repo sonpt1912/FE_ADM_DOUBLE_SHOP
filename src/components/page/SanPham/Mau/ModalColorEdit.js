@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button } from "antd";
-import InputField from "../../../form/InputField";
-import RadioComponent from "../../../form/RadioField";
+import { Modal, Button, Input, Radio } from "antd";
 import { useDispatch } from "react-redux";
 import { updateColor } from "../../../../store/slice/ColorSlice";
-import {
-  DangerButton,
-  PrimaryButton,
-  DefaultButton,
-} from "../../../form/CustomButton";
 
 const ModalColorEdit = ({ visible, onCancel, colors, onUpdateComplete }) => {
   const dispatch = useDispatch();
@@ -84,26 +77,26 @@ const ModalColorEdit = ({ visible, onCancel, colors, onUpdateComplete }) => {
       visible={visible}
       onCancel={onCancel}
       footer={[
-        <DangerButton key="delete" type="danger" onClick={handleDelete}>
+        <Button key="delete" type="danger" onClick={handleDelete}>
           Delete
-        </DangerButton>,
-        <DefaultButton key="cancel" onClick={onCancel}>
+        </Button>,
+        <Button key="cancel" onClick={onCancel}>
           Cancel
-        </DefaultButton>,
-        <PrimaryButton key="ok" type="primary" onClick={handleUpdate}>
+        </Button>,
+        <Button key="ok" type="primary" onClick={handleUpdate}>
           OK
-        </PrimaryButton>,
+        </Button>,
       ]}
     >
       <form>
-        <InputField
+        <Input
           name="code"
           label="Mã màu:"
           placeholder="Nhập mã màu"
           onChange={(e) => setCode(e.target.value)}
           value={codeState}
         />
-        <InputField
+        <Input
           name="name"
           label="Tên màu:"
           placeholder="Nhập tên màu"
@@ -114,7 +107,7 @@ const ModalColorEdit = ({ visible, onCancel, colors, onUpdateComplete }) => {
           onChange={(e) => setName(e.target.value)}
           value={nameState}
         />
-        <InputField
+        <Input
           name="description"
           label="Mô tả màu:"
           placeholder="Nhập mô tả màu"
@@ -125,7 +118,7 @@ const ModalColorEdit = ({ visible, onCancel, colors, onUpdateComplete }) => {
           onChange={(e) => setDescription(e.target.value)}
           value={descriptionState}
         />
-        <RadioComponent
+        <Radio
           name="status"
           options={[
             { label: "Hoạt động", value: 1 },

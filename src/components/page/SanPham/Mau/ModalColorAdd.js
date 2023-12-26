@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button } from "antd";
-import InputField from "../../../form/InputField";
-import RadioComponent from "../../../form/RadioField";
+import { Modal, Button, Radio, Input } from "antd";
 import { useDispatch } from "react-redux";
 import { addColor } from "../../../../store/slice/ColorSlice";
 
@@ -64,14 +62,14 @@ const ModalColor = ({ visible, onCancel, onUpdateComplete }) => {
       ]}
     >
       <form>
-        <InputField
+        <Input
           name="code"
           label="Code Color :"
           placeholder="Enter code color"
           onChange={handleInputChange}
           value={code}
         />
-        <InputField
+        <Input
           name="name"
           label="Name Color :"
           placeholder="Enter name color"
@@ -82,7 +80,7 @@ const ModalColor = ({ visible, onCancel, onUpdateComplete }) => {
           onChange={handleInputChange}
           value={name}
         />
-        <InputField
+        <Input
           name="description"
           label="Description Color :"
           placeholder="Enter description color"
@@ -93,7 +91,7 @@ const ModalColor = ({ visible, onCancel, onUpdateComplete }) => {
           onChange={handleInputChange}
           value={description}
         />
-        <RadioComponent
+        <Radio
           name="status"
           options={[
             { label: "Active", value: 1 },
