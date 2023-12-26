@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import CollapseCustom from "../../form/CollapseCustom";
-import TableComponent from "../../form/TableCustom";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Space } from "antd";
-import InputField from "../../form/InputField";
+import { Space, Input, Table, Collapse } from "antd";
+
 
 const components = [
-  <InputField
+  <Input
     label="name :"
     placeholder="Enter your username"
     customStyle={{
@@ -16,7 +15,7 @@ const components = [
       marginRight: "10px",
     }}
   />,
-  <InputField
+  <Input
     label="description :"
     placeholder="Enter your username"
     customStyle={{
@@ -108,9 +107,9 @@ const dataSource = [
 const CoAo = () => {
   return (
     <div>
-      <CollapseCustom components={components} />
+      <Collapse components={components} />
       <div style={{ marginBottom: "30px" }}></div>
-      <TableComponent
+      <Table
         columns={columns}
         dataSource={dataSource}
         totalRecord={100}

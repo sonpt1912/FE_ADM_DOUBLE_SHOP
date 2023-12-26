@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-import CollapseCustom from "../../../form/CollapseCustom";
-import TableComponent from "../../../form/TableCustom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Space } from "antd";
-import InputField from "../../../form/InputField";
+import { Space, Input, Table, Collapse } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchColors,
@@ -23,7 +20,7 @@ const Mau = () => {
   const totalPages = useSelector((state) => state.colors.totalPages);
 
   const components = [
-    <InputField
+    <Input
       label="name :"
       placeholder="Enter your username"
       customStyle={{
@@ -32,7 +29,7 @@ const Mau = () => {
         marginRight: "10px",
       }}
     />,
-    <InputField
+    <Input
       label="description :"
       placeholder="Enter your username"
       customStyle={{
@@ -151,9 +148,9 @@ const Mau = () => {
 
   return (
     <div>
-      <CollapseCustom components={components} />
+      <Collapse components={components} />
       <div style={{ marginBottom: "30px" }}></div>
-      <TableComponent
+      <Table
         columns={columns}
         dataSource={colors}
         totalRecord={totalRecords}

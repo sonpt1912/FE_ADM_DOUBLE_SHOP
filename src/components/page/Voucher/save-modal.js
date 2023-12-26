@@ -1,19 +1,9 @@
 import React from "react";
-import { Modal, Button, Tabs } from "antd";
+import { Modal, Button, Tabs, Input } from "antd";
 import axios from "axios";
-import InputField from "../../form/InputField";
 import { Row, Col } from "antd";
 
 const { TabPane } = Tabs;
-
-const inputStyle = {
-  border: "none",
-  borderBottom: "1px solid #000",
-  outline: "none",
-  width: "200px", // Đặt chiều rộng
-  padding: "5px", // Đặt padding
-  fontSize: "16px", // Đặt kích thước font
-};
 
 const ModalSave = ({ visible, onCancel }) => {
   return (
@@ -35,66 +25,60 @@ const ModalSave = ({ visible, onCancel }) => {
         <TabPane tab="Thông tin" key="1">
           <Row>
             <Col span={12}>
-              <InputField
+              <Input
                 label="Mã đợt phát hành :"
                 placeholder="Enter your username"
                 customStyle={{
-                  border: "none",
                   border: "1px solid #000",
                   outline: "none",
                 }}
               />
             </Col>
             <Col span={12}>
-              <InputField
+              <Input
                 label="Tên đợt phát hành :"
                 placeholder="Enter your username"
                 customStyle={{
-                  border: "none",
                   border: "1px solid #000",
                   outline: "none",
                 }}
               />
             </Col>
             <Col span={12}>
-              <InputField
+              <Input
                 label="Mệnh giá:"
                 placeholder="Enter your username"
                 customStyle={{
-                  border: "none",
                   border: "1px solid #000",
                   outline: "none",
                 }}
               />
             </Col>
             <Col span={12}>
-              <InputField
+              <Input
                 label="Tổng tiền hàng :"
                 placeholder="Enter your username"
                 customStyle={{
-                  border: "none",
                   border: "1px solid #000",
                   outline: "none",
                 }}
               />
             </Col>
             <Col span={12}>
-              <InputField
+              <Input
                 label="Tình trạng :"
                 placeholder="Enter your username"
                 customStyle={{
-                  border: "none",
                   border: "1px solid #000",
                   outline: "none",
                 }}
               />
             </Col>
             <Col span={12}>
-              <InputField
+              <Input
                 label="Ghỉ chú :"
                 placeholder="Enter your username"
                 customStyle={{
-                  border: "none",
                   border: "1px solid #000",
                   outline: "none",
                 }}
