@@ -18,12 +18,12 @@ import {
   faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
+import logo from "../assets/logo.png";
+
 import { Menu, Layout } from "antd";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 
-import Logo from "../assets/LogoUrl";
-import { size } from "lodash";
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -31,13 +31,22 @@ const Navbar = ({ collapsed }) => {
   const navigate = useNavigate();
 
   return (
-    <Sider theme="light" trigger={null} collapsible collapsed={collapsed}>
+    <Sider
+      style={{ background: "#f4f9fc" }}
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+    >
       <div className="demo-logo-vertical" />
       <div
         className="logo"
         style={{ textAlign: "center", paddingBottom: "10px" }}
       >
-        <img src={Logo} alt="Logo" style={{ width: "100px", height: "auto" }} />
+        <img
+          src={logo}
+          alt="Logo"
+          style={{ width: "100px", height: "auto" }}
+        />
         <div style={{ color: "Highlight", fontSize: "20px", fontWeight: "" }}>
           Double Shop
         </div>
@@ -47,6 +56,7 @@ const Navbar = ({ collapsed }) => {
         mode="inline"
         defaultSelectedKeys={["1"]}
         onClick={({ key }) => navigate(key)}
+        style={{ background: "#f4f9fc" }}
       >
         <Menu.Item
           className="menu-item"
