@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import colorSlice from "./slice/ColorSlice";
+import KhachHangReducer from "./slice/KhachHangReducer";
 
 const store = configureStore({
   reducer: {
-    colors: colorSlice.reducer,
+    khachHang : KhachHangReducer,
   },
 });
 
