@@ -47,9 +47,7 @@ const Navbar = ({ collapsed }) => {
           alt="Logo"
           style={{ width: "100px", height: "auto" }}
         />
-        <div style={{ color: "Highlight", fontSize: "20px", fontWeight: "" }}>
-          Double Shop
-        </div>
+
       </div>
 
       <Menu
