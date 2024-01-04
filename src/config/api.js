@@ -10,3 +10,5 @@ export const fetchAllColors = async () => {
     throw error;
   }
 };
+
+const API_SUCCESS = "success";

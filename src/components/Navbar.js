@@ -42,12 +42,7 @@ const Navbar = ({ collapsed }) => {
         className="logo"
         style={{ textAlign: "center", paddingBottom: "10px" }}
       >
-        <img
-          src={logo}
-          alt="Logo"
-          style={{ width: "100px", height: "auto" }}
-        />
-
+        <img src={logo} alt="Logo" style={{ width: "100px", height: "auto" }} />
       </div>
 
       <Menu
@@ -124,7 +119,7 @@ const Navbar = ({ collapsed }) => {
         </Menu.Item>
         <SubMenu
           icon={<FontAwesomeIcon icon={faEnvelopeOpenText} />}
-          title="Liên Hệ"
+          title="Thông tin thêm"
         >
           <Menu.Item
             key="/pham"

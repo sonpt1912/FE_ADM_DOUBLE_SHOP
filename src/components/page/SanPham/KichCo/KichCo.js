@@ -103,6 +103,18 @@ const KichCo = () => {
                 />
               </Form.Item>
             </div>
+            <div>
+              <Form.Item label="Code">
+                <Input
+                  placeholder="Enter code"
+                  style={{ width: "300px" }}
+                  value={searchParams.code}
+                  onChange={(e) =>
+                    setSearchParams({ ...searchParams, code: e.target.value })
+                  }
+                />
+              </Form.Item>
+            </div>
             <div style={{ marginRight: "150px" }}>
               <Form.Item label="Trạng Thái">
                 <Select
@@ -138,6 +150,7 @@ const KichCo = () => {
       title: "STT",
       dataIndex: "index",
       key: "index",
+      width: 75,
       render: (text, record, index) => index + 1,
       sorter: (a, b) => a.index - b.index,
     },
@@ -145,27 +158,32 @@ const KichCo = () => {
       title: "Mã",
       dataIndex: "code",
       key: "code",
+      width: 150,
       sorter: (a, b) => a.code.localeCompare(b.code),
     },
     {
       title: "Tên",
       dataIndex: "name",
       key: "name",
+      width: 200,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "Mô tả",
       dataIndex: "description",
       key: "description",
+      width: 400,
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
+      width: 100,
     },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "actions",
+      width: 100,
       render: (text, record) => (
         <Space size="middle">
           <Button style={{ border: "none" }} icon={<EyeOutlined />} />
@@ -176,7 +194,7 @@ const KichCo = () => {
   ];
   const getTitle = () => (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <span style={{ marginRight: 8 }}>Danh Sách Khách Hàng</span>
+      <span style={{ marginRight: 8 }}>Danh Sách Size</span>
       <Button type="primary" shape="round">
         Thêm Khách Hàng
       </Button>
@@ -217,6 +235,10 @@ const KichCo = () => {
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (totalPages) => `Total ${totalPages} items`,
+          }}
+          scroll={{
+            x: 1000,
+            y: 300,
           }}
           loading={loading}
           title={getTitle}
