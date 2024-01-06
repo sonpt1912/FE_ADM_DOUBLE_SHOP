@@ -137,7 +137,7 @@ const KichCo = () => {
               icon={<SearchOutlined />}
               onClick={onClickSearch}
             >
-              Search
+              `` Search
             </Button>
           </Form.Item>
         </Form>
