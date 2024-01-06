@@ -9,12 +9,12 @@ import {
   faGifts,
   faMoneyCheck,
   faUserGroup,
-  faEnvelopeOpenText,
   faReceipt,
   faRankingStar,
   faShop,
+  faEnvelopesBulk,
   faEnvelope,
-  faComments,
+  faNewspaper,
   faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -86,9 +86,6 @@ const Navbar = ({ collapsed }) => {
           <Menu.Item key="/sanPham/coAo">Cổ áo</Menu.Item>
           <Menu.Item key="/sanPham/chatLieu">Chất liệu</Menu.Item>
         </SubMenu>
-        <Menu.Item className="menu-item" key="/danhGia" icon={<EditOutlined />}>
-          Đánh Giá
-        </Menu.Item>
         <Menu.Item
           className="menu-item"
           key="/voucher"
@@ -118,15 +115,15 @@ const Navbar = ({ collapsed }) => {
           Nhân Viên
         </Menu.Item>
         <SubMenu
-          icon={<FontAwesomeIcon icon={faEnvelopeOpenText} />}
+          icon={<FontAwesomeIcon icon={faEnvelopesBulk} />}
           title="Thông tin thêm"
         >
           <Menu.Item
             key="/pham"
             className="menu-item"
-            icon={<FontAwesomeIcon icon={faComments} />}
+            icon={<FontAwesomeIcon icon={faNewspaper} />}
           >
-            Chat trực tuyến
+            Tạo bài viết
           </Menu.Item>
           <Menu.Item
             className="menu-item"
