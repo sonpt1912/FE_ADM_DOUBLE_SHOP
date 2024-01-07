@@ -7,7 +7,7 @@ import LienHe from "./page/LienHe";
 import NhanVien from "./page/NhanVien";
 import SanPham from "./page/SanPham";
 import Ao from "./page/SanPham/Ao";
-import ChatLieu from "./page/SanPham/ChatLieu";
+import ChatLieu from "./page/SanPham/ChatLieu/ChatLieu";
 import CoAo from "./page/SanPham/CoAo";
 import KichCo from "./page/SanPham/KichCo";
 import Mau from "./page/SanPham/Mau";
