@@ -1,6 +1,6 @@
 // sizeSlice.js
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchSizes, saveSize } from "../../config/api";
 
 const initialState = {
   sizes: [],
@@ -8,21 +8,6 @@ const initialState = {
   status: "idle",
   pagination: {},
 };
-
-export const fetchSizes = createAsyncThunk(
-  "sizes/fetchSizes",
-  async (payload) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8072/size/get-size-by-condition",
-        payload
-      );
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
 
 
 const sizeSlice = createSlice({
@@ -44,6 +29,16 @@ const sizeSlice = createSlice({
         };
       })
       .addCase(fetchSizes.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(saveSize.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(saveSize.fulfilled, (state, action) => {
+        state.status = "succeeded";
+      })
+      .addCase(saveSize.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
