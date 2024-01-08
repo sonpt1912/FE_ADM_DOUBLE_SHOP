@@ -11,13 +11,13 @@ import {
   Button,
   Select,
   DatePicker,
-  Slider,
   Divider,
   Space,
-  Pagination,
 } from "antd";
 import { SearchOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
-import { fetchSizes } from "../../../../store/slice/KichCoReducer";
+import { fetchSizes } from "../../../../config/api";
+import ModalAddSize from "./modalAddSize";
+const { Option } = Select;
 
 const { RangePicker } = DatePicker;
 
@@ -26,38 +26,46 @@ const KichCo = () => {
   const sizes = useSelector((state) => state.size.sizes);
   const pageSize = useSelector((state) => state.size.pageSize);
   const pagination = useSelector((state) => state.size.pagination);
-  console.log("Pagination", pagination);
+  console.log(pagination);
   const loading = useSelector((state) => state.size.status === "loading");
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   const [searchParams, setSearchParams] = useState({
     name: "",
     status: "",
   });
+
   useEffect(() => {
-    dispatch(
-      fetchSizes({
-        page: 0,
-        pageSize: 5,
-        name: searchParams.name,
-        status: searchParams.status,
-      })
-    );
-  }, [dispatch]);
+    if (!modalVisible) {
+      dispatch(
+        fetchSizes({
+          page: pagination.page,
+          pageSize: pagination.pageSize,
+          name: searchParams.name,
+          status: searchParams.status,
+        })
+      );
+    }
+  }, [modalVisible]);
 
   const onClickSearch = () => {
     dispatch(
       fetchSizes({
-        page: 0,
-        pageSize: 5,
+        page: pagination.page,
+        pageSize: pagination.pageSize,
         name: searchParams.name,
         status: searchParams.status,
       })
     );
-
-    setSearchParams({
-      name: "",
-      status: "",
-    });
   };
 
   const { token } = theme.useToken();
@@ -73,12 +81,11 @@ const KichCo = () => {
       label: "Search",
       children: (
         <Form
-          labelCol={{ span: 6 }}
+          labelCol={{ span: 5 }}
           wrapperCol={{ span: 14 }}
           layout="horizontal"
           style={{
             maxWidth: 1100,
-            marginLeft: "140px",
             margin: "auto",
             display: "flex",
             flexDirection: "column",
@@ -95,7 +102,7 @@ const KichCo = () => {
               <Form.Item label="Name">
                 <Input
                   placeholder="Enter name"
-                  style={{ width: "300px" }}
+                  style={{ width: "250px" }}
                   value={searchParams.name}
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, name: e.target.value })
@@ -103,7 +110,19 @@ const KichCo = () => {
                 />
               </Form.Item>
             </div>
-            <div style={{ marginRight: "150px" }}>
+            <div>
+              <Form.Item label="Code">
+                <Input
+                  placeholder="Enter code"
+                  style={{ width: "250px" }}
+                  value={searchParams.code}
+                  onChange={(e) =>
+                    setSearchParams({ ...searchParams, code: e.target.value })
+                  }
+                />
+              </Form.Item>
+            </div>
+            <div>
               <Form.Item label="Trạng Thái">
                 <Select
                   style={{ width: "300px" }}
@@ -111,9 +130,10 @@ const KichCo = () => {
                   onChange={(value) =>
                     setSearchParams({ ...searchParams, status: value })
                   }
+                  allowClear
                 >
-                  <Select.Option value="0">0</Select.Option>
-                  <Select.Option value="1">1</Select.Option>
+                  <Option value="0">0</Option>
+                  <Option value="1">1</Option>
                 </Select>
               </Form.Item>
             </div>
@@ -138,6 +158,7 @@ const KichCo = () => {
       title: "STT",
       dataIndex: "index",
       key: "index",
+      width: 75,
       render: (text, record, index) => index + 1,
       sorter: (a, b) => a.index - b.index,
     },
@@ -145,27 +166,32 @@ const KichCo = () => {
       title: "Mã",
       dataIndex: "code",
       key: "code",
+      width: 150,
       sorter: (a, b) => a.code.localeCompare(b.code),
     },
     {
       title: "Tên",
       dataIndex: "name",
       key: "name",
+      width: 200,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "Mô tả",
       dataIndex: "description",
       key: "description",
+      width: 400,
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
+      width: 100,
     },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "actions",
+      width: 100,
       render: (text, record) => (
         <Space size="middle">
           <Button style={{ border: "none" }} icon={<EyeOutlined />} />
@@ -176,8 +202,8 @@ const KichCo = () => {
   ];
   const getTitle = () => (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <span style={{ marginRight: 8 }}>Danh Sách Khách Hàng</span>
-      <Button type="primary" shape="round">
+      <span style={{ marginRight: 8 }}>Danh Sách Size</span>
+      <Button type="primary" shape="round" onClick={openModal}>
         Thêm Khách Hàng
       </Button>
     </div>
@@ -186,7 +212,7 @@ const KichCo = () => {
   const handleTableChange = (pagination) => {
     dispatch(
       fetchSizes({
-        page: pagination.current - 1,
+        page: pagination.page,
         pageSize: pagination.pageSize,
         ...searchParams,
       })
@@ -218,10 +244,15 @@ const KichCo = () => {
             showQuickJumper: true,
             showTotal: (totalPages) => `Total ${totalPages} items`,
           }}
+          scroll={{
+            x: 1000,
+            y: 300,
+          }}
           loading={loading}
           title={getTitle}
           onChange={handleTableChange}
         />
+        <ModalAddSize open={modalVisible} closeModal={closeModal} />
       </>
     </div>
   );
