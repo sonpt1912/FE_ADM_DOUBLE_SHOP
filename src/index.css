@@ -11,7 +11,6 @@ html {
 .container {
   height: 100%;
   width: 100%;
-  padding-right: 17px; 
   box-sizing: content-box; 
 
 }
@@ -27,6 +26,7 @@ code {
 ::-webkit-scrollbar-thumb {
   background-color: #a8a8a8; 
   border-radius: 6px; 
+  width: 1px;
 }
 
 ::-webkit-scrollbar-track {
