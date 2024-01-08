@@ -20,6 +20,10 @@ const ModalAddSize = ({ open, closeModal }) => {
       await dispatch(saveSize(payload));
       message.success("Size added successfully");
       closeModal();
+      setPayload({
+        name: "",
+        description: "",
+      });
       form.resetFields();
     } catch (error) {
       message.error("Failed to add size");
@@ -32,6 +36,10 @@ const ModalAddSize = ({ open, closeModal }) => {
   };
 
   const handleCancel = () => {
+    setPayload({
+      name: "",
+      description: "",
+    });
     closeModal();
     form.resetFields();
   };
