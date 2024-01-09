@@ -1,127 +1,98 @@
 import React, { useState } from "react";
-import { Modal, Button, Radio, Input, Select } from "antd";
+import { Modal, Button, Form, Input, Select, message } from "antd";
 import { useDispatch } from "react-redux";
+import { add } from "../../../../store/slice/ChatLieuReducer";
+import { fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
 //bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 // import { values } from "lodash";
 
-const ModalChatLieu = ({ visible, onCancel, onUpdateComplete }) => {
+const ModalChatLieu = ({ open, closeModal }) => {
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
-  const [maChatLieu, setMaChatLieu] = useState("");
-  const [tenChatLieu, setTenChatLieu] = useState("");
-  const [mieuTa, setMieuTa] = useState("");
-  const [trangThai, setTrangThai] = useState(1);
-  const currentDate = new Date();
-  const currentDateTimeString = currentDate.toISOString();
+  const [form] = Form.useForm();
+  const [payload, setPayload] = useState({
+    code: "",
+    name: "",
+    description: "",
+  });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  
+  const handleOk = async () => {
+    try {
+      setConfirmLoading(true);
+      await dispatch(add(payload));
+      message.success("Material added successfully");
+      closeModal();
+      setPayload({
+        code:"",
+        name: "",
+        description: "",
+      });
+      form.resetFields();
+    } catch (error) {
+      message.error("Failed to add Material");
+    } finally {
+      closeModal();
+      form.resetFields();
 
-    if (name === "trangThai") {
-      setTrangThai(parseInt(value));
-    } else if (name === "maChatLieu") {
-      setMaChatLieu(value);
-    } else if (name === "tenChatLieu") {
-      setTenChatLieu(value);
-    } else if (name === "mieuTa") {
-      setMieuTa(value);
+      setConfirmLoading(false);
     }
   };
 
-  const handleOk = () => {
-    const formData = {
-      maChatLieu: maChatLieu,
-      tenChatLieu: tenChatLieu,
-      mieuTa: mieuTa,
-      createdBy: 1,
-      updated_by: 1,
-      createdTime: currentDateTimeString,
-      updatedTime: "",
-      trangThai: trangThai,
-    };
-    setMaChatLieu("");
-    setTenChatLieu("");
-    setMieuTa("");
-    onCancel();
-    // if (onUpdateComplete) {
-    //   onUpdateComplete(); // Gọi hàm callback từ component cha
-    // }
+  const handleCancel = () => {
+    setPayload({
+      code:"",
+      name: "",
+      description: "",
+    });
+    closeModal();
+    form.resetFields();
   };
+
+  
 
   return (
     <Modal
       title="Thêm mới chất liệu"
-      visible={visible}
-      onCancel={onCancel}
-      footer={[
-        <Button key="cancel" onClick={onCancel}>
-          Cancel
-        </Button>,
-        <Button key="ok" type="primary"
-          onClick={handleOk}
-        >
-          OK
-        </Button>,
-      ]}
+      open={open}
+      onOk={handleOk}
+      confirmLoading={confirmLoading}
+      onCancel={handleCancel}
     >
       <form>
-        <h4>Mã Chất Liêu:</h4>
+        <h4>Code material:</h4>
         <Input
-          name="maChatLieu"
-          label="ma ChatLieu :"
-          placeholder="Nhập mã chất liệu"
-          onChange={handleInputChange}
-          value={maChatLieu}
+          name="code"
+          label="code:"
+          placeholder="Input code Material"
+          onChange={(e) => setPayload({ ...payload, code: e.target.value })}
+
         />
-        <h4 className="mt-3">Tên Chất Liệu:</h4>
+        <h4 className="mt-3">Name material:</h4>
         <Input
-          name="tenChatLieu"
-          label="ten ChatLieu :"
-          placeholder="Nhập Tên chất liệu"
-          onChange={handleInputChange}
-          value={tenChatLieu}
+          name="name"
+          label="name:"
+          placeholder="Input name matertial"
+          onChange={(e) => setPayload({ ...payload, name: e.target.value })}
+
         />
-        <h4 className="mt-3">Mô tả chất liệu:</h4>
+        <h4 className="mt-3">Desciption material:</h4>
         <Input
-          name="mieuTa"
-          label="moTa :"
+          name="desciption"
+          label="desciption :"
           placeholder="Nhập mieu tả"
-          onChange={handleInputChange}
-          value={mieuTa}
+          onChange={(e) => setPayload({ ...payload, description: e.target.value })}
+
         />
-        <div className="mt-3 d-flex">
-          <h4>Trạng thái:</h4>
+        {/* <div className="mt-3 d-flex">
+          <h4>Status:</h4>
           <Select className="ms-4" defaultValue={null}>
             <option disabled value={null}>Chọn trạng thái</option>
             <option value={1}>Còn Hàng</option>
             <option value={0}>Hết Hàng</option>
           </Select>
-        </div>
-        {/* <div className="d-flex">
-          <h5>Còn hàng</h5>
-          <Radio className="ms-4"
-            name="trangThai"
-            options={[
-              { label: "Active", value: 1 },
-              { label: "Inactive", value: 2 },
-            ]}
-            onChange={handleInputChange}
-            label="trạng thái:"
-            value={trangThai}
-          />
-          <h3>|</h3>
-          <h5>Hết hàng</h5>
-          <Radio className="ms-4"
-            name="trangThai"
-            options={[
-              { label: "Active", value: 1 },
-              { label: "Inactive", value: 2 },
-            ]}
-            onChange={handleInputChange}
-            label="trạng thái:"
-            value={trangThai}
-          />
         </div> */}
       </form>
     </Modal>

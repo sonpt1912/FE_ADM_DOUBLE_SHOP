@@ -10,41 +10,50 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import ModalChatLieu from "./ModalChatLieuAdd";
 import ModalChatLieuEdit from "./ModalChatLieuEdit";
+import { SearchOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { fetchMaterials, Delete } from "../../../../store/slice/ChatLieuReducer";
 
 
-const ChatLieu = () => {
+const Material = () => {
   const dispatch = useDispatch();
-  const [data, setData] = useState([]);
+  const materials = useSelector((state) => state.material.materials);
+  const pageSize = useSelector((state) => state.material.materials);
+  const pagination = useSelector((state) => state.material.pagination);
+  console.log("Pagination", pagination);
+  const loading = useSelector((state) => state.material.status === "loading");
+
+  const [searchParams, setSearchParams] = useState({
+    code: "",
+    name: "",
+  });
+
   useEffect(() => {
-    axios.get('http://localhost:8072/Material/hien-thi')
-      .then(Response => { setData(Response.data) })
-      .catch(error => {
-        console
-          .error('Error', error)
-      });
-  }, []);
+    dispatch(
+      fetchMaterials({
+        page: 0,
+        pageSize: 3,
+        code: searchParams.code,
+        name: searchParams.name,
+      })
+    );
+  }, [dispatch]);
 
+  const onClickSearch = () => {
+    dispatch(
+      fetchMaterials({
+        page: 0,
+        pageSize: 3,
+        code: searchParams.code,
+        name: searchParams.name,
+      })
+    );
 
-  // const components = [
-  //   <Input
-  //     label="name :"
-  //     placeholder="Enter your username"
-  //     customStyle={{
-  //       width: "450px",
-  //       backgroundColor: "lightblue",
-  //       marginRight: "10px",
-  //     }}
-  //   />,
-  //   <Input
-  //     label="description :"
-  //     placeholder="Enter your username"
-  //     customStyle={{
-  //       width: "450px",
-  //       backgroundColor: "lightblue",
-  //       marginRight: "10px",
-  //     }}
-  //   />,
-  // ];
+    setSearchParams({
+      code: "",
+      name: "",
+    });
+  };
+
   const columns = [
     {
       title: "id",
@@ -83,13 +92,41 @@ const ChatLieu = () => {
           <FontAwesomeIcon
             icon={faEdit}
             style={{ cursor: "pointer" }}
-            // onClick={() => handleEdit(record)}
-            onClick={showEditModal}
+            onClick={() => handleEdit(record)}
+          // onClick={showEditModal}
           />
+          <button onClick={() => handleDelete(record.id)}>Delete</button>
         </Space>
       ),
     },
   ];
+
+  const handleTableChange = (pagination) => {
+    dispatch(
+      fetchMaterials({
+        page: pagination.current - 1,
+        pageSize: pagination.pageSize,
+        ...searchParams,
+      })
+    );
+  };
+
+  const handleDelete = (id) => {
+    dispatch(
+      Delete(
+        id
+      )
+    ).then(() => {
+      dispatch(
+        fetchMaterials({
+          page: 0,
+          pageSize: 3,
+          code: searchParams.code,
+          name: searchParams.name,
+        })
+      )
+    });
+  };
 
   const [selectedChatLieu, setSelectedChatLieu] = useState([]);
   console.log(selectedChatLieu + " selected");
@@ -108,55 +145,36 @@ const ChatLieu = () => {
 
   ]
 
-  // Modal for edit
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
-  const showEditModal = () => {
-    setIsEditModalVisible(true);
+
+  const handleEdit = (ChatLieu) => {
+    const { id, code, name, description, status } = ChatLieu;
+    const chatLieuData = [id, code, name, description, status];
+    showModalEit();
+    setSelectedChatLieu(chatLieuData);
+  };
+  // Modal add
+  const [modalAdd, setModalAdd] = useState(false);
+
+  const showModalAdd = () => {
+    setModalAdd(true);
+  };
+
+  const closeModalAdd = () => {
+    setModalAdd(false);
+  };
+
+  // Modal for edit
+  const [modalEdit, setModalEdit] = useState(false);
+
+  const showModalEit = () => {
+    setModalEdit(true);
   };
 
   const hideEditModal = () => {
-    setIsEditModalVisible(false);
+    setModalEdit(false);
   };
 
-  const handleEdit = (ChatLieu) => {
-    const { maChatLieu, tenChatLieu, moTa, trangThai } = ChatLieu;
-    const chatLieuData = [maChatLieu, tenChatLieu, moTa, trangThai];
-    // showEditModal();
-    setSelectedChatLieu(chatLieuData);
-  };
-  // Modal
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  // const onUpdateComplete = () => {
-  //   dispatchEvent(fetchChatLieus({ page: currentPage, pageSize }));
-  // };
-
-  // useEffect(() => {
-  //   if (!isModalVisible) {
-  //     console.log("Alo", currentPage);
-  //     dispatch(fetchChatLieus({ page: currentPage, pageSize }));
-  //   }
-  // }, [dispatch, isModalVisible, currentPage, pageSize]);
-
-  // const onChange = (page) => {
-  //   page = page - 1;
-  //   dispatch(setCurrentPage(page));
-  // };
-
-  const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
   const items = [
     {
       key: '1',
@@ -169,30 +187,30 @@ const ChatLieu = () => {
         <div className="row">
           <div className="col-lg-6">
             <p>Tim kiếm theo Mã Chất Liệu:</p>
-            <Input className="w-100"
+            <Input
               placeholder="Mã Chất Liệu"
-              customStyle={{
-                width: "450px",
-                backgroundColor: "lightblue",
-                marginRight: "10px",
-              }}
+              value={searchParams.code}
+              onChange={(e) =>
+                setSearchParams({ ...searchParams, code: e.target.value })
+              }
             />
           </div>
           <div className="col-lg-6">
             <p>Tim kiếm theo Tên chất liệu:</p>
-            <Input className="w-100"
+            <Input
+              value={searchParams.name}
               placeholder="Tên Chất Liệu"
-              customStyle={{
-                width: "450px",
-                backgroundColor: "lightblue",
-                marginRight: "10px",
-              }}
+              onChange={(e) =>
+                setSearchParams({ ...searchParams, name: e.target.value })
+              }
             />
           </div>
         </div>
         <div className="mt-4"></div>
         <div className="text-center">
-          <button className="ps-4 pe-4 border border-5 border-primary rounded bg-primary" style={{ color: "white" }}>Seach</button>
+          <button
+            onClick={onClickSearch}
+            className="ps-4 pe-4 border border-5 border-primary rounded bg-primary" style={{ color: "white" }}>Seach</button>
         </div>
       </div>,
     },
@@ -200,6 +218,7 @@ const ChatLieu = () => {
   const onChange = (key) => {
     console.log(key);
   };
+
   return (
     <div>
 
@@ -216,33 +235,39 @@ const ChatLieu = () => {
           <h1>Danh Sách Chất Liệu</h1>
         </div>
         <div className="col-lg-3">
-          <button onClick={showModal} className="float-end me-4 border border-5 border-primary rounded bg-primary" style={{ color: "white" }}>+Thêm mới</button>
+          <button onClick={showModalAdd} className="float-end me-4 border border-5 border-primary rounded bg-primary" style={{ color: "white" }}>+Thêm mới</button>
         </div>
       </div>
 
       <Table
         className="text-center"
         columns={columns}
-        dataSource={data}
-      // totalRecord={totalRecords}
-      // showModal={showModal}
-      // currentPage={currentPage - 1}
-      // totalPages={totalPages}
-      // pageSize={pageSize}
-      // onChange={onChange}
-      // onShowSizeChange={onShowSizeChange}
+        dataSource={materials}
+        bordered
+        pagination={{
+          pageSize: pagination.pageSize,
+          total: pagination.totalItems,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: (totalPages) => `Total ${totalPages} items`,
+        }}
+        loading={loading}
+        // title={getTitle}
+        onChange={handleTableChange}
       />
-      <ModalChatLieu
-        visible={isModalVisible}
+      {/* <ModalChatLieu
+        visible={modalAdd}
         onCancel={handleCancel}
-        isModalVisible={isModalVisible}
+        isModalVisible={modalAdd}
       // onUpdateComplete={onUpdateComplete}
-      />
+      /> */}
+
+      <ModalChatLieu open={modalAdd} closeModal={closeModalAdd} />
 
       <ModalChatLieuEdit
-        isModalVisible={isModalVisible}
-        visible={isEditModalVisible}
-        onCancel={hideEditModal}
+        visible={modalEdit}
+        closeModal={hideEditModal}
+        isModalVisible={modalEdit}
         ChatLieus={selectedChatLieu}
       // onUpdateComplete={onUpdateComplete}
       />
@@ -250,4 +275,4 @@ const ChatLieu = () => {
   );
 };
 
-export default ChatLieu;
+export default Material;
