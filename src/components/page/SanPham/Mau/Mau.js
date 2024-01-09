@@ -1,66 +1,102 @@
 
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Space, Input, Table, Collapse, Button, ColorPicker } from "antd";
+
+import { Space, Input, theme,Table, Collapse, Button, ColorPicker , Form, Select, } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
 import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
-
+import { fetchColors, deleteColor , detailColor, addColor} from "../../../../store/slice/MauReducer";
 // import Icon, {ProfileFilled} from "@ant-design/icons/lib/components/Icon";
 
+import qs from "qs";
 
 import { } from 'antd';
-import {
-  fetchColors,
-  setCurrentPage,
-  setPageSize,
-} from "../../../../store/slice/ColorSlice";
+
 import ModalColor from "./ModalColorAdd";
-import ModalColorEdit from "./ModalColorEdit";
+import ModalColorUpdate from "./ModalColorEdit";
+
 
 const Mau = () => {
-  // const itemIdToRemove = '2';
   const dispatch = useDispatch();
-  const colors = useSelector((state) => state.colors.data.content);
-  const currentPage = useSelector((state) => state.colors.currentPage);
-  const pageSize = useSelector((state) => state.colors.pageSize);
-  const totalRecords = useSelector((state) => state.colors.totalColors);
-  const totalPages = useSelector((state) => state.colors.totalPages);
+  // const [data, setData] = useState();
+  const colors = useSelector((state) => state.color.colors);
+  const loading = useSelector((state) => state.color.status === "loading");
+  const pagination = useSelector((state) => state.size.pagination);
+  const [code, setCode] = useState('');
+  const [name, setName] = useState('');
+  const [status, setStatus] = useState('');
+  const [searchParams, setSearchParams] = useState({
+    name: "",
+    status: "",
+  });
+  
+  useEffect(() => {
+    dispatch(
+      fetchColors({
+        page: 0,
+        pageSize: 5,
+        name: searchParams.name,
+        status: searchParams.status,
+      }),
+     
+    );
+    
+  }, [dispatch]);
+ 
+  const onClickSearch = () => {
+    dispatch(
+      fetchColors({
+        page: 0,
+        pageSize: 5,
+        code: searchParams.code,
+        name: searchParams.name,
+      })
+    );
+  }
+  const handleDelete = (id) =>{
+    console.log("code", id)
+    dispatch(deleteColor(id))
+    .then(() => {
+      dispatch(
+        fetchColors({
+          page: 0,
+          pageSize: 5,
+          name: searchParams.name,
+          status: searchParams.status,
+        })
+      );
+    }).catch((error) => {
+      console.error("Lỗi khi xoá màu:", error);
+    });
+  
+  };
+  
+ 
 
+  const { token } = theme.useToken();
+  const panelStyle = {
+    marginBottom: 24,
+    background: token.colorFillAlter,
+    borderRadius: token.borderRadiusLG,
+  };
+  const styleButton ={
+    display: "flex", justifyContent: "space-between" 
+  }
 
-  const components = [
-    <Input
-      label="name :"
-      placeholder="Enter your username"
-      customStyle={{
-        width: "450px",
-        backgroundColor: "lightblue",
-        marginRight: "10px",
-      }}
-    />,
-    <Input
-      label="description :"
-      placeholder="Enter your username"
-      customStyle={{
-        width: "450px",
-        backgroundColor: "lightblue",
-        marginRight: "10px",
-      }}
-    />,
-  ];
-
-
+  
   const columns = [
     {
       title: 'STT',
-      dataIndex: 'key',
-      key: ''
+      dataIndex: 'index',
+      key: 'index',
+      render: (text, record, index) => index + 1,
+      sorter: (a, b) => a.index - b.index,
     },
     {
       title: 'Mã màu',
       dataIndex: 'code',
-      key:'code',
+      key: 'code',
       sorter: {
         // compare: (a, b) => a.chinese - b.chinese,
         // multiple: 3,
@@ -69,17 +105,27 @@ const Mau = () => {
     {
       title: 'Tên màu',
       dataIndex: 'name',
-      key: '',
+      key: 'name',
       sorter: {
         compare: (a, b) => a.chinese - b.chinese,
         multiple: 2,
       },
     },
     {
+      title: 'Mô tả',
+      dataIndex: 'description',
+      key: 'description',
+      sorter: {
+        compare: (a, b) => a.chinese - b.chinese,
+        multiple: 2,
+      },
+    },
+    
+    {
       title: 'Trạng Thái',
       dataIndex: 'status',
       key: 'status',
-      render: (text) => (text === "0" ? "Hoạt Động" : "Ngừng Hoạt Động"),
+      render: (text) => (text == "0" ? "Ngừng Hoạt Động" : " Hoạt Động"),
     },
     {
       title: 'Khác',
@@ -88,153 +134,183 @@ const Mau = () => {
       render:
         (text, record) => (
           <Space >
-            <EyeFilled style={{ fontSize: '23px' }}></EyeFilled>
-            <EditFilled style={{ fontSize: '23px' }}></EditFilled>
-            <DeleteFilled style={{ fontSize: '23px' }} onClick={() => handleRemove(record)}></DeleteFilled>
+            <EyeFilled style={{ fontSize: '23px' }} ></EyeFilled>
+            <EditFilled style={{ fontSize: '23px' }}  onClick={() => openModalUpdate(record.id)}></EditFilled>
+            <DeleteFilled style={{ fontSize: '23px' }} onClick={() => handleDelete(record.id)}></DeleteFilled>
           </Space>
         ),
     },
 
   ];
-  var
-    datas = [
-      {
-        key: '1',
-        code: '#PH555',
-        name: 'John Brown',
-        status: '1'
-        
-      },
-     
-     
-    ];
+  
 
-  const [xoa, setXoa] = useState(datas);
-  const handleRemove = (id) => {
-    const newXoa = xoa.filter(person => person.key !== id.key);
-    console.log("aa", newXoa)
-    setXoa(newXoa);
+  // const [selectedColor, setSelectedColor] = useState([]);
+  // console.log(selectedColor + " selected");
+  const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+
+  const openModal = () => {
+   
+    setIsModalOpenAdd(true);
+
   };
 
-  const statusOptions = [
-    { label: "Hoạt Động", value: "0" },
-    { label: "Dừng Hoạt Động", value: "1" },
-  ];
-
-  const [selectedColor, setSelectedColor] = useState([]);
-  console.log(selectedColor + " selected");
-  // Modal for view
-  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
-
-  const showViewModal = () => {
-    setIsViewModalVisible(true);
+  const closeModal = () => {
+    setIsModalOpenAdd(false);
   };
 
-  const hideViewModal = () => {
-    setIsViewModalVisible(false);
+
+  
+  
+  const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
+const [colorData, setColorData] = useState();
+  const openModalUpdate = async (id) => {
+      // Dispatch the detailColor action and wait for the result
+      const response = await dispatch(detailColor(id));
+      console.log("Response from detailColor:", response);
+         setColorData( response.payload);
+        console.log("Color Data:", colorData);
+setCode(colorData.code)
+setName(colorData.name)
+console.log(colorData.code)
+        setIsModalOpenUpdate(true);
   };
+  
+  
 
-  // Modal for edit
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-
-  const showEditModal = () => {
-    setIsEditModalVisible(true);
-  };
-
-  const hideEditModal = () => {
-    setIsEditModalVisible(false);
-  };
-
-  const handleEdit = (color) => {
-    const { id, code, name, description, status } = color;
-    const colorData = [id, code, name, description, status];
-    showEditModal();
-    setSelectedColor(colorData);
-  };
-  // Modal
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const onUpdateComplete = () => {
-    dispatch(fetchColors({ page: currentPage, pageSize }));
-  };
-
-  useEffect(() => {
-    if (!isModalVisible) {
-      console.log("Alo", currentPage);
-      dispatch(fetchColors({ page: currentPage, pageSize }));
-    }
-  }, [dispatch, isModalVisible, currentPage, pageSize]);
-
-  const onChange = (page) => {
-    page = page - 1;
-    dispatch(setCurrentPage(page));
-  };
-
-  const onShowSizeChange = (size) => {
-    dispatch(setPageSize(size));
+  const closeModalUpdate = () => {
+    setIsModalOpenUpdate(false);
   };
   const containerStyle = {
     display: 'flex',
-    alignItems: 'center', //can doc
+    alignItems: 'center',
+    
+     //can doc
   };
+  const getItems = () => [
+    {
+      key: "1",
+      label: "Search",
+      children: (
+        <Form
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 14 }}
+          layout="horizontal"
+          style={{
+            maxWidth: 1100,
+            marginLeft: "140px",
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "30px",
+            }}
+          >
+            <div style={containerStyle}>
+              <Form.Item label="Tên màu" >
+                <Input placeholder="Tìm kiếm" style={{ width: "270px" }}  value={searchParams.name}
+                  onChange={(e) =>
+                    setSearchParams({ ...searchParams, name: e.target.value })
+                  } />
+              </Form.Item>
+              <Form.Item label="Mã màu" style={{marginLeft: "30px"}}>
+                <Input placeholder="Tìm kiếm" style={{ width: "270px" }} />
+              </Form.Item>
+              <Form.Item label="Trạng Thái" style={{marginLeft: "30px"}}>
+                <Select style={{ width: "270px",  }}>
+                  <Select.Option value="0">Hoạt động</Select.Option>
+                  <Select.Option value="1">Ngừng hoạt động</Select.Option>
+                </Select>
+              </Form.Item>
+            </div>
+            
+          </div>
+          <Form.Item wrapperCol={{ offset: 10 }}>
+            <Button type="primary" htmlType="submit" onClick={onClickSearch} >
+              Tìm kiếm
+            </Button>
+          </Form.Item>
+        </Form>
+      ),
+      style: panelStyle,
+    },
+  ];
+  const handleTableChange = (pagination) => {
+    dispatch(
+      fetchColors({
+        page: pagination.current - 1,
+        pageSize: pagination.pageSize,
+        ...searchParams,
+      })
+    );
+  };
+  
+
+  
+
+
 
   return (
     <div>
-      <Collapse components={components} />
-      <div style={{ marginBottom: "30px" }}></div>
-
-      <div style={{ display: 'inline-flex' }}>
-        <FilterFilled style={{ fontSize: '20px' }}></FilterFilled>
-        <h3 >Bộ lọc</h3>
-      </div>
-      <div style={{ marginTop: "10px" }}></div>
-      <div style={containerStyle}>
-
-        <h3 >Mã màu</h3>
-        <Input placeholder="Tìm kiếm" size="large" style={{ width: '400px', margin: '20px' }} />
-        <h3 >Tên màu</h3>
-        <Input placeholder="Tìm kiếm" size="large" style={{ width: '400px', margin: '20px' }} />
-      </div>
-
-      <div align="center" >
-        <Button type="primary" >Làm mới</Button>
-      </div>
-      <div style={{ marginTop: "50px" }}></div>
-
-      <Collapse />
-      <div style={containerStyle}>
-        <ProfileFilled style={{ fontSize: '20px', display: 'inline-block' }}></ProfileFilled>
-        <h2 style={{ display: 'inline-block' }}>Danh sách màu</h2>
-        <div style={{ marginLeft: 'auto' }}>
-          <Button type="primary" onClick={showModal}>Thêm mới</Button>
-        </div>
-      </div>
+      <Collapse 
+      items={getItems()}
+      
+       />
+      
+      
+      {/* </div> */} 
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
+      <Button type="primary" shape="round" onClick={openModal}>
+        Thêm Màu
+      </Button>
+    </div>
       <Table
+      
         columns={columns}
-        dataSource={xoa}
-        totalRecord={totalRecords}
-        showModal={showModal}
-        currentPage={currentPage - 1}
-        totalPages={totalPages}
-        pageSize={pageSize}
-        onChange={onChange}
-        onShowSizeChange={onShowSizeChange}
+        dataSource={colors}
+        loading={loading}
+        // totalRecord={totalRecords}
+        showModal={openModal}
+        pagination={{
+            pageSize: pagination.pageSize,
+            total: pagination.totalItems,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (totalPages) => `Total ${totalPages} items`,
+          }}
+      // currentPage={currentPage - 1}
+      // totalPages={totalPages}
+      // pageSize={pageSize}
+      onChange={handleTableChange}
+      // onShowSizeChange={onShowSizeChange}
       />
       <ModalColor
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        isModalVisible={isModalVisible}
-        onUpdateComplete={onUpdateComplete}
-      />
-      </div>
-)};
+        isOpen={isModalOpenAdd}
+        // open={isModalOpen} 
+        // handleOk={handleOk} 
+        onCancel1 ={closeModal}
+        // onCancel={handleCancel}
+        // isModalVisible={isModalVisible}
+        // onUpdateComplete={onUpdateComplete}
+      /> 
+       <ModalColorUpdate
+        isOpen={isModalOpenUpdate}
+        colors={colorData}
+        // open={isModalOpen} 
+        // handleOk={handleOk} 
+        onCancel1 ={closeModalUpdate}
+        // onCancel={handleCancel}
+        // isModalVisible={isModalVisible}
+        // onUpdateComplete={onUpdateComplete}
+      /> 
+    </div>
+  )
+};
+
 
 export default Mau;

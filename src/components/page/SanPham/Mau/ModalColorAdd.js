@@ -1,82 +1,79 @@
-import React, { useState } from "react";
-import { Modal, Button, Radio, Input , Form , Select, ColorPicker, theme } from "antd";
-import { useDispatch } from "react-redux";
-import { addColor } from "../../../../store/slice/ColorSlice";
+// Modal.js
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addColor } from '../../../../store/slice/MauReducer';
+import { Button, Modal,Form, Input,Select , ColorPicker} from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 const { Option } = Select;
-const ModalColor = ({ visible, onCancel, onUpdateComplete }) => {
-  
+
+const ModalColor = ({ isOpen, onCancel1, onUpdateComplete }) => {
   const dispatch = useDispatch();
-  const [code, setCode] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState(1);
-  const currentDate = new Date();
-  const currentDateTimeString = currentDate.toISOString();
-  const { token } = theme.useToken();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [code, setCode] = useState('');
+    const [name, setName] = useState('');
+    const [status, setStatus] = useState('');
+    const [createtime , setCreateTime] = useState('2022-01-01');
+    const [description, setDescription] = useState('')
+    
+      const onCancel12 = () => {
+        setIsModalOpen(false);
+      };
+      const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        if (name === "status") {
+          setStatus(parseInt(value));
+        } else if (name === "code") {
+          setCode(value);
+        } else if (name === "name") {
+          setName(value);
+        } else if(name === "description"){
+            setDescription(value);
+        }
 
-
-  const Demo = () => {
-    const [open, setOpen] = useState(false);}
-  const [color, setColor] = useState(token.colorPrimary);
-
+      };
+      
+    const handleOk = async () => {
+          const formData = {
+            code: code,
+            name: name,
+            createdBy: 1,
+            updated_by: 1,
+            status: 1,
+            description: description
+          };
+      
+          console.log("form:", formData);
+          console.log("code", code);
+          dispatch(addColor(formData));
+          onCancel1();
+      };
+      const [form] = Form.useForm();
+      const onFinish = () => {
+        console.log("code", code);
+        console.log("name", name);
+        onCancel1();
+      };
+      
+      const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+      };
   
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "status") {
-      setStatus(parseInt(value));
-    } else if (name === "code") {
-      setCode(value);
-    } else if (name === "name") {
-      setName(value);
-    } else if (name === "description") {
-      setDescription(value);
-    }
-  };
-
-  const handleOk = () => {
-    const formData = {
-      code: code,
-      name: name,
-      description: description,
-      createdBy: 1,
-      updated_by: 1,
-      createdTime: currentDateTimeString,
-      updatedTime: "",
-      status: status,
-    };
-    dispatch(addColor(formData));
-    setCode("");
-    setName("");
-    setDescription("");
-    onCancel();
-    if (onUpdateComplete) {
-      onUpdateComplete(); // Gọi hàm callback từ component cha
-    }
-  };
-  const onFinish = (values) => {
-    console.log('Success:', values);
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
 
   return (
-    <Modal
-      title="Thêm màu"
-      visible={visible}
-      onCancel={onCancel}
-      // footer={[
-      //   <Button key="cancel" onClick={onCancel}>
-      //     Cancel
-      //   </Button>,
-      //   <Button key="ok" type="primary" onClick={handleOk}>
-      //     OK
-      //   </Button>,
-      // ]}
+    <>
+   
+    <Modal title="Thêm màu" 
+    visible={isOpen} 
+
+    footer={[
+        <Button type="primary" htmlType="submit" onClick={handleOk}>
+            Thêm
+          </Button>,
+          <Button type="primary" onClick={onCancel1}>
+            Canel
+          </Button>]}
     >
-    
-    <Form
+    <Form form={form}
     name="basic"
     labelCol={{
       span: 8,
@@ -97,63 +94,61 @@ const ModalColor = ({ visible, onCancel, onUpdateComplete }) => {
 
  
      <Form.Item
+
       label="Mã màu"
-      name="maMau"
+      name="code"
+    //   value={code}
+      onChange={handleInputChange}
       rules={[
           {
             required: true,
+            message: "Vui lòng nhâpj mã màu"
           },
         ]}
     >
-     <ColorPicker showText />
+     <ColorPicker  showText onChange={(color) => setCode(color.toHexString())}   />
      
     </Form.Item> 
 
     <Form.Item
       label="Tên màu"
-      name="tenMau"
+      name="name"
+      value = {name}
+    
+
       rules={[
         {
           required: true,
-          message: 'Please input your username!',
+          message: 'Vui lòng nhập tên màu',
         },
       ]}
     >
-      <Input />
+      <Input value={name} onChange={(e) => handleInputChange({ target: { name: 'name', value: e.target.value } })} />
+          
+          
     </Form.Item>
-
     <Form.Item
-        name="gender"
-        label="Trạng thái"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Select
+      label="Mô tả"
+      name="description"
+      value = {description}
+    >
+      <TextArea  value={description} onChange={(e) => handleInputChange({ target: { name: 'description', value: e.target.value } })} />
           
-          // onChange={onGenderChange}
-          defaultValue = "dangSuDung"
-          allowClear
-        >
-          <Option value="dangSuDung" >Đang sử dụng</Option>
-          <Option value="khongSuDung">Không sử dụng</Option>
           
-        </Select>
-      </Form.Item>
+    </Form.Item>
     <Form.Item
       wrapperCol={{
         offset: 8,
         span: 16,
       }}
     >
-      {/* <Button type="primary" htmlType="submit">
-        Submit
-      </Button> */}
+     
     </Form.Item>
   </Form>
+
+
     </Modal>
+  </>
   );
 };
 
