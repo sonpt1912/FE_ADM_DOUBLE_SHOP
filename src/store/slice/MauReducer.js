@@ -61,15 +61,17 @@ export const fetchColors = createAsyncThunk(
         });
         export const updateColor = createAsyncThunk(
           'colors/updateColor',
-          async (colorId) => {
+          async (colorId1) => {
             try {
-              const response = await axios.get(`http://localhost:8072/color/update/${colorId.id}`, colorId);
+              console.log('colorId:', colorId1);
+              const response = await axios.put(`http://localhost:8072/color/update/${colorId1.id}`, colorId1);
               return response.data;
             } catch (error) {
               
               throw error;
             }
           });
+          
   
 const colorSlice = createSlice({
     name: "colors",
@@ -132,9 +134,12 @@ const colorSlice = createSlice({
           })
           .addCase(updateColor.fulfilled, (state, action) => {
             state.status = 'succeeded';
-            // Update the state with the detailed color data
-            state.colors = [...state.colors, action.payload];
+            const colorIndex = state.colors.findIndex(color => color.id === action.payload.id);
+            if (colorIndex !== -1) {
+              state.colors[colorIndex] = action.payload;
+            } 
           })
+          
           .addCase(updateColor.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;

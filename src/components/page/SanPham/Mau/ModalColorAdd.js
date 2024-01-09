@@ -2,19 +2,20 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addColor } from '../../../../store/slice/MauReducer';
-import { Button, Modal,Form, Input,Select , ColorPicker} from 'antd';
+import { Button, Modal,Form, Input,Select , ColorPicker, message} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 const { Option } = Select;
 
-const ModalColor = ({ isOpen, onCancel1, onUpdateComplete }) => {
+const ModalColor = ({ isOpen, onCancel1 }) => {
   const dispatch = useDispatch();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [code, setCode] = useState('');
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
     const [createtime , setCreateTime] = useState('2022-01-01');
+    const [confirmLoading, setConfirmLoading] = useState(false);
     const [description, setDescription] = useState('')
-    
+    const [form] = Form.useForm();
       const onCancel12 = () => {
         setIsModalOpen(false);
       };
@@ -31,26 +32,52 @@ const ModalColor = ({ isOpen, onCancel1, onUpdateComplete }) => {
         }
 
       };
-      
+    
     const handleOk = async () => {
-          const formData = {
-            code: code,
-            name: name,
-            createdBy: 1,
-            updated_by: 1,
-            status: 1,
-            description: description
-          };
+
+
+      try {
+        const formData = {
+          code: code,
+          name: name,
+          createdBy: 1,
+          updated_by: 1,
+          status: 1,
+          description: description
+        };
+        setConfirmLoading(true);
+        await dispatch(addColor(formData));
+        message.success("Thêm màu thành công");
+        onCancel1();
+        
+        form.resetFields();
+      } catch (error) {
+        message.error("Failed to add size");
+      } finally {
+        onCancel1();
+        form.resetFields();
+  
+        setConfirmLoading(false);
+      }
+
+    }
+
+      //     const formData = {
+      //       code: code,
+      //       name: name,
+      //       createdBy: 1,
+      //       updated_by: 1,
+      //       status: 1,
+      //       description: description
+      //     };
       
-          console.log("form:", formData);
-          console.log("code", code);
-          dispatch(addColor(formData));
-          onCancel1();
-      };
-      const [form] = Form.useForm();
+      //     console.log("form:", formData);
+      //     console.log("code", code);
+      //     dispatch(addColor(formData));
+      //     onCancel1();
+      // };
+      
       const onFinish = () => {
-        console.log("code", code);
-        console.log("name", name);
         onCancel1();
       };
       
@@ -64,7 +91,10 @@ const ModalColor = ({ isOpen, onCancel1, onUpdateComplete }) => {
    
     <Modal title="Thêm màu" 
     visible={isOpen} 
-
+    
+      onOk={handleOk}
+      confirmLoading={confirmLoading}
+      // onCancel1={handleCancel}
     footer={[
         <Button type="primary" htmlType="submit" onClick={handleOk}>
             Thêm

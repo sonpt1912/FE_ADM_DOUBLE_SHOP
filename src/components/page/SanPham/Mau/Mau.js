@@ -28,7 +28,7 @@ const Mau = () => {
   const [status, setStatus] = useState('');
   const [searchParams, setSearchParams] = useState({
     name: "",
-    status: "",
+    code: "",
   });
   
   useEffect(() => {
@@ -37,7 +37,7 @@ const Mau = () => {
         page: 0,
         pageSize: 5,
         name: searchParams.name,
-        status: searchParams.status,
+        code: searchParams.code,
       }),
      
     );
@@ -63,7 +63,7 @@ const Mau = () => {
           page: 0,
           pageSize: 5,
           name: searchParams.name,
-          status: searchParams.status,
+          code: searchParams.code,
         })
       );
     }).catch((error) => {
@@ -136,7 +136,7 @@ const Mau = () => {
           <Space >
             <EyeFilled style={{ fontSize: '23px' }} ></EyeFilled>
             <EditFilled style={{ fontSize: '23px' }}  onClick={() => openModalUpdate(record.id)}></EditFilled>
-            <DeleteFilled style={{ fontSize: '23px' }} onClick={() => handleDelete(record.id)}></DeleteFilled>
+            <DeleteFilled style={{ fontSize: '23px' }} onClick={() => handleDelete(record.id)} ></DeleteFilled>
           </Space>
         ),
     },
@@ -148,8 +148,11 @@ const Mau = () => {
   // console.log(selectedColor + " selected");
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
 
-  const openModal = () => {
-   
+  const openModal = async (id) => {
+    const response = await dispatch(detailColor(id));
+      console.log("Response from detailColor:", response);
+         setColorData( response.payload);
+        console.log("Color Data:", colorData);
     setIsModalOpenAdd(true);
 
   };
@@ -164,14 +167,10 @@ const Mau = () => {
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
 const [colorData, setColorData] = useState();
   const openModalUpdate = async (id) => {
-      // Dispatch the detailColor action and wait for the result
       const response = await dispatch(detailColor(id));
       console.log("Response from detailColor:", response);
          setColorData( response.payload);
         console.log("Color Data:", colorData);
-setCode(colorData.code)
-setName(colorData.name)
-console.log(colorData.code)
         setIsModalOpenUpdate(true);
   };
   
@@ -242,17 +241,13 @@ console.log(colorData.code)
   const handleTableChange = (pagination) => {
     dispatch(
       fetchColors({
-        page: pagination.current - 1,
+        page: pagination.current,
         pageSize: pagination.pageSize,
         ...searchParams,
       })
     );
   };
   
-
-  
-
-
 
   return (
     <div>
@@ -283,30 +278,20 @@ console.log(colorData.code)
             showQuickJumper: true,
             showTotal: (totalPages) => `Total ${totalPages} items`,
           }}
-      // currentPage={currentPage - 1}
-      // totalPages={totalPages}
-      // pageSize={pageSize}
+          scroll={{
+            x: 1000,
+            y: 300,
+          }}
       onChange={handleTableChange}
-      // onShowSizeChange={onShowSizeChange}
       />
       <ModalColor
         isOpen={isModalOpenAdd}
-        // open={isModalOpen} 
-        // handleOk={handleOk} 
         onCancel1 ={closeModal}
-        // onCancel={handleCancel}
-        // isModalVisible={isModalVisible}
-        // onUpdateComplete={onUpdateComplete}
       /> 
        <ModalColorUpdate
         isOpen={isModalOpenUpdate}
         colors={colorData}
-        // open={isModalOpen} 
-        // handleOk={handleOk} 
         onCancel1 ={closeModalUpdate}
-        // onCancel={handleCancel}
-        // isModalVisible={isModalVisible}
-        // onUpdateComplete={onUpdateComplete}
       /> 
     </div>
   )
