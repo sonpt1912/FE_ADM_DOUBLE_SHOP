@@ -13,10 +13,18 @@ import {
   DatePicker,
   Divider,
   Space,
+  Col,
+  Row,
 } from "antd";
-import { SearchOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  EditOutlined,
+  EyeOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { fetchSizes } from "../../../../config/api";
 import ModalAddSize from "./modalAddSize";
+import ModalUpdateSize from "./modalUpdateSize";
 const { Option } = Select;
 
 const { RangePicker } = DatePicker;
@@ -30,13 +38,21 @@ const KichCo = () => {
   const loading = useSelector((state) => state.size.status === "loading");
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleUpdate, setModalVisibleUpdate] = useState(false);
+
 
   const openModal = () => {
     setModalVisible(true);
   };
+  const openModalUpdate = () => {
+    setModalVisibleUpdate(true);
+  };
 
   const closeModal = () => {
     setModalVisible(false);
+  };
+  const closeModalUpdate = () => {
+    setModalVisibleUpdate(false);
   };
 
   const [searchParams, setSearchParams] = useState({
@@ -84,48 +100,37 @@ const KichCo = () => {
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 14 }}
           layout="horizontal"
-          style={{
-            maxWidth: 1100,
-            margin: "auto",
-            display: "flex",
-            flexDirection: "column",
-          }}
+          style={{ maxWidth: 1500, margin: "auto", marginTop: "20px" }}
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "30px",
-            }}
-          >
-            <div>
+          <Row gutter={16}>
+            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
               <Form.Item label="Name">
                 <Input
                   placeholder="Enter name"
-                  style={{ width: "250px" }}
+                  style={{ width: "100%" }}
                   value={searchParams.name}
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, name: e.target.value })
                   }
                 />
               </Form.Item>
-            </div>
-            <div>
+            </Col>
+            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
               <Form.Item label="Code">
                 <Input
                   placeholder="Enter code"
-                  style={{ width: "250px" }}
+                  style={{ width: "100%" }}
                   value={searchParams.code}
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, code: e.target.value })
                   }
                 />
               </Form.Item>
-            </div>
-            <div>
+            </Col>
+            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
               <Form.Item label="Trạng Thái">
                 <Select
-                  style={{ width: "300px" }}
+                  style={{ width: "100%" }}
                   value={searchParams.status}
                   onChange={(value) =>
                     setSearchParams({ ...searchParams, status: value })
@@ -136,8 +141,8 @@ const KichCo = () => {
                   <Option value="1">1</Option>
                 </Select>
               </Form.Item>
-            </div>
-          </div>
+            </Col>
+          </Row>
           <Form.Item wrapperCol={{ offset: 10 }}>
             <Button
               type="primary"
@@ -180,7 +185,7 @@ const KichCo = () => {
       title: "Mô tả",
       dataIndex: "description",
       key: "description",
-      width: 400,
+      width: 350,
     },
     {
       title: "Trạng thái",
@@ -195,7 +200,8 @@ const KichCo = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button style={{ border: "none" }} icon={<EyeOutlined />} />
-          <Button style={{ border: "none" }} icon={<EditOutlined />} />
+          <Button style={{ border: "none" }} icon={<EditOutlined />} onClick={openModalUpdate} />
+          <Button style={{ border: "none" }} icon={<DeleteOutlined />} />
         </Space>
       ),
     },
@@ -204,7 +210,7 @@ const KichCo = () => {
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <span style={{ marginRight: 8 }}>Danh Sách Size</span>
       <Button type="primary" shape="round" onClick={openModal}>
-        Thêm Khách Hàng
+        Thêm Kích Cỡ
       </Button>
     </div>
   );
@@ -218,6 +224,8 @@ const KichCo = () => {
       })
     );
   };
+
+  
   return (
     <div>
       <>
@@ -236,7 +244,6 @@ const KichCo = () => {
           columns={columns}
           rowKey={(record) => record.id}
           dataSource={sizes}
-          bordered
           pagination={{
             pageSize: pagination.pageSize,
             total: pagination.totalItems,
@@ -252,7 +259,8 @@ const KichCo = () => {
           title={getTitle}
           onChange={handleTableChange}
         />
-        <ModalAddSize open={modalVisible} closeModal={closeModal} />
+        <ModalAddSize open={modalVisible} closeModal={closeModal}                                                                        />
+        <ModalUpdateSize open={modalVisibleUpdate} closeModal={closeModalUpdate}/>
       </>
     </div>
   );

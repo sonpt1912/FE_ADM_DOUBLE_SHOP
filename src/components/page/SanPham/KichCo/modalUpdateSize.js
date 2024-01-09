@@ -5,7 +5,7 @@ import { saveSize } from "../../../../config/api";
 
 const { TextArea } = Input;
 
-const ModalAddSize = ({ open, closeModal }) => {
+const ModalUpdateSize = ({ open, closeModal }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
@@ -46,7 +46,7 @@ const ModalAddSize = ({ open, closeModal }) => {
 
   return (
     <Modal
-      title="Thêm Mới Kích Cỡ"
+      title="Kích Cỡ"
       open={open}
       onOk={handleOk}
       confirmLoading={confirmLoading}
@@ -87,4 +87,4 @@ const ModalAddSize = ({ open, closeModal }) => {
   );
 };
 
-export default ModalAddSize;
+export default ModalUpdateSize;
