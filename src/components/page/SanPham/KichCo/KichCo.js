@@ -15,6 +15,8 @@ import {
   Space,
   Col,
   Row,
+  message,
+  Popconfirm,
 } from "antd";
 import {
   SearchOutlined,
@@ -22,9 +24,10 @@ import {
   EyeOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { fetchSizes } from "../../../../config/api";
+import { fetchSizes, updateSize } from "../../../../config/api";
 import ModalAddSize from "./modalAddSize";
 import ModalUpdateSize from "./modalUpdateSize";
+
 const { Option } = Select;
 
 const { RangePicker } = DatePicker;
@@ -32,14 +35,21 @@ const { RangePicker } = DatePicker;
 const KichCo = () => {
   const dispatch = useDispatch();
   const sizes = useSelector((state) => state.size.sizes);
-  const pageSize = useSelector((state) => state.size.pageSize);
   const pagination = useSelector((state) => state.size.pagination);
-  console.log(pagination);
+  const [pageSize, setPageSize] = useState(5);
+  const [current, setCurrent] = useState(1);
   const loading = useSelector((state) => state.size.status === "loading");
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleUpdate, setModalVisibleUpdate] = useState(false);
 
+  const [payload, setPayload] = useState({
+    code: "",
+    name: "",
+    description: "",
+  });
+
+  const [updateStatus, setUpdateStatus] = useState({ status: 0 });
 
   const openModal = () => {
     setModalVisible(true);
@@ -50,6 +60,7 @@ const KichCo = () => {
 
   const closeModal = () => {
     setModalVisible(false);
+    setCurrent(1);
   };
   const closeModalUpdate = () => {
     setModalVisibleUpdate(false);
@@ -59,25 +70,53 @@ const KichCo = () => {
     name: "",
     status: "",
   });
+  const handleChangeStatus = async (record) => {
+    const payloadStatus = {
+      code: record.code,
+      name: record.name,
+      description: record.description,
+    };
+    const newStatus = record.status === 1 ? 0 : 1;
+    setUpdateStatus({ status: newStatus });
+    await dispatch(updateSize({ ...payloadStatus, ...updateStatus }));
+    message.success("Size updated successfully");
+
+    dispatch(
+      fetchSizes({
+        page: pagination.current ,
+        pageSize: pageSize,
+      })
+    );
+  };
 
   useEffect(() => {
-    if (!modalVisible) {
+    if (!modalVisible || !modalVisibleUpdate) {
       dispatch(
         fetchSizes({
-          page: pagination.page,
-          pageSize: pagination.pageSize,
+          page: current - 1,
+          pageSize: pageSize,
           name: searchParams.name,
           status: searchParams.status,
         })
       );
     }
-  }, [modalVisible]);
+  }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams, dispatch]);  
+
+  const onClickEdit = (record) => {
+    setPayload({
+      code: record.code,
+      name: record.name,
+      description: record.description,
+      status: record.status,
+    });
+    openModalUpdate();
+  };
 
   const onClickSearch = () => {
     dispatch(
       fetchSizes({
-        page: pagination.page,
-        pageSize: pagination.pageSize,
+        page: pagination.current ,
+        pageSize: pageSize,
         name: searchParams.name,
         status: searchParams.status,
       })
@@ -185,7 +224,7 @@ const KichCo = () => {
       title: "Mô tả",
       dataIndex: "description",
       key: "description",
-      width: 350,
+      width: 300,
     },
     {
       title: "Trạng thái",
@@ -196,12 +235,28 @@ const KichCo = () => {
     {
       title: "Hành động",
       key: "actions",
-      width: 100,
+      width: 150,
       render: (text, record) => (
         <Space size="middle">
           <Button style={{ border: "none" }} icon={<EyeOutlined />} />
-          <Button style={{ border: "none" }} icon={<EditOutlined />} onClick={openModalUpdate} />
-          <Button style={{ border: "none" }} icon={<DeleteOutlined />} />
+          <Button
+            style={{ border: "none" }}
+            icon={<EditOutlined />}
+            onClick={() => onClickEdit(record)}
+          />
+          <Popconfirm
+            title="Are you sure you want to delete this size?"
+            onConfirm={() => handleChangeStatus(record)}
+            okText="Yes"
+            cancelText="No"
+            loading={loading}
+          >
+            <Button
+              style={{ border: "none" }}
+              disabled={record.status === 0}
+              icon={<DeleteOutlined />}
+            />
+          </Popconfirm>
         </Space>
       ),
     },
@@ -216,16 +271,10 @@ const KichCo = () => {
   );
 
   const handleTableChange = (pagination) => {
-    dispatch(
-      fetchSizes({
-        page: pagination.page,
-        pageSize: pagination.pageSize,
-        ...searchParams,
-      })
-    );
+    const { current, pageSize } = pagination;
+    setCurrent(current);
   };
 
-  
   return (
     <div>
       <>
@@ -245,8 +294,9 @@ const KichCo = () => {
           rowKey={(record) => record.id}
           dataSource={sizes}
           pagination={{
-            pageSize: pagination.pageSize,
+            pageSize: pageSize,
             total: pagination.totalItems,
+            current: current,
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (totalPages) => `Total ${totalPages} items`,
@@ -259,8 +309,13 @@ const KichCo = () => {
           title={getTitle}
           onChange={handleTableChange}
         />
-        <ModalAddSize open={modalVisible} closeModal={closeModal}                                                                        />
-        <ModalUpdateSize open={modalVisibleUpdate} closeModal={closeModalUpdate}/>
+        <ModalAddSize open={modalVisible} closeModal={closeModal} />
+        <ModalUpdateSize
+          open={modalVisibleUpdate}
+          loading={loading}
+          closeModal={closeModalUpdate}
+          payload={payload}
+        />
       </>
     </div>
   );
