@@ -90,6 +90,7 @@ const colorSlice = createSlice({
             pageSize: 5,
             totalItems: action.payload.totalRecord,
           };
+        
         })
         .addCase(fetchColors.rejected, (state, action) => {
           state.status = "failed";

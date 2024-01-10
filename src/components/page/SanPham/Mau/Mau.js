@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect } from "react";
 
-import { Space, Input, theme,Table, Collapse, Button, ColorPicker , Form, Select, } from "antd";
+import { Space, Input, theme, Table, Collapse, Button, ColorPicker, Form, Select, } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
 import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
-import { fetchColors, deleteColor , detailColor, addColor} from "../../../../store/slice/MauReducer";
+import { fetchColors, deleteColor, detailColor, addColor } from "../../../../store/slice/MauReducer";
 // import Icon, {ProfileFilled} from "@ant-design/icons/lib/components/Icon";
 
 import qs from "qs";
@@ -16,63 +16,68 @@ import { } from 'antd';
 import ModalColor from "./ModalColorAdd";
 import ModalColorUpdate from "./ModalColorEdit";
 
+const { Option } = Select;
 
 const Mau = () => {
   const dispatch = useDispatch();
   // const [data, setData] = useState();
   const colors = useSelector((state) => state.color.colors);
   const loading = useSelector((state) => state.color.status === "loading");
-  const pagination = useSelector((state) => state.size.pagination);
-  const [code, setCode] = useState('');
-  const [name, setName] = useState('');
-  const [status, setStatus] = useState('');
+  const pagination = useSelector((state) => state.color.pagination);
+
+  // const [code, setCode] = useState('');
+  // const [name, setName] = useState('');
+  // const [status, setStatus] = useState('');
   const [searchParams, setSearchParams] = useState({
     name: "",
     code: "",
   });
-  
+
   useEffect(() => {
     dispatch(
       fetchColors({
-        page: 0,
-        pageSize: 5,
+        page: pagination.page,
+        pageSize: pagination.pageSize,
         name: searchParams.name,
         code: searchParams.code,
+        status: searchParams.status
       }),
-     
+
     );
-    
+
   }, [dispatch]);
- 
+
   const onClickSearch = () => {
     dispatch(
       fetchColors({
-        page: 0,
-        pageSize: 5,
+        page: pagination.page,
+        pageSize: pagination.pageSize,
         code: searchParams.code,
         name: searchParams.name,
+        status: searchParams.status
       })
     );
   }
-  const handleDelete = (id) =>{
+  const handleDelete = (id) => {
     console.log("code", id)
     dispatch(deleteColor(id))
-    .then(() => {
-      dispatch(
-        fetchColors({
-          page: 0,
-          pageSize: 5,
-          name: searchParams.name,
-          code: searchParams.code,
-        })
-      );
-    }).catch((error) => {
-      console.error("Lỗi khi xoá màu:", error);
-    });
-  
+      .then(() => {
+        dispatch(
+          fetchColors({
+            page: pagination.page,
+            pageSize: pagination.pageSize,
+            name: searchParams.name,
+            code: searchParams.code,
+            status: searchParams.status
+          })
+        );
+      }).catch((error) => {
+        console.error("Lỗi khi xoá màu:", error);
+      });
+
   };
-  
- 
+
+
 
   const { token } = theme.useToken();
   const panelStyle = {
@@ -80,11 +85,11 @@ const Mau = () => {
     background: token.colorFillAlter,
     borderRadius: token.borderRadiusLG,
   };
-  const styleButton ={
-    display: "flex", justifyContent: "space-between" 
+  const styleButton = {
+    display: "flex", justifyContent: "space-between"
   }
 
-  
+
   const columns = [
     {
       title: 'STT',
@@ -120,7 +125,7 @@ const Mau = () => {
         multiple: 2,
       },
     },
-    
+
     {
       title: 'Trạng Thái',
       dataIndex: 'status',
@@ -135,24 +140,20 @@ const Mau = () => {
         (text, record) => (
           <Space >
             <EyeFilled style={{ fontSize: '23px' }} ></EyeFilled>
-            <EditFilled style={{ fontSize: '23px' }}  onClick={() => openModalUpdate(record.id)}></EditFilled>
+            <EditFilled style={{ fontSize: '23px' }} onClick={() => openModalUpdate(record.id)}></EditFilled>
             <DeleteFilled style={{ fontSize: '23px' }} onClick={() => handleDelete(record.id)} ></DeleteFilled>
           </Space>
         ),
     },
 
   ];
-  
-
-  // const [selectedColor, setSelectedColor] = useState([]);
-  // console.log(selectedColor + " selected");
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
 
   const openModal = async (id) => {
     const response = await dispatch(detailColor(id));
-      console.log("Response from detailColor:", response);
-         setColorData( response.payload);
-        console.log("Color Data:", colorData);
+    console.log("Response from detailColor:", response);
+    setColorData(response.payload);
+    console.log("Color Data:", colorData);
     setIsModalOpenAdd(true);
 
   };
@@ -160,30 +161,23 @@ const Mau = () => {
   const closeModal = () => {
     setIsModalOpenAdd(false);
   };
-
-
-  
-  
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
-const [colorData, setColorData] = useState();
+  const [colorData, setColorData] = useState();
   const openModalUpdate = async (id) => {
-      const response = await dispatch(detailColor(id));
-      console.log("Response from detailColor:", response);
-         setColorData( response.payload);
-        console.log("Color Data:", colorData);
-        setIsModalOpenUpdate(true);
+    const response = await dispatch(detailColor(id));
+    console.log("Response from detailColor:", response);
+    setColorData(response.payload);
+    console.log("Color Data:", colorData);
+    setIsModalOpenUpdate(true);
   };
-  
-  
-
   const closeModalUpdate = () => {
     setIsModalOpenUpdate(false);
   };
   const containerStyle = {
     display: 'flex',
     alignItems: 'center',
-    
-     //can doc
+
+    //can doc
   };
   const getItems = () => [
     {
@@ -211,22 +205,38 @@ const [colorData, setColorData] = useState();
           >
             <div style={containerStyle}>
               <Form.Item label="Tên màu" >
-                <Input placeholder="Tìm kiếm" style={{ width: "270px" }}  value={searchParams.name}
+                <Input placeholder="Tìm kiếm" style={{ width: "270px" }} value={searchParams.name}
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, name: e.target.value })
-                  } />
+                  }
+
+                />
               </Form.Item>
-              <Form.Item label="Mã màu" style={{marginLeft: "30px"}}>
-                <Input placeholder="Tìm kiếm" style={{ width: "270px" }} />
+              <Form.Item label="Mã màu" style={{ marginLeft: "30px" }} >
+                <Input placeholder="Tìm kiếm" style={{ width: "270px" }}
+                  value={searchParams.code}
+                  onChange={(e) =>
+                    setSearchParams({ ...searchParams, code: e.target.value })
+                  }
+                />
               </Form.Item>
-              <Form.Item label="Trạng Thái" style={{marginLeft: "30px"}}>
-                <Select style={{ width: "270px",  }}>
-                  <Select.Option value="0">Hoạt động</Select.Option>
-                  <Select.Option value="1">Ngừng hoạt động</Select.Option>
+
+
+              <Form.Item label="Trạng Thái" style={{ marginLeft: "30px" }}>
+                <Select
+                  style={{ width: "270px", }}
+                  value={searchParams.status}
+                  onChange={(value) =>
+                    setSearchParams({ ...searchParams, status: value })
+                  }
+                  allowClear
+                >
+                  <Option value="0">Ngừng hoạt động</Option>
+                  <Option value="1">Hoạt động</Option>
                 </Select>
               </Form.Item>
             </div>
-            
+
           </div>
           <Form.Item wrapperCol={{ offset: 10 }}>
             <Button type="primary" htmlType="submit" onClick={onClickSearch} >
@@ -241,58 +251,57 @@ const [colorData, setColorData] = useState();
   const handleTableChange = (pagination) => {
     dispatch(
       fetchColors({
-        page: pagination.current,
+        page: pagination.page,
         pageSize: pagination.pageSize,
         ...searchParams,
       })
     );
   };
-  
+
 
   return (
     <div>
-      <Collapse 
-      items={getItems()}
-      
-       />
-      
-      
-      {/* </div> */} 
+      <Collapse
+        items={getItems()}
+
+      />
+
+      {/* </div> */}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
-      <Button type="primary" shape="round" onClick={openModal}>
-        Thêm Màu
-      </Button>
-    </div>
+        <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
+        <Button type="primary" shape="round" onClick={openModal}>
+          Thêm Màu
+        </Button>
+      </div>
       <Table
-      
+
         columns={columns}
         dataSource={colors}
         loading={loading}
-        // totalRecord={totalRecords}
+        total={pagination.totalItems}
         showModal={openModal}
         pagination={{
-            pageSize: pagination.pageSize,
-            total: pagination.totalItems,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (totalPages) => `Total ${totalPages} items`,
-          }}
-          scroll={{
-            x: 1000,
-            y: 300,
-          }}
-      onChange={handleTableChange}
+          pageSize: pagination.pageSize,
+          total: pagination.totalItems,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: (totalPages) => `Total ${totalPages} items`,
+        }}
+        scroll={{
+          x: 1000,
+          y: 300,
+        }}
+        onChange={handleTableChange}
       />
       <ModalColor
         isOpen={isModalOpenAdd}
-        onCancel1 ={closeModal}
-      /> 
-       <ModalColorUpdate
+        onCancel1={closeModal}
+      />
+      <ModalColorUpdate
         isOpen={isModalOpenUpdate}
         colors={colorData}
-        onCancel1 ={closeModalUpdate}
-      /> 
+        onCancel1={closeModalUpdate}
+      />
     </div>
   )
 };

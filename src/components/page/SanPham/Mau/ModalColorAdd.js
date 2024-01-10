@@ -47,7 +47,7 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
         };
         setConfirmLoading(true);
         await dispatch(addColor(formData));
-        message.success("Thêm màu thành công");
+        // message.success("Thêm màu thành công");
         onCancel1();
         
         form.resetFields();
@@ -60,23 +60,7 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
         setConfirmLoading(false);
       }
 
-    }
-
-      //     const formData = {
-      //       code: code,
-      //       name: name,
-      //       createdBy: 1,
-      //       updated_by: 1,
-      //       status: 1,
-      //       description: description
-      //     };
-      
-      //     console.log("form:", formData);
-      //     console.log("code", code);
-      //     dispatch(addColor(formData));
-      //     onCancel1();
-      // };
-      
+    }      
       const onFinish = () => {
         onCancel1();
       };
@@ -124,16 +108,22 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
 
  
      <Form.Item
-
       label="Mã màu"
       name="code"
-    //   value={code}
+      value={code}
       onChange={handleInputChange}
       rules={[
           {
             required: true,
-            message: "Vui lòng nhâpj mã màu"
+            message: "Vui lòng nhập mã màu"
           },
+          {
+            validator(_, value) {
+              if(value == ""){
+                return Promise.reject('Please enter 10 digit Number!');
+              }
+            }
+          }
         ]}
     >
      <ColorPicker  showText onChange={(color) => setCode(color.toHexString())}   />
@@ -144,8 +134,6 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
       label="Tên màu"
       name="name"
       value = {name}
-    
-
       rules={[
         {
           required: true,
