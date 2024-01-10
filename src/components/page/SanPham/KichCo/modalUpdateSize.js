@@ -1,52 +1,59 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message } from "antd";
 import { useDispatch } from "react-redux";
-import { saveSize } from "../../../../config/api";
+import { updateSize } from "../../../../config/api";
 
 const { TextArea } = Input;
 
-const ModalAddSize = ({ open, closeModal }) => {
+const ModalUpdateSize = ({ open, closeModal, payload }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const [payload, setPayload] = useState({
+  const [updatedValues, setUpdatedValues] = useState({
     name: "",
     description: "",
   });
 
+  useEffect(() => {
+    form.setFieldsValue({
+      code: payload.code,
+      name: payload.name,
+      description: payload.description,
+      status: payload.status,
+    });
+  }, [form, payload]);
+
+  const handleValuesChange = (_, allValues) => {
+    setUpdatedValues({
+      name: allValues.name,
+      description: allValues.description,
+    });
+  };
+
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      await dispatch(saveSize(payload));
-      message.success("Size added successfully");
+      await dispatch(updateSize({ ...payload, ...updatedValues }));
+      message.success("Size updated successfully");
       closeModal();
-      setPayload({
-        name: "",
-        description: "",
-      });
       form.resetFields();
     } catch (error) {
-      message.error("Failed to add size");
+      message.error("Failed to update size");
     } finally {
       closeModal();
       form.resetFields();
-
       setConfirmLoading(false);
     }
   };
 
   const handleCancel = () => {
-    setPayload({
-      name: "",
-      description: "",
-    });
     closeModal();
     form.resetFields();
   };
 
   return (
     <Modal
-      title="Thêm Mới Kích Cỡ"
+      title="Cập Nhật Kích Cỡ"
       open={open}
       onOk={handleOk}
       confirmLoading={confirmLoading}
@@ -65,21 +72,15 @@ const ModalAddSize = ({ open, closeModal }) => {
           maxWidth: 1000,
           marginTop: "30px",
         }}
+        onValuesChange={handleValuesChange}
       >
-        <Form.Item
-          label="Tên"
-          name="name"
-          onChange={(e) => setPayload({ ...payload, name: e.target.value })}
-        >
+        <Form.Item label="Mã" name="code">
+          <Input disabled />
+        </Form.Item>
+        <Form.Item label="Tên" name="name">
           <Input />
         </Form.Item>
-        <Form.Item
-          label="Mô tả"
-          name="description"
-          onChange={(e) =>
-            setPayload({ ...payload, description: e.target.value })
-          }
-        >
+        <Form.Item label="Mô tả" name="description">
           <TextArea />
         </Form.Item>
       </Form>
@@ -87,4 +88,4 @@ const ModalAddSize = ({ open, closeModal }) => {
   );
 };
 
-export default ModalAddSize;
+export default ModalUpdateSize;

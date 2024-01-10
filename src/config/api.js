@@ -37,3 +37,15 @@ export const saveSize = createAsyncThunk("sizes/saveSize", async (payload) => {
     throw error;
   }
 });
+
+export const updateSize = createAsyncThunk(
+  "sizes/updateSize",
+  async (payload) => {
+    try {
+      const response = await axios.post(`${API_URL}/size/update`, payload);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
