@@ -9,7 +9,7 @@ const store = configureStore({
   reducer: {
     khachHang: KhachHangReducer,
     rank: RankReducer,
-    size: KichCoReducer
+    size: KichCoReducer,
     color: MauReducer
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware],
