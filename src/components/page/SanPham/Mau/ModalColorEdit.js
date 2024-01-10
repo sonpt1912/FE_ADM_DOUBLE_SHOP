@@ -6,9 +6,9 @@ import { detailColor, updateColor } from '../../../../store/slice/MauReducer';
 import TextArea from 'antd/es/input/TextArea';
 const { Option } = Select;
 
-// ... Import statements
 
-const ModalColorUpdate = ({ isOpen, onCancel1, onUpdateComplete, colors }) => {
+
+const ModalColorUpdate = ({ isOpen, onCancel1, colors }) => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [code, setCode] = useState('');
@@ -20,38 +20,29 @@ const ModalColorUpdate = ({ isOpen, onCancel1, onUpdateComplete, colors }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   useEffect(() => {
-    console.log("colors:", colors);
     if (colors) {
       setCode(colors.code);
       setName(colors.name);
-      setStatus(colors.status); // Ensure status is a string
+      setStatus(colors.status);
       setDescription(colors.description);
       setId(colors.id);
-      console.log("id", colors.id)
     }
   }, [colors]);
-
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "status") {
       setStatus(parseInt(value));
-    } 
-    // else if (name === "code") {
-    //   setCode(value);
-    // }
-     else if (name === "name") {
-      setName(value);
-    } else if(name === "description"){
-        setDescription(value);
     }
-
+    else if (name === "code") {
+      setCode(value);
+    }
+    else if (name === "name") {
+      setName(value);
+    } else if (name === "description") {
+      setDescription(value);
+    }
   };
-  
-
   const handleOk = async () => {
-
-
     try {
       const formData = {
         code: code,
@@ -66,47 +57,18 @@ const ModalColorUpdate = ({ isOpen, onCancel1, onUpdateComplete, colors }) => {
       await dispatch(updateColor(formData));
       message.success("Sửa màu thành công");
       onCancel1();
-      
       form.resetFields();
     } catch (error) {
       message.error("Failed to add size");
     } finally {
       onCancel1();
       form.resetFields();
-
       setConfirmLoading(false);
     }
-
   }
-
-
-const handleOk1 = async () => {
-      const formData = {
-        code: code,
-        id: id,
-        name: name,
-        createdBy: 1,
-        updated_by: 1,
-        status: 1,
-        description: description
-      };
-  
-      console.log("form:", formData);
-      console.log("code", code);
-      dispatch(updateColor(formData));
-      onCancel1();
-  };
-
- 
-
-  const onFinishFailed = (errorInfo) => {
-
-    console.log('Failed:', errorInfo);
-  };
-
   return (
 
-<Modal
+    <Modal
       title="Update chất liệu"
       visible={isOpen}
       footer={[
@@ -122,22 +84,22 @@ const handleOk1 = async () => {
     >
       <form>
         <h4>Mã màu</h4>
-        <ColorPicker 
-        showText 
-        value={code}
-        disabled />
+        <ColorPicker
+          showText
+          value={code}
+          disabled />
         <h4 className="mt-3">Tên màu</h4>
-        <Input 
-       
-        value={name}
-        onChange={(e) => handleInputChange({ target: { name: 'name', value: e.target.value } })} />
+        <Input
+
+          value={name}
+          onChange={(e) => handleInputChange({ target: { name: 'name', value: e.target.value } })} />
         <h4 className="mt-3">Mô tả</h4>
         <TextArea
           name="desciption"
-          
-         value={description}
+          value={description}
           onChange={(e) => handleInputChange({ target: { name: 'description', value: e.target.value } })} />
-        
+
       </form>
-    </Modal>);};
+    </Modal>);
+};
 export default ModalColorUpdate;

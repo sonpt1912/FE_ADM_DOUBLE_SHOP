@@ -3,31 +3,27 @@ import React, { useState, useEffect } from "react";
 
 import { Space, Input, theme, Table, Collapse, Button, ColorPicker, Form, Select, } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+
 
 import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
 import { fetchColors, deleteColor, detailColor, addColor } from "../../../../store/slice/MauReducer";
-// import Icon, {ProfileFilled} from "@ant-design/icons/lib/components/Icon";
 
-import qs from "qs";
+
+
 
 import { } from 'antd';
 
 import ModalColor from "./ModalColorAdd";
 import ModalColorUpdate from "./ModalColorEdit";
+import ModalColorDetail from "./ModalColorDetail";
 
 const { Option } = Select;
 
 const Mau = () => {
   const dispatch = useDispatch();
-  // const [data, setData] = useState();
   const colors = useSelector((state) => state.color.colors);
   const loading = useSelector((state) => state.color.status === "loading");
   const pagination = useSelector((state) => state.color.pagination);
-
-  // const [code, setCode] = useState('');
-  // const [name, setName] = useState('');
-  // const [status, setStatus] = useState('');
   const [searchParams, setSearchParams] = useState({
     name: "",
     code: "",
@@ -59,7 +55,7 @@ const Mau = () => {
     );
   }
   const handleDelete = (id) => {
-    console.log("code", id)
+
     dispatch(deleteColor(id))
       .then(() => {
         dispatch(
@@ -103,8 +99,7 @@ const Mau = () => {
       dataIndex: 'code',
       key: 'code',
       sorter: {
-        // compare: (a, b) => a.chinese - b.chinese,
-        // multiple: 3,
+
       },
     },
     {
@@ -139,7 +134,7 @@ const Mau = () => {
       render:
         (text, record) => (
           <Space >
-            <EyeFilled style={{ fontSize: '23px' }} ></EyeFilled>
+            <EyeFilled style={{ fontSize: '23px' }} onClick={() => openModalDetail(record.id)} ></EyeFilled>
             <EditFilled style={{ fontSize: '23px' }} onClick={() => openModalUpdate(record.id)}></EditFilled>
             <DeleteFilled style={{ fontSize: '23px' }} onClick={() => handleDelete(record.id)} ></DeleteFilled>
           </Space>
@@ -147,13 +142,10 @@ const Mau = () => {
     },
 
   ];
+  //add
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
 
-  const openModal = async (id) => {
-    const response = await dispatch(detailColor(id));
-    console.log("Response from detailColor:", response);
-    setColorData(response.payload);
-    console.log("Color Data:", colorData);
+  const openModal = async () => {
     setIsModalOpenAdd(true);
 
   };
@@ -161,13 +153,29 @@ const Mau = () => {
   const closeModal = () => {
     setIsModalOpenAdd(false);
   };
+
+  //detail
+  const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+  const [colorDataDetail, setColorDataDetail] = useState();
+  const openModalDetail = async (id) => {
+    const response = await dispatch(detailColor(id));
+
+    setColorDataDetail(response.payload);
+
+    setIsModalOpenDetail(true);
+  };
+  const closeModalDetail = () => {
+    setIsModalOpenDetail(false);
+  };
+  //update
+
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
   const [colorData, setColorData] = useState();
   const openModalUpdate = async (id) => {
     const response = await dispatch(detailColor(id));
-    console.log("Response from detailColor:", response);
+
     setColorData(response.payload);
-    console.log("Color Data:", colorData);
+
     setIsModalOpenUpdate(true);
   };
   const closeModalUpdate = () => {
@@ -301,6 +309,11 @@ const Mau = () => {
         isOpen={isModalOpenUpdate}
         colors={colorData}
         onCancel1={closeModalUpdate}
+      />
+      <ModalColorDetail
+        isOpen={isModalOpenDetail}
+        colors={colorDataDetail}
+        onCancel1={closeModalDetail}
       />
     </div>
   )

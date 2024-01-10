@@ -27,7 +27,7 @@ export const fetchColors = createAsyncThunk(
     'colors/deleteColor',
     async (colorId) => {
       try {
-        const response = await axios.delete(`http://localhost:8072/color/delete/${colorId}`);
+        const response = await axios.post(`http://localhost:8072/color/delete/${colorId}`);
         return response.data;
       } catch (error) {
         throw error;
@@ -63,9 +63,11 @@ export const fetchColors = createAsyncThunk(
           'colors/updateColor',
           async (colorId1) => {
             try {
-              console.log('colorId:', colorId1);
+              
               const response = await axios.put(`http://localhost:8072/color/update/${colorId1.id}`, colorId1);
+              
               return response.data;
+              
             } catch (error) {
               
               throw error;
