@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Input, Select, Form, message } from "antd";
 import { useDispatch } from "react-redux";
-import { update } from "../../../../store/slice/ChatLieuReducer";
+import { update, fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
 
 const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
   const dispatch = useDispatch();
@@ -61,7 +61,15 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
         description: descriptionState
       };
       setConfirmLoading(true);
-      await dispatch(update(formData));
+      await dispatch(update(formData))
+        .then(() => {
+          dispatch(
+            fetchMaterials({
+              page: 0,
+              pageSize: 3
+            })
+          )
+        });
       message.success("thành công");
       console.log(update(formData))
       closeModal();
@@ -87,34 +95,32 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
 
   return (
     <Modal
-      title="Update chất liệu"
+      title="Update Material"
       // visible={visible}
       open={visible}
       onOk={handleOk}
       onCancel={handleCancel}
       confirmLoading={confirmLoading}
-      footer={[
-        <Button key="cancel" onClick={closeModal}>
-          Cancel
-        </Button>,
-        <Button key="ok" type="primary" onClick={handleOk}>
-          OK
-        </Button>,
-      ]}
+      // footer={[
+      //   <Button key="cancel" onClick={handleCancel}>
+      //     Cancel
+      //   </Button>,
+      //   <Button key="ok" type="primary" onClick={handleOk}>
+      //     OK
+      //   </Button>,
+      // ]}
     >
       <Form>
         <h4>ID:</h4>
         <Input
           name="id"
-          label="id:"
           // onChange={(e) => setCode(e.target.value)}
           value={idState}
           disabled
         />
-        <h4>Mã Chất Liêu:</h4>
+        <h4>Code Material:</h4>
         <Input
           name="code"
-          label="Mã màu:"
           placeholder="Nhập mã màu"
           // onChange={(e) => setCode(e.target.value)}
           value={codeState}
@@ -126,7 +132,7 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
           }
           )}
         />
-        <h4 className="mt-3">Tên Chất Liệu:</h4>
+        <h4 className="mt-3">Name Material:</h4>
         <Input
           name="name"
           label="Name:"
@@ -136,7 +142,7 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
           onChange={(e) => setName(e.target.value)}
         // onChange={(e) => setPayload({ ...payload, name: e.target.value })}
         />
-        <h4 className="mt-3">Mô tả chất liệu:</h4>
+        <h4 className="mt-3">Description Material:</h4>
         <Input
           name="description"
           label="Desciption:"
@@ -146,7 +152,7 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
           value={descriptionState}
         />
         <div className="mt-3 d-flex">
-          <h4>Trạng thái:</h4>
+          <h4>Status:</h4>
           <Select className="ms-4"
             // onChange={(e) => setTrangThai(parseInt(e.target.value))}
             value={statusState == 0 ? "Hết Hàng" : "Còn Hàng"}

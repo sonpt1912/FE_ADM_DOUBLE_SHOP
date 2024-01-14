@@ -98,8 +98,8 @@ const Material = () => {
             onClick={() => openModalUpdate(record.id)}
           // onClick={showEditModal}
           />
-          <button 
-          onClick={() => handleDelete(record.id)} 
+          <button
+            onClick={() => handleDelete(record.id)}
           >Delete</button>
         </Space>
       ),
@@ -117,20 +117,17 @@ const Material = () => {
   };
 
   const handleDelete = (id) => {
-    dispatch(
-      Delete(
-        id
-      )
-    ).then(() => {
-      dispatch(
-        fetchMaterials({
-          page: 0,
-          pageSize: 3,
-          code: searchParams.code,
-          name: searchParams.name,
-        })
-      )
-    });
+    dispatch(Delete(id))
+      .then(() => {
+        dispatch(
+          fetchMaterials({
+            page: 0,
+            pageSize: 3,
+            code: searchParams.code,
+            name: searchParams.name,
+          })
+        )
+      });
   };
 
   const [selectedChatLieu, setSelectedChatLieu] = useState([]);
@@ -161,16 +158,6 @@ const Material = () => {
   };
 
   // Modal for edit
-  const [modalEdit, setModalEdit] = useState(false);
-
-  const showModalEit = () => {
-    setModalEdit(true);
-  };
-
-  const hideEditModal = () => {
-    setModalEdit(false);
-  };
-
   const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
   const [materialData, setMaterialData] = useState();
   const openModalUpdate = async (id) => {
@@ -179,7 +166,7 @@ const Material = () => {
     setMaterialData(response.payload);
     console.log("Material Data:", materialData);
     setIsModalOpenUpdate(true);
-    
+
   };
 
   const closeModalUpdate = () => {
@@ -270,7 +257,7 @@ const Material = () => {
 
       <ModalChatLieuEdit
         visible={isModalOpenUpdate}
-        closeModal={hideEditModal}
+        closeModal={closeModalUpdate}
         ChatLieus={materialData}
 
       // onUpdateComplete={onUpdateComplete}

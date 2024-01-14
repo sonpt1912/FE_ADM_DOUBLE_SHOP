@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Input, Select, message } from "antd";
 import { useDispatch } from "react-redux";
-import { add } from "../../../../store/slice/ChatLieuReducer";
-import { fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
+import { add, fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 //bootstrap
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -18,15 +19,23 @@ const ModalChatLieu = ({ open, closeModal }) => {
     description: "",
   });
 
-  
+
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      await dispatch(add(payload));
+      await dispatch(add(payload))
+        .then(() => {
+          dispatch(
+            fetchMaterials({
+              page: 0,
+              pageSize: 3
+            })
+          )
+        });
       message.success("Material added successfully");
       closeModal();
       setPayload({
-        code:"",
+        code: "",
         name: "",
         description: "",
       });
@@ -36,14 +45,13 @@ const ModalChatLieu = ({ open, closeModal }) => {
     } finally {
       closeModal();
       form.resetFields();
-
       setConfirmLoading(false);
     }
   };
 
   const handleCancel = () => {
     setPayload({
-      code:"",
+      code: "",
       name: "",
       description: "",
     });
@@ -51,51 +59,91 @@ const ModalChatLieu = ({ open, closeModal }) => {
     form.resetFields();
   };
 
-  
+  // const validate = useFormik({
+  //   initialValues: {
+  //     code: '',
+  //     name: '',
+  //     description: ''
+  //   },
+  //   validatetionSchema: Yup.object({
+  //     code: Yup.string.required("Please enter code"),
+  //     name: Yup.string.required("Please enter name"),
+  //     description: Yup.string.required("Please enter description")
+  //   }),
+  //   onOk: (values) => {
+  //     try {
+  //       setConfirmLoading(true);
+  //       dispatch(add(payload))
+  //         .then(() => {
+  //           dispatch(
+  //             fetchMaterials({
+  //               page: 0,
+  //               pageSize: 3
+  //             })
+  //           )
+  //         });
+  //       message.success("Material added successfully");
+  //       closeModal();
+  //       setPayload({
+  //         code: "",
+  //         name: "",
+  //         description: "",
+  //       });
+  //       form.resetFields();
+  //     } catch (error) {
+  //       message.error("Failed to add Material");
+  //     } finally {
+  //       closeModal();
+  //       form.resetFields();
+  //       setConfirmLoading(false);
+  //     }
+  //   }
+  // })
+
+
 
   return (
-    <Modal
-      title="Thêm mới chất liệu"
-      open={open}
-      onOk={handleOk}
-      confirmLoading={confirmLoading}
-      onCancel={handleCancel}
-    >
-      <form>
-        <h4>Code material:</h4>
-        <Input
-          name="code"
-          label="code:"
-          placeholder="Input code Material"
-          onChange={(e) => setPayload({ ...payload, code: e.target.value })}
-
-        />
-        <h4 className="mt-3">Name material:</h4>
-        <Input
-          name="name"
-          label="name:"
-          placeholder="Input name matertial"
-          onChange={(e) => setPayload({ ...payload, name: e.target.value })}
-
-        />
-        <h4 className="mt-3">Desciption material:</h4>
-        <Input
-          name="desciption"
-          label="desciption :"
-          placeholder="Nhập mieu tả"
-          onChange={(e) => setPayload({ ...payload, description: e.target.value })}
-
-        />
-        {/* <div className="mt-3 d-flex">
-          <h4>Status:</h4>
-          <Select className="ms-4" defaultValue={null}>
-            <option disabled value={null}>Chọn trạng thái</option>
-            <option value={1}>Còn Hàng</option>
-            <option value={0}>Hết Hàng</option>
-          </Select>
-        </div> */}
-      </form>
-    </Modal>
+    <div>
+      <Modal
+        title="Thêm mới chất liệu"
+        open={open}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        // footer={null}
+        confirmLoading={confirmLoading}
+      >
+        <form>
+          <h4>Code material:</h4>
+          <Input
+            name="code"
+            label="code:"
+            placeholder="Input code Material"
+            onChange={(e) => setPayload({ ...payload, code: e.target.value })}
+            required
+          />
+          <h4 className="mt-3">Name material:</h4>
+          <Input
+            name="name"
+            label="name:"
+            placeholder="Input name matertial"
+            onChange={(e) => setPayload({ ...payload, name: e.target.value })}
+            required
+          />
+          <h4 className="mt-3">Desciption material:</h4>
+          <Input
+            name="desciption"
+            label="desciption :"
+            placeholder="Nhập mieu tả"
+            onChange={(e) => setPayload({ ...payload, description: e.target.value })}
+            required
+          />
+          
+            {/* <Button htmlType="submit" onClick={handleOk}>Update</Button>
+            <Button onClick={handleCancel}>Cancel</Button> */}
+          
+        </form>
+      </Modal>
+    </div>
   );
 };
 
