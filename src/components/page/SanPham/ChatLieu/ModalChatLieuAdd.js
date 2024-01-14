@@ -137,10 +137,10 @@ const ModalChatLieu = ({ open, closeModal }) => {
             onChange={(e) => setPayload({ ...payload, description: e.target.value })}
             required
           />
-          
-            {/* <Button htmlType="submit" onClick={handleOk}>Update</Button>
+
+          {/* <Button htmlType="submit" onClick={handleOk}>Update</Button>
             <Button onClick={handleCancel}>Cancel</Button> */}
-          
+
         </form>
       </Modal>
     </div>
