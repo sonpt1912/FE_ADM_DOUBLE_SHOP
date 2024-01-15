@@ -90,7 +90,7 @@ const KichCo = () => {
   };
 
   useEffect(() => {
-    if (!modalVisible || !modalVisibleUpdate) {
+    if (!modalVisible && !modalVisibleUpdate) {
       dispatch(
         fetchSizes({
           page: current - 1,
@@ -100,7 +100,8 @@ const KichCo = () => {
         })
       );
     }
-  }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams, dispatch]);  
+  }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams]);
+  
 
   const onClickEdit = (record) => {
     setPayload({
