@@ -49,3 +49,42 @@ export const updateSize = createAsyncThunk(
     }
   }
 );
+
+export const fetchCollars = createAsyncThunk(
+  "collars/fetchCollars",
+  async (payload) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/collar/get-collar-by-condition`,
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const saveCollar = createAsyncThunk("collars/saveCollar", async (payload) => {
+  try {
+    const response = await axios.post(`${API_URL}/collar/save`, payload);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const updateCollar = createAsyncThunk(
+  "collars/updateCollar",
+  async (payload) => {
+    try {
+      const response = await axios.post(`${API_URL}/collar/update`, payload);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+
+
