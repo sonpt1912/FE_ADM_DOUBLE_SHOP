@@ -92,7 +92,7 @@ const materialSlice = createSlice({
         state.materials = action.payload.listData;
         state.pagination = {
           page: 0,
-          pageSize: 3,
+          pageSize: 5,
           totalItems: action.payload.totalRecord,
         };
       })

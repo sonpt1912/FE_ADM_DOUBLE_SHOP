@@ -28,7 +28,7 @@ const ModalChatLieu = ({ open, closeModal }) => {
           dispatch(
             fetchMaterials({
               page: 0,
-              pageSize: 3
+              pageSize: 5
             })
           )
         });

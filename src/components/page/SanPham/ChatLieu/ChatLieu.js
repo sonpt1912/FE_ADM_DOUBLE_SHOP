@@ -34,7 +34,7 @@ const Material = () => {
     dispatch(
       fetchMaterials({
         page: 0,
-        pageSize: 6,
+        pageSize: 5,
         code: searchParams.code,
         name: searchParams.name,
       })
@@ -45,7 +45,7 @@ const Material = () => {
     dispatch(
       fetchMaterials({
         page: 0,
-        pageSize: 3,
+        pageSize: 5,
         code: searchParams.code,
         name: searchParams.name,
       })
@@ -59,10 +59,15 @@ const Material = () => {
 
   const columns = [
     {
-      title: "id",
-      dataIndex: "id",
-      key: "id",
-      // render: (text, record, index) => index + 1,
+      // title: "id",
+      // dataIndex: "id",
+      // key: "id",
+      // // render: (text, record, index) => index + 1,
+      title: 'STT',
+      dataIndex: 'index',
+      key: 'index',
+      render: (text, record, index) => index + 1,
+      sorter: (a, b) => a.index - b.index,
     },
     {
       title: "code",
@@ -122,7 +127,7 @@ const Material = () => {
         dispatch(
           fetchMaterials({
             page: 0,
-            pageSize: 3,
+            pageSize: 5,
             code: searchParams.code,
             name: searchParams.name,
           })

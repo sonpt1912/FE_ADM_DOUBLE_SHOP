@@ -66,7 +66,7 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
           dispatch(
             fetchMaterials({
               page: 0,
-              pageSize: 3
+              pageSize: 5
             })
           )
         });
