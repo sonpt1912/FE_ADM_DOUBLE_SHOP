@@ -1,5 +1,9 @@
 import React from "react";
-import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Button, Layout, theme } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -10,8 +14,10 @@ const CustomHeader = ({ collapsed, setCollapsed }) => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const isTokenExist = !!token;
 
+  const navigate = useNavigate();
 
   return (
     <Header
@@ -34,18 +40,20 @@ const CustomHeader = ({ collapsed, setCollapsed }) => {
         }}
       />
 
-      <Link to="/login" >
-        <Button
-          type="text"
-          icon={<UserOutlined />}
-          style={{
-            fontSize: "16px",
-            height: 64,
-          }}
-        >
-          Đăng nhập
-        </Button>
-      </Link>
+      {!isTokenExist && (
+        <Link to="/login">
+          <Button
+            type="text"
+            icon={<UserOutlined />}
+            style={{
+              fontSize: "16px",
+              height: 64,
+            }}
+          >
+            Đăng nhập
+          </Button>
+        </Link>
+      )}
     </Header>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Button, Checkbox, message } from "antd";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
@@ -24,8 +24,15 @@ const Login = () => {
         username: values.username,
         password: values.password,
       });
-      navigate("/thongKe");
-      console.log("Success:", result);
+
+      if (result.success) {
+        navigate("/dashboard/thongKe");
+        console.log("Success:", result);
+      } else {
+        message.error("Login failed");
+
+        console.error("Login failed:", result.error);
+      }
     } catch (error) {
       console.error("Failed:", error);
     }
@@ -35,9 +42,14 @@ const Login = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const onSuccessGoogle = (response) => {
-    dispatch(loginGoogle(response.credential));
-    navigate("/dashboard/thongKe");
+  const onSuccessGoogle = async (response) => {
+    try {
+      await dispatch(loginGoogle(response.credential));
+      navigate("/dashboard/thongKe");
+    } catch (error) {
+      message.error("Login failed:");
+      console.error("Login failed:", error);
+    }
   };
 
   return (

@@ -1,5 +1,7 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
-import thunkMiddleware from 'redux-thunk';
+import thunkMiddleware from "redux-thunk";
+import thunk from "redux-thunk";
+
 import KhachHangReducer from "./slice/KhachHangReducer";
 import RankReducer from "./slice/RankReducer";
 import KichCoReducer from "./slice/KichCoReducer";
@@ -10,9 +12,9 @@ const store = configureStore({
     khachHang: KhachHangReducer,
     rank: RankReducer,
     size: KichCoReducer,
-    color: MauReducer
+    color: MauReducer,
   },
-  middleware: [...getDefaultMiddleware(), thunkMiddleware],
+  middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });
 
 export default store;

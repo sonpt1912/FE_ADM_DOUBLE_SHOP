@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:8072";
 
@@ -39,6 +40,8 @@ export const fetchSizes = createAsyncThunk(
     } catch (error) {
       if (error.response && error.response.status === 401) {
         message.error("Unauthorized: Please log in.");
+        const navigate = useNavigate();
+        navigate("/login");
       }
       throw error;
     }
@@ -95,6 +98,7 @@ export const loginGoogle = createAsyncThunk(
       const response = await axios.post(`${API_URL}/auth/google`, {
         crenditial: tokenId,
       });
+      console.log("Google", response.data.jwtToken);
       localStorage.setItem("token", response.data.jwtToken);
       return response.data.jwtToken;
     } catch (error) {
