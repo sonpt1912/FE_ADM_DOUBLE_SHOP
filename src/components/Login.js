@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Button, Checkbox, message } from "antd";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login, loginGoogle } from "../config/api";
+import { selectIsAuthenticated } from "../store/slice/AuthReducer";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token || token === "undefined") {
+      navigate("/login");
+    } else if (isAuthenticated) {
+      navigate("/dashboard/thongKe");
+    }
+  }, [isAuthenticated, navigate]);
 
   const onFailureGoogle = (error) => {
     if (error.response && error.response.status === 401) {
@@ -20,21 +31,30 @@ const Login = () => {
   };
   const onFinish = async (values) => {
     try {
-      const result = await login({
-        username: values.username,
-        password: values.password,
-      });
+      const result = await dispatch(
+        login({ username: values.username, password: values.password })
+      );
 
-      if (result.success) {
-        navigate("/dashboard/thongKe");
-        console.log("Success:", result);
+      if (
+        result.error &&
+        result.error.message ===
+          "Access Denied !! Full authentication is required to access this resource"
+      ) {
+        message.error(
+          "Access Denied !! Full authentication is required to access this resource"
+        );
       } else {
-        message.error("Login failed");
-
-        console.error("Login failed:", result.error);
+        navigate("/dashboard/thongKe");
       }
     } catch (error) {
       console.error("Failed:", error);
+
+      if (error.response && error.response.status === 401) {
+        message.error("Username or password is incorrect");
+      } else {
+        message.error("Login failed");
+        navigate("/login");
+      }
     }
   };
 
@@ -54,7 +74,6 @@ const Login = () => {
 
   return (
     <GoogleOAuthProvider clientId="371453517569-sdlqpnul2t1iihsrk3u2apb6qvik0cvh.apps.googleusercontent.com">
-      {" "}
       <div className="login-page">
         <div className="login-box">
           <div className="illustration-wrapper">

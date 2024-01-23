@@ -24,6 +24,7 @@ import {
   EyeOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import { fetchSizes, updateSize } from "../../../../config/api";
 import ModalAddSize from "./modalAddSize";
 import ModalUpdateSize from "./modalUpdateSize";
@@ -34,6 +35,7 @@ const { RangePicker } = DatePicker;
 
 const KichCo = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const sizes = useSelector((state) => state.size.sizes);
   const pagination = useSelector((state) => state.size.pagination);
   const [pageSize, setPageSize] = useState(5);
@@ -83,25 +85,89 @@ const KichCo = () => {
 
     dispatch(
       fetchSizes({
-        page: pagination.current ,
+        page: pagination.current,
         pageSize: pageSize,
       })
     );
   };
 
   useEffect(() => {
-    if (!modalVisible && !modalVisibleUpdate) {
-      dispatch(
-        fetchSizes({
-          page: current - 1,
-          pageSize: pageSize,
-          name: searchParams.name,
-          status: searchParams.status,
-        })
-      );
-    }
+    const fetchData = async () => {
+      try {
+        if (!modalVisible && !modalVisibleUpdate) {
+          const response = await dispatch(
+            fetchSizes({
+              page: current - 1,
+              pageSize: pageSize,
+              name: searchParams.name,
+              status: searchParams.status,
+            })
+          );
+
+          if (response && response.error) {
+            if (
+              response.error.message ===
+              "Access Denied !! Full authentication is required to access this resource"
+            ) {
+              let count = 5;
+
+              const countdownMessage = () => {
+                if (count === 0) {
+                  navigate("/login");
+                  return;
+                }
+
+                const errorMessage =
+                  count === 5
+                    ? "Access Denied !! Full authentication is required to access this resource."
+                    : `Redirecting to login page in ${count} seconds...`;
+                message.loading({
+                  content: errorMessage,
+                  duration: 1,
+                  onClose: () => {
+                    count--;
+                    countdownMessage();
+                  },
+                });
+              };
+
+              countdownMessage();
+            } else {
+              message.error("Error fetching data. Please try again later.");
+              let count = 5;
+
+              const countdownMessage = () => {
+                if (count === 0) {
+                  navigate("/login");
+                  return;
+                }
+                const errorMessage =
+                  count === 5
+                    ? "Error fetching data. Please try again later."
+                    : `Redirecting to login page in ${count} seconds...`;
+
+                message.loading({
+                  content: errorMessage,
+                  duration: 1,
+                  onClose: () => {
+                    count--;
+                    countdownMessage();
+                  },
+                });
+              };
+
+              countdownMessage();
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        message.error("Error fetching data. Please try again later.");
+      }
+    };
+
+    fetchData();
   }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams]);
-  
 
   const onClickEdit = (record) => {
     setPayload({
@@ -116,7 +182,7 @@ const KichCo = () => {
   const onClickSearch = () => {
     dispatch(
       fetchSizes({
-        page: pagination.current ,
+        page: pagination.current,
         pageSize: pageSize,
         name: searchParams.name,
         status: searchParams.status,

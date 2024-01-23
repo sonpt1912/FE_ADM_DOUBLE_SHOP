@@ -17,6 +17,7 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 export const fetchAllColors = async () => {
   try {
     const response = await axios.get(`${API_URL}/color/get-all`);
@@ -38,11 +39,6 @@ export const fetchSizes = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        message.error("Unauthorized: Please log in.");
-        const navigate = useNavigate();
-        navigate("/login");
-      }
       throw error;
     }
   }
@@ -83,29 +79,25 @@ export const login = createAsyncThunk(
         username,
         password,
       });
-      localStorage.setItem("token", response.data.jwtToken);
-      return response.data.jwtToken;
+      localStorage.setItem("token", response.data.access_token);
+      return response.data.access_token;
     } catch (error) {
       throw error.response.data;
     }
   }
 );
 
-export const loginGoogle = createAsyncThunk(
-  "auth/loginGoogle",
-  async (tokenId) => {
-    try {
-      const response = await axios.post(`${API_URL}/auth/google`, {
-        crenditial: tokenId,
-      });
-      console.log("Google", response.data.jwtToken);
-      localStorage.setItem("token", response.data.jwtToken);
-      return response.data.jwtToken;
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        message.error("Unauthorized: Please log in.");
-      }
-      throw error.response.data;
+export const loginGoogle = createAsyncThunk("auth/google", async (tokenId) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/google`, {
+      crenditial: tokenId,
+    });
+    localStorage.setItem("token", response.data.access_token);
+    return response.data.access_token;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      message.error("Unauthorized: Please log in.");
     }
+    throw error.response.data;
   }
-);
+});
