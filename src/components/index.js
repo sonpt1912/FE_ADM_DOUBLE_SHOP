@@ -14,6 +14,7 @@ import Mau from "./page/SanPham/Mau";
 import ThongKe from "./page/ThongKe";
 import Voucher from "./page/Voucher";
 import HangKhachHang from "./page/Hang/HangKhachHang";
+import Login from "./Login";
 export {
   Ao,
   KichCo,
@@ -30,5 +31,6 @@ export {
   SanPham,
   ThongKe,
   Voucher,
-  HangKhachHang
+  HangKhachHang,
+  Login
 };

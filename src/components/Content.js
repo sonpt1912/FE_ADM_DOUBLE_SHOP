@@ -20,6 +20,7 @@ import ChatLieu from "./page/SanPham/ChatLieu";
 import CoAo from "./page/SanPham/CoAo";
 import KichCo from "./page/SanPham/KichCo/KichCo";
 import Mau from "./page/SanPham/Mau/Mau";
+import Login from "./Login";
 
 const { Content } = Layout;
 
@@ -36,7 +37,6 @@ const CustomContent = () => {
   return (
     <Content
       style={{
-
         margin: "24px 16px",
         padding: 24,
         minHeight: "calc(100vh - 48px)",
