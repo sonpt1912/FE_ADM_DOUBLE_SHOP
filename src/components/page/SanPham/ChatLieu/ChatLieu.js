@@ -10,7 +10,6 @@ import axios from 'axios';
 
 import ModalChatLieu from "./ModalChatLieuAdd";
 import ModalChatLieuEdit from "./ModalChatLieuEdit";
-import ModalMaterialUpdate from "./ModalChatLieuUpdate";
 // import ModalColorUpdate from "./ModalChatLieuUpdate";
 import { SearchOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { fetchMaterials, Delete, detail } from "../../../../store/slice/ChatLieuReducer";
@@ -243,6 +242,12 @@ const Material = () => {
       </div>
 
       <Table
+      style={{
+        maxWidth: 1100,
+        margin: "auto",
+        display: "flex",
+        flexDirection: "column",
+      }}
         className="text-center"
         columns={columns}
         dataSource={materials}

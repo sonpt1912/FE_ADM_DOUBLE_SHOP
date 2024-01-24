@@ -8,7 +8,7 @@ import BanHang from "./page/BanHang/BanHang";
 import ChiTietDonHang from "./page/ChiTietDonHang";
 import DanhGia from "./page/DanhGia/DanhGia";
 import KhachHang from "./page/KhachHang/KhachHang";
-import KhuyenMai from "./page/KhuyenMai";
+import KhuyenMai from "./page/KhuyenMai/KhuyenMai";
 import LienHe from "./page/LienHe";
 import NhanVien from "./page/NhanVien/NhanVien";
 import SanPham from "./page/SanPham";
