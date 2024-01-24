@@ -1,6 +1,4 @@
-import React from "react";
-import { EditOutlined } from "@ant-design/icons";
-
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartSimple,
@@ -20,7 +18,7 @@ import {
 
 import logo from "../assets/logo.png";
 
-import { Menu, Layout } from "antd";
+import { Modal, Menu, Layout } from "antd";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 
@@ -29,6 +27,20 @@ const { SubMenu } = Menu;
 
 const Navbar = ({ collapsed }) => {
   const navigate = useNavigate();
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+
+  const showLogoutModal = () => {
+    setLogoutModalVisible(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const handleCancel = () => {
+    setLogoutModalVisible(false);
+  };
 
   return (
     <Sider
@@ -53,73 +65,78 @@ const Navbar = ({ collapsed }) => {
       >
         <Menu.Item
           className="menu-item"
-          key="/thongKe"
+          key="/dashboard/thongKe"
           icon={<FontAwesomeIcon icon={faChartSimple} />}
         >
           Thống Kê
         </Menu.Item>
         <Menu.Item
           className="menu-item"
-          key="/banHang"
+          key="/dashboard/banHang"
           icon={<FontAwesomeIcon icon={faShop} />}
         >
           Bán Hàng
         </Menu.Item>
         <Menu.Item
           className="menu-item"
-          key="/chiTietDonHang"
+          key="/dashboard/chiTietDonHang"
           icon={<FontAwesomeIcon icon={faReceipt} />}
         >
           Chi tiết đơn hàng
         </Menu.Item>
         <Menu.Item
           className="menu-item"
-          key="/khachHang"
+          key="/dashboard/khachHang"
           icon={<FontAwesomeIcon icon={faUsers} />}
         >
           Khách Hàng
         </Menu.Item>
-        <SubMenu icon={<FontAwesomeIcon icon={faShirt} />} title="Sản Phẩm">
-          <Menu.Item key="/sanPham/ao">Áo</Menu.Item>
-          <Menu.Item key="/sanPham/mau">Màu</Menu.Item>
-          <Menu.Item key="/sanPham/kichCo">Kích cỡ</Menu.Item>
-          <Menu.Item key="/sanPham/coAo">Cổ áo</Menu.Item>
-          <Menu.Item key="/sanPham/chatLieu">Chất liệu</Menu.Item>
+        <SubMenu
+          icon={<FontAwesomeIcon icon={faShirt} />}
+          title="Sản Phẩm"
+          key="/dashboard/sanPham"
+        >
+          <Menu.Item key="/dashboard/sanPham/ao">Áo</Menu.Item>
+          <Menu.Item key="/dashboard/sanPham/mau">Màu</Menu.Item>
+          <Menu.Item key="/dashboard/sanPham/kichCo">Kích cỡ</Menu.Item>
+          <Menu.Item key="/dashboard/sanPham/coAo">Cổ áo</Menu.Item>
+          <Menu.Item key="/dashboard/sanPham/chatLieu">Chất liệu</Menu.Item>
         </SubMenu>
         <Menu.Item
           className="menu-item"
-          key="/voucher"
+          key="/dashboard/voucher"
           icon={<FontAwesomeIcon icon={faMoneyCheck} />}
         >
           Voucher
         </Menu.Item>
         <Menu.Item
           className="menu-item"
-          key="/hang"
+          key="/dashboard/hang"
           icon={<FontAwesomeIcon icon={faRankingStar} />}
         >
           Hạng
         </Menu.Item>
         <Menu.Item
           className="menu-item"
-          key="/khuyenMai"
+          key="/dashboard/khuyenMai"
           icon={<FontAwesomeIcon icon={faGifts} />}
         >
           Khuyến Mãi
         </Menu.Item>
         <Menu.Item
           className="menu-item"
-          key="/nhanVien"
+          key="/dashboard/nhanVien"
           icon={<FontAwesomeIcon icon={faUserGroup} />}
         >
           Nhân Viên
         </Menu.Item>
         <SubMenu
+          key="/dashboard/thongTinThem"
           icon={<FontAwesomeIcon icon={faEnvelopesBulk} />}
           title="Thông tin thêm"
         >
           <Menu.Item
-            key="/pham"
+            key="/dashboard/pham"
             className="menu-item"
             icon={<FontAwesomeIcon icon={faNewspaper} />}
           >
@@ -127,17 +144,29 @@ const Navbar = ({ collapsed }) => {
           </Menu.Item>
           <Menu.Item
             className="menu-item"
-            key="/thanh"
+            key="/dashboard/thanh"
             icon={<FontAwesomeIcon icon={faEnvelope} />}
           >
             Gửi email
           </Menu.Item>
         </SubMenu>
 
-        <Menu.Item icon={<FontAwesomeIcon icon={faArrowRightFromBracket} />}>
+        <Menu.Item
+          icon={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
+          onClick={showLogoutModal}
+        >
           Đăng xuất
         </Menu.Item>
       </Menu>
+
+      <Modal
+        title="Xác nhận đăng xuất"
+        visible={logoutModalVisible}
+        onOk={handleLogout}
+        onCancel={handleCancel}
+      >
+        <p>Bạn có chắc muốn đăng xuất?</p>
+      </Modal>
     </Sider>
   );
 };
