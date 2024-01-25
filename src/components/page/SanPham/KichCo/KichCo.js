@@ -103,60 +103,12 @@ const KichCo = () => {
               status: searchParams.status,
             })
           );
-
           if (response && response.error) {
             if (
-              response.error.message ===
-              "Access Denied !! Full authentication is required to access this resource"
+              response.error.message === "Request failed with status code 401"
             ) {
-              let count = 5;
-
-              const countdownMessage = () => {
-                if (count === 0) {
-                  navigate("/login");
-                  return;
-                }
-
-                const errorMessage =
-                  count === 5
-                    ? "Access Denied !! Full authentication is required to access this resource."
-                    : `Redirecting to login page in ${count} seconds...`;
-                message.loading({
-                  content: errorMessage,
-                  duration: 1,
-                  onClose: () => {
-                    count--;
-                    countdownMessage();
-                  },
-                });
-              };
-
-              countdownMessage();
-            } else {
-              message.error("Error fetching data. Please try again later.");
-              let count = 5;
-
-              const countdownMessage = () => {
-                if (count === 0) {
-                  navigate("/login");
-                  return;
-                }
-                const errorMessage =
-                  count === 5
-                    ? "Error fetching data. Please try again later."
-                    : `Redirecting to login page in ${count} seconds...`;
-
-                message.loading({
-                  content: errorMessage,
-                  duration: 1,
-                  onClose: () => {
-                    count--;
-                    countdownMessage();
-                  },
-                });
-              };
-
-              countdownMessage();
+              navigate("/login");
+              message.error(response.error.message);
             }
           }
         }

@@ -64,8 +64,18 @@ const Login = () => {
 
   const onSuccessGoogle = async (response) => {
     try {
-      await dispatch(loginGoogle(response.credential));
-      navigate("/dashboard/thongKe");
+      const result = await dispatch(loginGoogle(response.credential));
+      if (
+        result.error &&
+        result.error.message ===
+          "Access Denied !! Full authentication is required to access this resource"
+      ) {
+        message.error(
+          "Access Denied !! Full authentication is required to access this resource"
+        );
+      } else {
+        navigate("/dashboard/thongKe");
+      }
     } catch (error) {
       message.error("Login failed:");
       console.error("Login failed:", error);
