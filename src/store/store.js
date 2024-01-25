@@ -6,11 +6,8 @@ import KhachHangReducer from "./slice/KhachHangReducer";
 import RankReducer from "./slice/RankReducer";
 import KichCoReducer from "./slice/KichCoReducer";
 import MauReducer from "./slice/MauReducer";
-<<<<<<< HEAD
-import CollarReducer from "./slice/CollarReducer";
-=======
 import AuthReducer from "./slice/AuthReducer";
->>>>>>> 46e33ce2e3dd4f260188ea2de9a7fe5e181bd377
+import CollarReducer from "./slice/CollarReducer";
 
 const store = configureStore({
   reducer: {
@@ -18,11 +15,8 @@ const store = configureStore({
     rank: RankReducer,
     size: KichCoReducer,
     color: MauReducer,
-<<<<<<< HEAD
-    collar: CollarReducer
-=======
+    collar:CollarReducer,
     auth: AuthReducer,
->>>>>>> 46e33ce2e3dd4f260188ea2de9a7fe5e181bd377
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });
