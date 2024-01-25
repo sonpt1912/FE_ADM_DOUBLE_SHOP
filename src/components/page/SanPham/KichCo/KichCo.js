@@ -119,7 +119,7 @@ const KichCo = () => {
     };
 
     fetchData();
-  }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams]);
+  }, [modalVisible, modalVisibleUpdate, current, pageSize]);
 
   const onClickEdit = (record) => {
     setPayload({
