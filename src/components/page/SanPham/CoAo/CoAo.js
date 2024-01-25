@@ -34,6 +34,7 @@ const { RangePicker } = DatePicker;
 
 const CoAo = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const collars = useSelector((state) => state.collar.collars);
   const pagination = useSelector((state) => state.collar.pagination);
   const [pageSize, setPageSize] = useState(5);
@@ -90,16 +91,81 @@ const CoAo = () => {
   };
 
   useEffect(() => {
-    if (!modalVisible || !modalVisibleUpdate) {
-      dispatch(
-        fetchCollars({
-          page: current - 1,
-          pageSize: pageSize,
-          name: searchParams.name,
-          status: searchParams.status,
-        })
-      );
-    }
+    const fetchData = async () => {
+      try {
+        if (!modalVisible && !modalVisibleUpdate) {
+          const response = await dispatch(
+            fetchCollars({
+              page: current - 1,
+              pageSize: pageSize,
+              name: searchParams.name,
+              status: searchParams.status,
+            })
+          );
+
+          if (response && response.error) {
+            if (
+              response.error.message ===
+              "Access Denied !! Full authentication is required to access this resource"
+            ) {
+              let count = 5;
+
+              const countdownMessage = () => {
+                if (count === 0) {
+                  navigate("/login");
+                  return;
+                }
+
+                const errorMessage =
+                  count === 5
+                    ? "Access Denied !! Full authentication is required to access this resource."
+                    : `Redirecting to login page in ${count} seconds...`;
+                message.loading({
+                  content: errorMessage,
+                  duration: 1,
+                  onClose: () => {
+                    count--;
+                    countdownMessage();
+                  },
+                });
+              };
+
+              countdownMessage();
+            } else {
+              message.error("Error fetching data. Please try again later.");
+              let count = 5;
+
+              const countdownMessage = () => {
+                if (count === 0) {
+                  navigate("/login");
+                  return;
+                }
+                const errorMessage =
+                  count === 5
+                    ? "Error fetching data. Please try again later."
+                    : `Redirecting to login page in ${count} seconds...`;
+
+                message.loading({
+                  content: errorMessage,
+                  duration: 1,
+                  onClose: () => {
+                    count--;
+                    countdownMessage();
+                  },
+                });
+              };
+
+              countdownMessage();
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        message.error("Error fetching data. Please try again later.");
+      }
+    };
+
+    fetchData();
   }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams, dispatch]);  
 
   const onClickEdit = (record) => {
