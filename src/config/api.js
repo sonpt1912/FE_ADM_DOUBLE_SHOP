@@ -71,7 +71,6 @@ export const updateSize = createAsyncThunk(
   }
 );
 
-<<<<<<< HEAD
 export const fetchCollars = createAsyncThunk(
   "collars/fetchCollars",
   async (payload) => {
@@ -83,7 +82,38 @@ export const fetchCollars = createAsyncThunk(
       return response.data;
     } catch (error) {
       throw error;
-=======
+    }
+  }
+);
+
+export const saveCollar = createAsyncThunk("collars/saveCollar", async (payload) => {
+  try {
+    const response = await axios.post(`${API_URL}/collar/save`, payload);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      message.error("Unauthorized: Please log in.");
+    }
+    throw error;
+  }
+});
+
+export const updateCollar = createAsyncThunk(
+  "collars/updateCollar",
+  async (payload) => {
+    try {
+      const response = await axios.post(`${API_URL}/collar/update`, payload);
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
+      throw error;
+    }
+  }
+);
+
+
 export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password }) => {
@@ -96,36 +126,10 @@ export const login = createAsyncThunk(
       return response.data.access_token;
     } catch (error) {
       throw error.response.data;
->>>>>>> 46e33ce2e3dd4f260188ea2de9a7fe5e181bd377
     }
   }
 );
 
-<<<<<<< HEAD
-export const saveCollar = createAsyncThunk("collars/saveCollar", async (payload) => {
-  try {
-    const response = await axios.post(`${API_URL}/collar/save`, payload);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-});
-
-export const updateCollar = createAsyncThunk(
-  "collars/updateCollar",
-  async (payload) => {
-    try {
-      const response = await axios.post(`${API_URL}/collar/update`, payload);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
-
-
-
-=======
 export const loginGoogle = createAsyncThunk("auth/google", async (tokenId) => {
   try {
     const response = await axios.post(`${API_URL}/auth/google`, {
@@ -140,4 +144,3 @@ export const loginGoogle = createAsyncThunk("auth/google", async (tokenId) => {
     throw error.response.data;
   }
 });
->>>>>>> 46e33ce2e3dd4f260188ea2de9a7fe5e181bd377
