@@ -21,12 +21,12 @@ const ModalCollarDetail = ({ isOpen, onCancel1, collars }) => {
   useEffect(() => {
     
     if (collars) {
-      setCode(collars.code);
+    
+        setCode(collars.code);
       setName(collars.name);
       setStatus(collars.status); 
       setDescription(collars.description);
       setId(collars.id);
-      
     }
   }, [collars]);
 
@@ -67,7 +67,7 @@ const ModalCollarDetail = ({ isOpen, onCancel1, collars }) => {
          value={description}
           />
            <h4 className="mt-3">Trạng thái</h4>
-          <Input value={status == 1 ? "Hoạt động" : "Ngừng hoạt động"}></Input>
+          <Input value={status == 1 ? "Hoạt động" : "Không hoạt động"}></Input>
         
       </form>
     </Modal>);};

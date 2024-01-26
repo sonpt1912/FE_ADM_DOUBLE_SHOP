@@ -12,7 +12,7 @@ const ModalUpdateCollar = ({ open, closeModal, payload }) => {
   const [updatedValues, setUpdatedValues] = useState({
     name: "",
     description: "",
-    status:""
+    
   });
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const ModalUpdateCollar = ({ open, closeModal, payload }) => {
     setUpdatedValues({
       name: allValues.name,
       description: allValues.description,
-      status:allValues.status
+      
     });
   };
 
@@ -84,9 +84,6 @@ const ModalUpdateCollar = ({ open, closeModal, payload }) => {
         </Form.Item>
         <Form.Item label="Mô tả" name="description">
           <TextArea />
-        </Form.Item>
-        <Form.Item label="Trạng thái" name="status">
-        <Input/>
         </Form.Item>
       </Form>
     </Modal>

@@ -168,7 +168,7 @@ const CoAo = () => {
     };
 
     fetchData();
-  }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams,isSearching]);  
+  }, [modalVisible, modalVisibleUpdate, current, pageSize,isSearching]);  
 
   const onClickEdit = (record) => {
     setPayload({
@@ -322,7 +322,7 @@ const CoAo = () => {
       dataIndex: "status",
       key: "status",
       width: 100,
-      render: (text) => (text == "0" ? "Ngừng Hoạt Động" : " Hoạt Động")
+      render: (text) => (text == "0" ? "Không Hoạt Động" : " Hoạt Động")
     },
     {
       title: "Hành động",
