@@ -39,21 +39,6 @@ const CustomHeader = ({ collapsed, setCollapsed }) => {
           height: 64,
         }}
       />
-
-      {!isTokenExist && (
-        <Link to="/login">
-          <Button
-            type="text"
-            icon={<UserOutlined />}
-            style={{
-              fontSize: "16px",
-              height: 64,
-            }}
-          >
-            Đăng nhập
-          </Button>
-        </Link>
-      )}
     </Header>
   );
 };

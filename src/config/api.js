@@ -79,10 +79,11 @@ export const login = createAsyncThunk(
         username,
         password,
       });
-      localStorage.setItem("token", response.data.access_token);
-      return response.data.access_token;
+      localStorage.setItem("token", response.data.data.access_token);
+      return response.data;
     } catch (error) {
-      throw error.response.data;
+      console.log("error");
+      return error.response.data;
     }
   }
 );

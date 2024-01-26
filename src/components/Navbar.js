@@ -153,6 +153,7 @@ const Navbar = ({ collapsed }) => {
 
         <Menu.Item
           icon={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
+          key={"/dashboard/logout"}
           onClick={showLogoutModal}
         >
           Đăng xuất
