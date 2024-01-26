@@ -113,6 +113,17 @@ export const updateCollar = createAsyncThunk(
   }
 );
 
+export const detailCollar = createAsyncThunk(
+  'collars/detailCollar',
+  async (collarId) => {
+    try {
+      const response = await axios.get(`http://localhost:8072/collar/get-collar-by-id/${collarId}`);
+      return response.data;
+    } catch (error) {
+      
+      throw error;
+    }
+  });
 
 export const login = createAsyncThunk(
   "auth/login",

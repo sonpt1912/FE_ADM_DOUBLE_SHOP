@@ -8,7 +8,7 @@ import KichCoReducer from "./slice/KichCoReducer";
 import MauReducer from "./slice/MauReducer";
 import AuthReducer from "./slice/AuthReducer";
 import CollarReducer from "./slice/CollarReducer";
-
+import PromotionReducer from "./slice/PromotionReducer";
 const store = configureStore({
   reducer: {
     khachHang: KhachHangReducer,
@@ -17,6 +17,7 @@ const store = configureStore({
     color: MauReducer,
     collar:CollarReducer,
     auth: AuthReducer,
+    promotion: PromotionReducer,
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });

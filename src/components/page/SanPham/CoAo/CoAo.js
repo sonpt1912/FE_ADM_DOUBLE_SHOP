@@ -24,10 +24,11 @@ import {
   EyeOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { fetchCollars,updateCollar } from "../../../../config/api";
+import { useNavigate } from "react-router-dom";
+import { fetchCollars,updateCollar,detailCollar } from "../../../../config/api";
 import ModalAddCollar from "./ModalCollarAdd";
 import ModalUpdateCollar from "./ModalCollarEdit";
-
+import ModalCollarDetail from "./ModalDetailCollar";
 const { Option } = Select;
 
 const { RangePicker } = DatePicker;
@@ -40,7 +41,7 @@ const CoAo = () => {
   const [pageSize, setPageSize] = useState(5);
   const [current, setCurrent] = useState(1);
   const loading = useSelector((state) => state.collar.status === "loading");
-
+  const [isSearching, setIsSearching] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleUpdate, setModalVisibleUpdate] = useState(false);
 
@@ -48,6 +49,7 @@ const CoAo = () => {
     code: "",
     name: "",
     description: "",
+    status:""
   });
 
   const [updateStatus, setUpdateStatus] = useState({ status: 0 });
@@ -89,7 +91,7 @@ const CoAo = () => {
       })
     );
   };
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -166,7 +168,7 @@ const CoAo = () => {
     };
 
     fetchData();
-  }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams, dispatch]);  
+  }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams,isSearching]);  
 
   const onClickEdit = (record) => {
     setPayload({
@@ -177,9 +179,13 @@ const CoAo = () => {
     });
     openModalUpdate();
   };
+  
+  const onClickSearch = async () => {
+    setIsSearching(true);
+     
+    console.log(isSearching);
 
-  const onClickSearch = () => {
-    dispatch(
+   await dispatch(
       fetchCollars({
         page: pagination.current ,
         pageSize: pageSize,
@@ -187,6 +193,21 @@ const CoAo = () => {
         status: searchParams.status,
       })
     );
+    setIsSearching(false);
+    console.log(isSearching);
+  };
+
+  const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+  const [collarDataDetail, setCollarDataDetail] = useState();
+  const openModalDetail = async (id) => {
+    const response = await dispatch(detailCollar(id));
+
+    setCollarDataDetail(response.payload);
+
+    setIsModalOpenDetail(true);
+  };
+  const closeModalDetail = () => {
+    setIsModalOpenDetail(false);
   };
 
   const { token } = theme.useToken();
@@ -217,6 +238,7 @@ const CoAo = () => {
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, name: e.target.value })
                   }
+                  disabled={console.log(isSearching) || isSearching}
                 />
               </Form.Item>
             </Col>
@@ -229,6 +251,7 @@ const CoAo = () => {
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, code: e.target.value })
                   }
+                  disabled={console.log(isSearching) || isSearching}
                 />
               </Form.Item>
             </Col>
@@ -240,10 +263,11 @@ const CoAo = () => {
                   onChange={(value) =>
                     setSearchParams({ ...searchParams, status: value })
                   }
+                  disabled={console.log(isSearching) || isSearching}
                   allowClear
                 >
-                  <Option value="0">0</Option>
-                  <Option value="1">1</Option>
+                  <Option value="0">Không hoạt động</Option>
+                  <Option value="1">Hoạt động</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -254,6 +278,7 @@ const CoAo = () => {
               htmlType="submit"
               icon={<SearchOutlined />}
               onClick={onClickSearch}
+              disabled={isSearching}
             >
               Search
             </Button>
@@ -297,6 +322,7 @@ const CoAo = () => {
       dataIndex: "status",
       key: "status",
       width: 100,
+      render: (text) => (text == "0" ? "Ngừng Hoạt Động" : " Hoạt Động")
     },
     {
       title: "Hành động",
@@ -304,7 +330,7 @@ const CoAo = () => {
       width: 150,
       render: (text, record) => (
         <Space size="middle">
-          <Button style={{ border: "none" }} icon={<EyeOutlined />} />
+          <Button style={{ border: "none" }} icon={<EyeOutlined />} onClick={() => openModalDetail(record.id)}/>
           <Button
             style={{ border: "none" }}
             icon={<EditOutlined />}
@@ -363,9 +389,8 @@ const CoAo = () => {
             pageSize: pageSize,
             total: pagination.totalItems,
             current: current,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (totalPages) => `Total ${totalPages} items`,
+            showTotal: (totalPages) => 
+            `Total ${totalPages} items`,
           }}
           scroll={{
             x: 1000,
@@ -382,6 +407,11 @@ const CoAo = () => {
           closeModal={closeModalUpdate}
           payload={payload}
         />
+        <ModalCollarDetail
+        isOpen={isModalOpenDetail}
+        collars={collarDataDetail}
+        onCancel1={closeModalDetail}
+      />
       </>
     </div>
   );
