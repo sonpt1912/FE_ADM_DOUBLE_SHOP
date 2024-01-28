@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "axios";
+import { message } from "antd";
 
 const initialState = {
   materials: [],
@@ -29,6 +30,9 @@ export const add = createAsyncThunk(
         `http://localhost:8072/Material/add`, payload);
       return response.data;
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
       throw error;
     }
   });
@@ -36,14 +40,16 @@ export const add = createAsyncThunk(
 export const detail = createAsyncThunk(
   'materials/detail', async (payload) => {
     try {
-      
+
       const response = await axios
         .get(`http://localhost:8072/Material/hien-thi/${payload}`);
-        console.log("Object:"+ response.data )
+      console.log("Object:" + response.data)
       return response.data;
-      
-    } catch (error) {
 
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
       throw error;
     }
   });
@@ -51,13 +57,17 @@ export const detail = createAsyncThunk(
 export const update = createAsyncThunk(
   "materials/update", async (payload) => {
     try {
-      
+
       const response = await axios
-        .put(`http://localhost:8072/Material/update/${payload.id}`
+        .post(`http://localhost:8072/Material/update/${payload.id}`
           , payload);
-        console.log("Object",response.data)
+      console.log("Object", response.data)
       return response.data;
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
+      throw error;
     }
   }
 );
