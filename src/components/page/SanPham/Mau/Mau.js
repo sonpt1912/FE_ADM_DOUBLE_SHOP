@@ -6,28 +6,31 @@ import { useDispatch, useSelector } from "react-redux";
 
 
 import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
-import { fetchColors, deleteColor, detailColor, addColor } from "../../../../store/slice/MauReducer";
 
-
-
-
+import { fetchColors, deleteColor,detailColor, addColor } from "../../../../store/slice/MauReducer";
 import { } from 'antd';
 
 import ModalColor from "./ModalColorAdd";
 import ModalColorUpdate from "./ModalColorEdit";
 import ModalColorDetail from "./ModalColorDetail";
 
+
 const { Option } = Select;
 
 const Mau = () => {
   const dispatch = useDispatch();
-  const colors = useSelector((state) => state.color.colors);
+  const colors = useSelector((state) => 
+state.color.colors
+    // console.log("sdds", state.color)
+  
+  );
   const loading = useSelector((state) => state.color.status === "loading");
   const pagination = useSelector((state) => state.color.pagination);
   const [searchParams, setSearchParams] = useState({
     name: "",
     code: "",
   });
+  console.log(colors)
 
   useEffect(() => {
     dispatch(
@@ -145,7 +148,7 @@ const Mau = () => {
   //add
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
 
-  const openModal = async () => {
+  const openModal = async (id) => {
     setIsModalOpenAdd(true);
 
   };

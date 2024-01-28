@@ -14,7 +14,12 @@ const { Option } = Select;
 
 const KhachHang = () => {
   const dispatch = useDispatch();
-  const customer = useSelector((state) => state.khachHang.customer);
+  const customer = useSelector((state) => 
+  
+    state.khachHang.customer
+    
+  
+  );
   const loading = useSelector((state) => state.color.status === "loading");
   const pagination = useSelector((state) => state.color.pagination);
   const [searchParams, setSearchParams] = useState({
