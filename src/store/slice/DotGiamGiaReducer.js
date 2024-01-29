@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const promoSlice = createSlice({
-  name: 'promotion',
+  name: 'dotgiamgia',
   initialState: {
     promoMessage: '',
   },

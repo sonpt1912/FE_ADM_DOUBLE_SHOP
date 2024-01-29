@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPromoMessage,selectPromoMessage } from '../../../store/slice/PromotionReducer';
+import { setPromoMessage,selectPromoMessage } from '../../../store/slice/DotGiamGiaReducer';
 
-const Promotion = () => {
+const DotGiamGia = () => {
   const dispatch = useDispatch();
   const promoMessage = useSelector(selectPromoMessage);
   const [newPromoMessage, setNewPromoMessage] = useState('');
@@ -25,4 +25,4 @@ const Promotion = () => {
   );
 };
 
-export default Promotion;
+export default DotGiamGia;
