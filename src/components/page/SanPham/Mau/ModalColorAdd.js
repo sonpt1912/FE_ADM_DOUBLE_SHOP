@@ -47,13 +47,14 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
         description: description
       };
       setConfirmLoading(true);
-      await dispatch(addColor(formData));
+       dispatch(addColor(formData));
+      
       message.success("Thêm màu thành công");
       onCancel1();
 
       form.resetFields();
     } catch (error) {
-      message.error("Failed to add size");
+      message.error("Failed to add color");
     } finally {
       onCancel1();
       form.resetFields();

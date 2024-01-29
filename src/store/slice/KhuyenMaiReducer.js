@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "axios";
+import { message } from "antd";
 
 const initialState = {
   promotions: [],
@@ -39,8 +40,8 @@ export const detail = createAsyncThunk(
       
       const response = await axios
         .get(`http://localhost:8072/promotion/hien-thi/${payload}`);
-        console.log("Object:"+ response.data )
-      return response.data;
+        console.log("Object:"+ response.data.data )
+      return response.data.data;
       
     } catch (error) {
 
@@ -88,11 +89,11 @@ const promotionSlice = createSlice({
       })
       .addCase(fetchPromotions.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.promotions = action.payload.listData;
+        state.promotions = action.payload.data.listData;
         state.pagination = {
           page: 0,
           pageSize: 5,
-          totalItems: action.payload.totalRecord,
+          totalItems: action.payload.data.totalRecord,
         };
       })
       .addCase(fetchPromotions.rejected, (state, action) => {

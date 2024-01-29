@@ -104,6 +104,7 @@ const Material = () => {
           />
           <button
             onClick={() => handleDelete(record.id)}
+            disabled={record.status === 0}
           >Delete</button>
         </Space>
       ),
@@ -242,12 +243,12 @@ const Material = () => {
       </div>
 
       <Table
-      style={{
-        maxWidth: 1100,
-        margin: "auto",
-        display: "flex",
-        flexDirection: "column",
-      }}
+        style={{
+          maxWidth: 1100,
+          margin: "auto",
+          display: "flex",
+          flexDirection: "column",
+        }}
         className="text-center"
         columns={columns}
         dataSource={materials}

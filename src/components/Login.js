@@ -29,12 +29,31 @@ const Login = () => {
       console.error("Google login failed:", error);
     }
   };
+
   const onFinish = async (values) => {
     try {
       const result = await dispatch(
         login({ username: values.username, password: values.password })
       );
 
+      if (result.payload.code === 200) {
+        navigate("/dashboard/thongKe");
+      } else {
+        message.error("Thông tin tài khoản không chính xác");
+        navigate("/login");
+      }
+    } catch (error) {
+      message.error("Thông tin tài khoản không chính xác");
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  const onSuccessGoogle = async (response) => {
+    try {
+      const result = await dispatch(loginGoogle(response.credential));
       if (
         result.error &&
         result.error.message ===
@@ -47,28 +66,7 @@ const Login = () => {
         navigate("/dashboard/thongKe");
       }
     } catch (error) {
-      console.error("Failed:", error);
-
-      if (error.response && error.response.status === 401) {
-        message.error("Username or password is incorrect");
-      } else {
-        message.error("Login failed");
-        navigate("/login");
-      }
-    }
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const onSuccessGoogle = async (response) => {
-    try {
-      await dispatch(loginGoogle(response.credential));
-      navigate("/dashboard/thongKe");
-    } catch (error) {
       message.error("Login failed:");
-      console.error("Login failed:", error);
     }
   };
 
@@ -85,16 +83,15 @@ const Login = () => {
           <Form
             id="login-form"
             name="login-form"
-            initialValues={{ remember: true }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
           >
             <p className="form-title">Welcome back</p>
-            <p>Login to the Dashboard</p>
+            <p></p>
             <Form.Item
               name="username"
               rules={[
-                { required: true, message: "Please input your username!" },
+                { required: true, message: "Vui lòng nhập tên tài khoản!" },
               ]}
             >
               <Input placeholder="Username" />
@@ -102,24 +99,20 @@ const Login = () => {
 
             <Form.Item
               name="password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
             >
               <Input.Password placeholder="Password" />
-            </Form.Item>
-
-            <Form.Item name="remember" valuePropName="checked">
-              <Checkbox>Remember me</Checkbox>
             </Form.Item>
 
             <Form.Item>
               <GoogleLogin
                 onSuccess={onSuccessGoogle}
                 onFailure={onFailureGoogle}
+                shape="square"
+                useOneTap="true"
               />
             </Form.Item>
-
+            <hr></hr>
             <Form.Item>
               <Button
                 type="primary"

@@ -37,7 +37,9 @@ export const fetchSizes = createAsyncThunk(
         `${API_URL}/size/get-size-by-condition`,
         payload
       );
+      console.log("siz", response.data)
       return response.data;
+      
     } catch (error) {
       throw error;
     }
@@ -79,10 +81,11 @@ export const login = createAsyncThunk(
         username,
         password,
       });
-      localStorage.setItem("token", response.data.access_token);
-      return response.data.access_token;
+      localStorage.setItem("token", response.data.data.access_token);
+      return response.data;
     } catch (error) {
-      throw error.response.data;
+      console.log("error");
+      return error.response.data;
     }
   }
 );
@@ -95,9 +98,6 @@ export const loginGoogle = createAsyncThunk("auth/google", async (tokenId) => {
     localStorage.setItem("token", response.data.access_token);
     return response.data.access_token;
   } catch (error) {
-    if (error.response && error.response.status === 401) {
-      message.error("Unauthorized: Please log in.");
-    }
     throw error.response.data;
   }
 });

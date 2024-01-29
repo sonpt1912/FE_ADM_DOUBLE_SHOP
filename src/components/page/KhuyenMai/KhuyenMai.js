@@ -17,7 +17,7 @@ const Promotion = () => {
     const loading = useSelector((state) => state.promotion.status === "loading");
 
     const [searchParams, setSearchParams] = useState({
-        // code: "",
+        code: "",
         name: "",
     });
 
@@ -26,7 +26,7 @@ const Promotion = () => {
             fetchPromotions({
                 page: 0,
                 pageSize: 5,
-                // code: searchParams.code,
+                code: searchParams.code,
                 name: searchParams.name,
             })
         );
@@ -37,13 +37,13 @@ const Promotion = () => {
             fetchPromotions({
                 page: 0,
                 pageSize: 5,
-                // code: searchParams.code,
+                code: searchParams.code,
                 name: searchParams.name,
             })
         );
 
         setSearchParams({
-            // code: "",
+            code: "",
             name: "",
         });
     };
@@ -61,9 +61,19 @@ const Promotion = () => {
             sorter: (a, b) => a.index - b.index,
         },
         {
+            title: "code",
+            dataIndex: "code",
+            key: "code",
+        },
+        {
             title: "name",
             dataIndex: "name",
             key: "name",
+        },
+        {
+            title: "value",
+            dataIndex: "value",
+            key: "value",
         },
         {
             title: "startDate",
@@ -79,7 +89,7 @@ const Promotion = () => {
             title: "status",
             dataIndex: "status",
             key: "status",
-            render: (text, record) => (record.status === "0" ? "Inactive" : "Active"),
+            render: (text, record) => (record.status == "0" ? "Ngừng hoạt động" : record.status == "1" ? "Đang hoạt động" : "Chưa hoạt động"),
         },
         {
             title: "ChucNang",
@@ -96,6 +106,7 @@ const Promotion = () => {
                     />
                     <button
                         onClick={() => handleDelete(record.id)}
+                        disabled={record.status === "0"}
                     >Delete</button>
                 </Space>
             ),
@@ -119,7 +130,7 @@ const Promotion = () => {
                     fetchPromotions({
                         page: 0,
                         pageSize: 5,
-                        // code: searchParams.code,
+                        code: searchParams.code,
                         name: searchParams.name,
                     })
                 )
@@ -161,22 +172,22 @@ const Promotion = () => {
                     <h1>Tìm kiếm</h1>
                 </div>
 
-                <div className="row">
-                    <div className="col-lg-6">
+                <div>
+                    <div style={{ width: '50%' }}>
                         <p>Tim kiếm theo Mã Chất Liệu:</p>
                         <Input
-                            placeholder="Mã Chất Liệu"
-                            // value={searchParams.code}
-                            // onChange={(e) =>
-                            //     setSearchParams({ ...searchParams, code: e.target.value })
-                            // }
+                            placeholder="Input code"
+                            value={searchParams.code}
+                            onChange={(e) =>
+                                setSearchParams({ ...searchParams, code: e.target.value })
+                            }
                         />
                     </div>
-                    <div className="col-lg-6">
+                    <div style={{ width: '50%' }}>
                         <p>Tim kiếm theo Tên chất liệu:</p>
                         <Input
                             value={searchParams.name}
-                            placeholder="Tên Chất Liệu"
+                            placeholder="Input name"
                             onChange={(e) =>
                                 setSearchParams({ ...searchParams, name: e.target.value })
                             }
@@ -187,7 +198,7 @@ const Promotion = () => {
                 <div className="text-center">
                     <button
                         onClick={onClickSearch}
-                        className="ps-4 pe-4 border border-5 border-primary rounded bg-primary" style={{ color: "white" }}>Seach</button>
+                        className="ps-4 pe-4 border border-5 border-primary rounded bg-primary">Seach</button>
                 </div>
             </div>,
         },
@@ -204,7 +215,6 @@ const Promotion = () => {
 
             <div className="mt-4"></div>
             <hr />
-            {/* <Collapse components={components} /> */}
             <div style={{ marginBottom: "30px" }}></div>
 
             <div className="row mx-auto container">
@@ -212,7 +222,7 @@ const Promotion = () => {
                     <h1>Danh Sách Chất Liệu</h1>
                 </div>
                 <div className="col-lg-3">
-                    <button onClick={showModalAdd} className="float-end me-4 border border-5 border-primary rounded bg-primary" style={{ color: "white" }}>+Thêm mới</button>
+                    <button onClick={showModalAdd} className="float-end me-4 border border-5 border-primary rounded bg-primary">+Thêm mới</button>
                 </div>
             </div>
 

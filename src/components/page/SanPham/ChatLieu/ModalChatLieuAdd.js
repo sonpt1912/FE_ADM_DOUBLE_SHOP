@@ -59,49 +59,6 @@ const ModalChatLieu = ({ open, closeModal }) => {
     form.resetFields();
   };
 
-  // const validate = useFormik({
-  //   initialValues: {
-  //     code: '',
-  //     name: '',
-  //     description: ''
-  //   },
-  //   validatetionSchema: Yup.object({
-  //     code: Yup.string.required("Please enter code"),
-  //     name: Yup.string.required("Please enter name"),
-  //     description: Yup.string.required("Please enter description")
-  //   }),
-  //   onOk: (values) => {
-  //     try {
-  //       setConfirmLoading(true);
-  //       dispatch(add(payload))
-  //         .then(() => {
-  //           dispatch(
-  //             fetchMaterials({
-  //               page: 0,
-  //               pageSize: 3
-  //             })
-  //           )
-  //         });
-  //       message.success("Material added successfully");
-  //       closeModal();
-  //       setPayload({
-  //         code: "",
-  //         name: "",
-  //         description: "",
-  //       });
-  //       form.resetFields();
-  //     } catch (error) {
-  //       message.error("Failed to add Material");
-  //     } finally {
-  //       closeModal();
-  //       form.resetFields();
-  //       setConfirmLoading(false);
-  //     }
-  //   }
-  // })
-
-
-
   return (
     <div>
       <Modal

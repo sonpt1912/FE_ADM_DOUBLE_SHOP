@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, Input, Select, message } from "antd";
+import { Modal, Button, Form, Input, Select, message, Date } from "antd";
 import { useDispatch } from "react-redux";
 import { add, fetchPromotions } from "../../../store/slice/KhuyenMaiReducer";
 import { useFormik } from 'formik';
@@ -16,7 +16,8 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
   const [payload, setPayload] = useState({
     code: "",
     name: "",
-    description: "",
+    startDate: null,
+    endDate: null,
   });
 
 
@@ -35,7 +36,10 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
       message.success("Promotion added successfully");
       closeModal();
       setPayload({
+        code: "",
         name: "",
+        startDate: null,
+        endDate: null,
       });
       form.resetFields();
     } catch (error) {
@@ -49,7 +53,10 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
 
   const handleCancel = () => {
     setPayload({
+      code: "",
       name: "",
+      startDate: null,
+      endDate: null,
     });
     closeModal();
     form.resetFields();
@@ -65,7 +72,15 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
         // footer={null}
         confirmLoading={confirmLoading}
       >
-        <form>          
+        <form>
+          <h4 className="mt-3">Code promotion:</h4>
+          <Input
+            name="code"
+            label="code:"
+            placeholder="Input code matertial"
+            onChange={(e) => setPayload({ ...payload, code: e.target.value })}
+            required
+          />
           <h4 className="mt-3">Name promotion:</h4>
           <Input
             name="name"
@@ -74,6 +89,33 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
             onChange={(e) => setPayload({ ...payload, name: e.target.value })}
             required
           />
+          <h4 className="mt-3">Value promotion:</h4>
+          <Input
+            name="value"
+            label="value:"
+            placeholder="Input value matertial"
+            onChange={(e) => setPayload({ ...payload, value: e.target.value })}
+            required
+          />
+          <h4 className="mt-3">Startdate promotion:</h4>
+          <Input
+            name="startDate"
+            label="startDate:"
+            // placeholder="Input name matertial"
+            type="Date"
+            onChange={(e) => setPayload({ ...payload, startDate: e.target.value })}
+            required
+          />
+          <h4 className="mt-3">Enddate promotion:</h4>
+          <Input
+            name="endDate"
+            label="endDate:"
+            // placeholder="Input name matertial"
+            type="Date"
+            onChange={(e) => setPayload({ ...payload, endDate: e.target.value })}
+            required
+          />
+
 
           {/* <Button htmlType="submit" onClick={handleOk}>Update</Button>
             <Button onClick={handleCancel}>Cancel</Button> */}
