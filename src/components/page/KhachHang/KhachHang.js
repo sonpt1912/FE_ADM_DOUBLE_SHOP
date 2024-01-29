@@ -1,73 +1,48 @@
-import { CaretRightOutlined } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
-import qs from "qs";
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  Collapse,
-  theme,
-  Form,
-  Table,
-  Input,
-  Button,
-  Select,
-  DatePicker,
-  Slider,
-  Divider,
-  Space,
-} from "antd";
-import { SearchOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 
-const { RangePicker } = DatePicker;
+import React, { useState, useEffect } from "react";
+import { Space, Input, theme, Table, Collapse, Button, DatePicker, Form, Select, } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
+
+import { } from 'antd';
+import { Link } from "react-router-dom";
+import { fetchCustomer } from "../../../store/slice/KhachHangReducer";
+
+
+
+const { Option } = Select;
 
 const KhachHang = () => {
-  const [data, setData] = useState();
-  const [loading, setLoading] = useState(false);
-  const [tableParams, setTableParams] = useState({
-    pagination: {
-      current: 1,
-      pageSize: 5,
-    },
+  const dispatch = useDispatch();
+  const customer = useSelector((state) => 
+  
+    state.khachHang.customer
+    
+  
+  );
+  const loading = useSelector((state) => state.color.status === "loading");
+  const pagination = useSelector((state) => state.color.pagination);
+  const [searchParams, setSearchParams] = useState({
+    name: "",
+    code: "",
   });
-
-  const fetchData = () => {
-    setLoading(true);
-
-    const queryParams = qs.stringify({
-      pageNumber: tableParams.pagination.current,
-      pageSize: tableParams.pagination.pageSize,
-    });
-
-    fetch(`http://localhost:8072/customer/page?${queryParams}`)
-      .then((res) => res.json())
-      .then(({ content, totalElements, pageNumber }) => {
-        setData(content);
-        setLoading(false);
-        setTableParams({
-          ...tableParams,
-          pagination: {
-            ...tableParams.pagination,
-            total: totalElements,
-            current: pageNumber,
-          },
-        });
-      });
+  const onChange = (date, dateString) => {
+    console.log(date, dateString);
   };
+  
 
   useEffect(() => {
-    fetchData();
-  }, [JSON.stringify(tableParams)]);
+    dispatch(
+      fetchCustomer({
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+       
+      }),
 
-  const handleTableChange = (pagination, filters, sorter) => {
-    setTableParams({
-      pagination,
-      filters,
-      ...sorter,
-    });
+    );
 
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setData([]);
-    }
-  };
+  }, [dispatch]);
+
 
   const { token } = theme.useToken();
   const panelStyle = {
@@ -75,13 +50,130 @@ const KhachHang = () => {
     background: token.colorFillAlter,
     borderRadius: token.borderRadiusLG,
   };
+  const styleButton = {
+    display: "flex", justifyContent: "space-between"
+  }
 
-  const [disabled, setDisabled] = useState(false);
 
-  const handleSliderChange = (value) => {
-    console.log("Slider value:", value);
+ 
+   
+  const columns = [
+    {
+      title: 'STT',
+      dataIndex: 'index',
+      key: 'index',
+      render: (text, record, index) => index + 1,
+      sorter: (a, b) => a.index - b.index,
+    },
+    {
+      title: 'Ảnh',
+      dataIndex: 'image',
+      key: 'image',
+
+    },
+    {
+      title: 'Tên Khách Hàng',
+      dataIndex: 'name',
+      key: 'name',
+      sorter: {
+        compare: (a, b) => a.chinese - b.chinese,
+        multiple: 2,
+      },
+    },
+    {
+      title: 'CCCD',
+      dataIndex: 'phone',
+      key: 'phone',
+      sorter: {
+        compare: (a, b) => a.chinese - b.chinese,
+        multiple: 2,
+      },
+    },
+
+    {
+      title: 'Số điện thoại',
+      dataIndex: 'phone',
+      key: 'phone',
+      sorter: {
+        compare: (a, b) => a.chinese - b.chinese,
+        multiple: 2,
+      },
+    },
+    {
+      title: 'Ngày sinh',
+      dataIndex: 'birtDay',
+      key: 'birtDay',
+      sorter: {
+        compare: (a, b) => a.chinese - b.chinese,
+        multiple: 2,
+      },
+    },
+    {
+      title: 'Trạng Thái',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text) => (text == "0" ? "Ngừng Hoạt Động" : " Hoạt Động"),
+    },
+    {
+      title: 'Khác',
+      dataIndex: 'action',
+      key: 'action',
+      render:
+        (text, record) => (
+          <Space >
+            <EyeFilled style={{ fontSize: '23px' }}  ></EyeFilled>
+            <EditFilled style={{ fontSize: '23px' }} ></EditFilled>
+            <DeleteFilled style={{ fontSize: '23px' }}  ></DeleteFilled>
+          </Space>
+        ),
+    },
+
+  ];
+
+
+  //add
+  const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+
+  const openModal = async () => {
+    setIsModalOpenAdd(true);
+
   };
 
+  const closeModal = () => {
+    setIsModalOpenAdd(false);
+  };
+
+  //detail
+  // const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+  // const [colorDataDetail, setColorDataDetail] = useState();
+  // const openModalDetail = async (id) => {
+  //   const response = await dispatch(detailColor(id));
+
+  //   setColorDataDetail(response.payload);
+
+  //   setIsModalOpenDetail(true);
+  // };
+  // const closeModalDetail = () => {
+  //   setIsModalOpenDetail(false);
+  // };
+  //update
+
+  // const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
+  // const [colorData, setColorData] = useState();
+  // const openModalUpdate = async (id) => {
+  //   const response = await dispatch(detailColor(id));
+  //   setColorData(response.payload);
+  //   setIsModalOpenUpdate(true);
+  // };
+  // const closeModalUpdate = () => {
+  //   setIsModalOpenUpdate(false);
+  // };
+  const containerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+
+    //can doc
+  };
   const getItems = () => [
     {
       key: "1",
@@ -106,34 +198,39 @@ const KhachHang = () => {
               marginTop: "30px",
             }}
           >
-            <div>
-              <Form.Item label="Name">
-                <Input placeholder="Enter name" style={{ width: "300px" }} />
+            <div style={containerStyle}>
+              <Form.Item label="Tìm kiếm" >
+                <Input placeholder="Tên khách hàng và số điện thoại" style={{ width: "270px" }} value={searchParams.name}
+                  onChange={(e) =>
+                    setSearchParams({ ...searchParams, name: e.target.value })
+                  }
+
+                />
               </Form.Item>
-              <Form.Item label="Trạng Thái">
-                <Select style={{ width: "300px" }}>
-                  <Select.Option value="demo">Demo</Select.Option>
+              <Form.Item label="Ngày Sinh" style={{ marginLeft: "30px" }} >
+              <DatePicker placeholder="Ngày sinh" onChange={onChange}style={{ width: "270px" }} />
+              </Form.Item>
+
+
+              <Form.Item label="Trạng Thái" style={{ marginLeft: "30px" }}>
+                <Select
+                  style={{ width: "270px", }}
+                  value={searchParams.status}
+                  onChange={(value) =>
+                    setSearchParams({ ...searchParams, status: value })
+                  }
+                  allowClear
+                >
+                  <Option value="0">Ngừng hoạt động</Option>
+                  <Option value="1">Hoạt động</Option>
                 </Select>
               </Form.Item>
             </div>
-            <div style={{ marginRight: "150px" }}>
-              <Form.Item label="Ngày Sinh">
-                <RangePicker style={{ width: "280px" }} />
-              </Form.Item>
-              <Form.Item label="Khoảng tuổi">
-                <Slider
-                  range
-                  defaultValue={[20, 50]}
-                  disabled={disabled}
-                  onChange={handleSliderChange}
-                  style={{ width: "280px" }}
-                />
-              </Form.Item>
-            </div>
+
           </div>
           <Form.Item wrapperCol={{ offset: 10 }}>
-            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-              Search
+            <Button type="primary" htmlType="submit" >
+              Tìm kiếm
             </Button>
           </Form.Item>
         </Form>
@@ -142,93 +239,40 @@ const KhachHang = () => {
     },
   ];
 
-  const columns = [
-    {
-      title: "STT",
-      dataIndex: "index",
-      key: "index",
-      render: (text, record, index) => index + 1,
-      sorter: (a, b) => a.index - b.index,
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name),
-    },
-    {
-      title: "Gender",
-      dataIndex: "gender",
-      key: "gender",
-      sorter: (a, b) => a.gender - b.gender,
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button
-            style={{ border: "none" }}
-            icon={<EyeOutlined />}
-          />
-          <Button
-            style={{ border: "none" }}
-            icon={<EditOutlined />}
-          />
-        </Space>
-      ),
-      
-    },
-  ];
-  const getTitle = () => (
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <span style={{ marginRight: 8 }}>Danh Sách Khách Hàng</span>
-      <Button type="primary" shape="round">
-        Thêm Khách Hàng
-      </Button>
-    </div>
-  );
+
+
   return (
-    <>
-      <Divider orientation="left">KHÁCH HÀNG</Divider>
+    <div>
       <Collapse
-        defaultActiveKey={["1"]}
-        expandIcon={({ isActive }) => (
-          <CaretRightOutlined rotate={isActive ? 90 : 0} />
-        )}
-        style={{
-          background: token.colorBgContainer,
-        }}
         items={getItems()}
       />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
+        <Link to="/dashboard/khachHang/taoKhachHang" >Tạo Khách hàng</Link>
+      </div>
       <Table
-        columns={columns}
-        rowKey={(record) => record.id}
-        dataSource={data}
-        bordered
-        pagination={tableParams.pagination}
-        loading={loading}
-        title={getTitle}
-        onChange={handleTableChange}
-      />
 
-    </>
-  );
+        columns={columns}
+        dataSource={customer}
+        loading={loading}
+        total={pagination.totalItems}
+        showModal={openModal}
+        pagination={{
+          pageSize: pagination.pageSize,
+          total: pagination.totalItems,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: (totalPages) => `Total ${totalPages} items`,
+        }}
+        scroll={{
+          x: 1000,
+          y: 300,
+        }}
+      />
+   
+    </div>
+  )
 };
+
 
 export default KhachHang;
