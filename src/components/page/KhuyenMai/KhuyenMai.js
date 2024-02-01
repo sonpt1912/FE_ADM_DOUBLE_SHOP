@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Space, Input, Table, Collapse } from "antd";
+import { Space, Input, Table, Collapse, Form, Select, Button, theme } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 
 import ModalKhuyenMai from "./ModalKhuyenMaiAdd";
@@ -28,6 +28,7 @@ const Promotion = () => {
                 pageSize: 5,
                 code: searchParams.code,
                 name: searchParams.name,
+                status: searchParams.status
             })
         );
     }, [dispatch]);
@@ -39,6 +40,7 @@ const Promotion = () => {
                 pageSize: 5,
                 code: searchParams.code,
                 name: searchParams.name,
+                status: searchParams.status
             })
         );
 
@@ -163,42 +165,63 @@ const Promotion = () => {
         setIsModalOpenUpdate(false);
     };
 
+    const { Option } = Select;
+
     const items = [
         {
             key: '1',
             label: 'Tìm Kiếm',
             children: <div>
-                <div className="text-center">
+                <div>
                     <h1>Tìm kiếm</h1>
                 </div>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "30px",
+                }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <Form.Item label="Code" >
+                            <Input placeholder="Search by Code" style={{ width: "270px" }}
+                                value={searchParams.code}
+                                onChange={(e) =>
+                                    setSearchParams({ ...searchParams, code: e.target.value })
+                                }
 
-                <div>
-                    <div style={{ width: '50%' }}>
-                        <p>Tim kiếm theo Mã Chất Liệu:</p>
-                        <Input
-                            placeholder="Input code"
-                            value={searchParams.code}
-                            onChange={(e) =>
-                                setSearchParams({ ...searchParams, code: e.target.value })
-                            }
-                        />
-                    </div>
-                    <div style={{ width: '50%' }}>
-                        <p>Tim kiếm theo Tên chất liệu:</p>
-                        <Input
-                            value={searchParams.name}
-                            placeholder="Input name"
-                            onChange={(e) =>
-                                setSearchParams({ ...searchParams, name: e.target.value })
-                            }
-                        />
+                            />
+                        </Form.Item>
+                        <Form.Item label="Name" style={{ marginLeft: "30px" }} >
+                            <Input placeholder="Search by Name" style={{ width: "270px" }}
+                                value={searchParams.name}
+                                onChange={(e) =>
+                                    setSearchParams({ ...searchParams, name: e.target.value })
+                                }
+                            />
+                        </Form.Item>
+
+
+                        <Form.Item label="Status" style={{ marginLeft: "30px" }}>
+                            <Select
+                                style={{ width: "270px", }}
+                                value={searchParams.status}
+                                onChange={(value) =>
+                                    setSearchParams({ ...searchParams, status: value })
+                                }
+                                allowClear
+                            >
+                                <Option value="0">Ngừng hoạt động</Option>
+                                <Option value="1">Đang hoạt động</Option>
+                                <Option value="2">Chưa hoạt động</Option>
+                            </Select>
+                        </Form.Item>
                     </div>
                 </div>
-                <div className="mt-4"></div>
                 <div className="text-center">
-                    <button
-                        onClick={onClickSearch}
-                        className="ps-4 pe-4 border border-5 border-primary rounded bg-primary">Seach</button>
+                    <Form.Item wrapperCol={{ offset: 10 }}>
+                        <Button type="primary" htmlType="submit" onClick={onClickSearch} >
+                            Tìm kiếm
+                        </Button>
+                    </Form.Item>
                 </div>
             </div>,
         },
@@ -217,13 +240,11 @@ const Promotion = () => {
             <hr />
             <div style={{ marginBottom: "30px" }}></div>
 
-            <div className="row mx-auto container">
-                <div className="col-lg-9">
-                    <h1>Danh Sách Chất Liệu</h1>
-                </div>
-                <div className="col-lg-3">
-                    <button onClick={showModalAdd} className="float-end me-4 border border-5 border-primary rounded bg-primary">+Thêm mới</button>
-                </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
+                <Button type="primary" shape="round" onClick={showModalAdd}>
+                    Thêm Màu
+                </Button>
             </div>
 
             <Table
@@ -237,6 +258,10 @@ const Promotion = () => {
                     showSizeChanger: true,
                     showQuickJumper: true,
                     showTotal: (totalPages) => `Total ${totalPages} items`,
+                }}
+                scroll={{
+                    x: 1000,
+                    y: 300,
                 }}
                 loading={loading}
                 // title={getTitle}

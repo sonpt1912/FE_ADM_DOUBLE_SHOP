@@ -13,7 +13,7 @@ export const fetchMaterials = createAsyncThunk(
   "materials/fetchMaterials", async (payload) => {
     try {
       const response = await axios.post(
-        "http://localhost:8072/Material/hien-thi/condition",
+        "http://localhost:8072/Material/get-all/condition",
         payload
       );
       return response.data;
@@ -42,7 +42,7 @@ export const detail = createAsyncThunk(
     try {
 
       const response = await axios
-        .get(`http://localhost:8072/Material/hien-thi/${payload}`);
+        .get(`http://localhost:8072/Material/get-all/${payload}`);
       console.log("Object:" + response.data.data)
       return response.data.data;
 
