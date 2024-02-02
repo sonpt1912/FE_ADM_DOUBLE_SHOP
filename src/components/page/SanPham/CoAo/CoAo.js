@@ -16,16 +16,16 @@ import {
   Col,
   Row,
   message,
-  Popconfirm,
+  Popconfirm,Pagination
 } from "antd";
 import {
   SearchOutlined,
-  EditOutlined,
-  EyeOutlined,
-  DeleteOutlined,
+  EditFilled,
+  EyeFilled,
+  DeleteFilled,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchCollars,updateCollar,detailCollar } from "../../../../config/api";
+import { fetchCollars,updateCollar,detailCollar } from "../../../../config/api1";
 import ModalAddCollar from "./ModalCollarAdd";
 import ModalUpdateCollar from "./ModalCollarEdit";
 import ModalCollarDetail from "./ModalDetailCollar";
@@ -36,9 +36,12 @@ const { RangePicker } = DatePicker;
 const CoAo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const collars = useSelector((state) => state.collar.collars);
+  const collars = useSelector((state) => 
+  state.collar.collars
+ 
+  );
   const pagination = useSelector((state) => state.collar.pagination);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [current, setCurrent] = useState(1);
   const loading = useSelector((state) => state.collar.status === "loading");
   const [isSearching, setIsSearching] = useState(false);
@@ -70,6 +73,7 @@ const CoAo = () => {
   };
 
   const [searchParams, setSearchParams] = useState({
+    code:"",
     name: "",
     status: "",
   });
@@ -100,6 +104,7 @@ const CoAo = () => {
             fetchCollars({
               page: current - 1,
               pageSize: pageSize,
+              code:searchParams.code,
               name: searchParams.name,
               status: searchParams.status,
             })
@@ -189,6 +194,7 @@ const CoAo = () => {
       fetchCollars({
         page: pagination.current ,
         pageSize: pageSize,
+        code:searchParams.code,
         name: searchParams.name,
         status: searchParams.status,
       })
@@ -330,10 +336,10 @@ const CoAo = () => {
       width: 150,
       render: (text, record) => (
         <Space size="middle">
-          <Button style={{ border: "none" }} icon={<EyeOutlined />} onClick={() => openModalDetail(record.id)}/>
+          <Button style={{ border: "none" }} icon={<EyeFilled />} onClick={() => openModalDetail(record.id)}/>
           <Button
             style={{ border: "none" }}
-            icon={<EditOutlined />}
+            icon={<EditFilled />}
             onClick={() => onClickEdit(record)}
           />
           <Popconfirm
@@ -346,7 +352,7 @@ const CoAo = () => {
             <Button
               style={{ border: "none" }}
               disabled={record.status === 0}
-              icon={<DeleteOutlined />}
+              icon={<DeleteFilled />}
             />
           </Popconfirm>
         </Space>
@@ -363,42 +369,50 @@ const CoAo = () => {
   );
 
   const handleTableChange = (pagination) => {
-    const { current, pageSize } = pagination;
+    const { current } = pagination;
+    if (pagination.pageSize !== pageSize) {
+      setPageSize(pagination.pageSize);
+    }
     setCurrent(current);
+ 
   };
+
 
   return (
     <div>
       <>
         <Divider orientation="left">Cổ Áo</Divider>
         <Collapse
-          defaultActiveKey={["1"]}
-          expandIcon={({ isActive }) => (
-            <CaretRightOutlined rotate={isActive ? 90 : 0} />
-          )}
-          style={{
-            background: token.colorBgContainer,
-          }}
+          // defaultActiveKey={["1"]}
+          // expandIcon={({ isActive }) => (
+          //   <CaretRightOutlined rotate={isActive ? 90 : 0} />
+          // )}
+          // style={{
+          //   background: token.colorBgContainer,
+          // }}
           items={getItems()}
         />
+       
         <Table
-          columns={columns}
-          rowKey={(record) => record.id}
-          dataSource={collars}
-          pagination={{
-            pageSize: pageSize,
-            total: pagination.totalItems,
-            current: current,
-            showTotal: (totalPages) => 
-            `Total ${totalPages} items`,
-          }}
-          scroll={{
-            x: 1000,
-            y: 300,
-          }}
-          loading={loading}
-          title={getTitle}
-          onChange={handleTableChange}
+         columns={columns}
+         rowKey={(record) => record.id}
+         dataSource={collars}
+         pagination={{
+           pageSize: pageSize,
+           total: pagination.totalItems,
+           current: current,
+           showSizeChanger: true, // Thêm thuộc tính showSizeChanger vào đây
+           showQuickJumper: true,
+           showTotal: (totalPages) => `Total ${totalPages} items`,
+           
+         }}
+         scroll={{
+           x: 1000,
+           y: 300,
+         }}
+         loading={loading}
+         title={getTitle}
+         onChange={handleTableChange}
         />
         <ModalAddCollar open={modalVisible} closeModal={closeModal} />
         <ModalUpdateCollar

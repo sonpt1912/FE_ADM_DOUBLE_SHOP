@@ -53,7 +53,7 @@ const CustomContent = () => {
         <Route path="/lienHe" element={<LienHe />} />
         <Route path="/sanPham/ao" element={<Ao />} />
         <Route path="/sanPham/chatLieu" element={<ChatLieu />} />
-        <Route path="/sanPham/coAo" element={<CoAo/>}/>
+        <Route path="/sanPham/coAo" element={<CoAo />}/>
         <Route path="/sanPham/kichCo" element={<KichCo />} />
         <Route path="/sanPham/mau" element={<Mau />} />
         <Route path="/nhanVien" element={<NhanVien />} />

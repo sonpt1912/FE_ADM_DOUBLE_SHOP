@@ -35,7 +35,11 @@ const { RangePicker } = DatePicker;
 const KichCo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const sizes = useSelector((state) => state.size.sizes);
+  const sizes = useSelector((state) => 
+  console.log(state)
+  // state.size.sizes
+  
+  );
   const pagination = useSelector((state) => state.size.pagination);
   const [pageSize, setPageSize] = useState(5);
   const [current, setCurrent] = useState(1);

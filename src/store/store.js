@@ -16,7 +16,7 @@ const store = configureStore({
     rank: RankReducer,
     size: KichCoReducer,
     color: MauReducer,
-    collar:CollarReducer,
+    collar: CollarReducer,
     auth: AuthReducer,
   
   },
