@@ -9,7 +9,7 @@ import MauReducer from "./slice/MauReducer";
 import AuthReducer from "./slice/AuthReducer";
 import CollarReducer from "./slice/CollarReducer";
 
-import DotGiamGiaReducer from "./slice/DotGiamGiaReducer";
+
 const store = configureStore({
   reducer: {
     khachHang: KhachHangReducer,
@@ -18,7 +18,7 @@ const store = configureStore({
     color: MauReducer,
     collar:CollarReducer,
     auth: AuthReducer,
-    dotgiamgia: DotGiamGiaReducer,
+  
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });
