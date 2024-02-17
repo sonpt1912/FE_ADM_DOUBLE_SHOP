@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Space, Input, Table, Collapse, Form, Select, Button, theme } from "antd";
+import { Space, Input, Table, Collapse, Form, Select, Button, Divider, Row, Col, theme } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 
 import ModalKhuyenMai from "./ModalKhuyenMaiAdd";
 import ModalKhuyenMaiEdit from "./ModalKhuyenMaiEdit";
-import { SearchOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { SearchOutlined, EditOutlined, EyeOutlined, DeleteFilled } from "@ant-design/icons";
 
 import { fetchPromotions, Delete, detail } from "../../../store/slice/KhuyenMaiReducer";
 const Promotion = () => {
@@ -106,10 +106,7 @@ const Promotion = () => {
                         onClick={() => openModalUpdate(record.id)}
                     // onClick={showEditModal}
                     />
-                    <button
-                        onClick={() => handleDelete(record.id)}
-                        disabled={record.status === "0"}
-                    >Delete</button>
+                    <DeleteFilled onClick={() => handleDelete(record.id)} disabled={record.status === "0"} />
                 </Space>
             ),
         },
@@ -167,63 +164,79 @@ const Promotion = () => {
 
     const { Option } = Select;
 
+    const { token } = theme.useToken();
+    const panelStyle = {
+        marginBottom: 24,
+        background: token.colorFillAlter,
+        borderRadius: token.borderRadiusLG,
+    };
+
     const items = [
         {
             key: '1',
             label: 'Tìm Kiếm',
-            children: <div>
-                <div>
-                    <h1>Tìm kiếm</h1>
-                </div>
-                <div style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: "30px",
-                }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <Form.Item label="Code" >
-                            <Input placeholder="Search by Code" style={{ width: "270px" }}
-                                value={searchParams.code}
-                                onChange={(e) =>
-                                    setSearchParams({ ...searchParams, code: e.target.value })
-                                }
-
-                            />
-                        </Form.Item>
-                        <Form.Item label="Name" style={{ marginLeft: "30px" }} >
-                            <Input placeholder="Search by Name" style={{ width: "270px" }}
-                                value={searchParams.name}
-                                onChange={(e) =>
-                                    setSearchParams({ ...searchParams, name: e.target.value })
-                                }
-                            />
-                        </Form.Item>
-
-
-                        <Form.Item label="Status" style={{ marginLeft: "30px" }}>
-                            <Select
-                                style={{ width: "270px", }}
-                                value={searchParams.status}
-                                onChange={(value) =>
-                                    setSearchParams({ ...searchParams, status: value })
-                                }
-                                allowClear
-                            >
-                                <Option value="0">Ngừng hoạt động</Option>
-                                <Option value="1">Đang hoạt động</Option>
-                                <Option value="2">Chưa hoạt động</Option>
-                            </Select>
-                        </Form.Item>
-                    </div>
-                </div>
-                <div className="text-center">
+            children: (
+                <Form
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 14 }}
+                    layout="horizontal"
+                    style={{ maxWidth: 1500, margin: "auto", marginTop: "20px" }}
+                >
+                    <Row gutter={16}>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Form.Item label="Code">
+                                <Input
+                                    placeholder="Enter code"
+                                    style={{ width: "100%" }}
+                                    value={searchParams.code}
+                                    onChange={(e) =>
+                                        setSearchParams({ ...searchParams, code: e.target.value })
+                                    }
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Form.Item label="Name">
+                                <Input
+                                    placeholder="Enter name"
+                                    style={{ width: "100%" }}
+                                    value={searchParams.name}
+                                    onChange={(e) =>
+                                        setSearchParams({ ...searchParams, name: e.target.value })
+                                    }
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Form.Item label="Trạng Thái">
+                                <Select
+                                    style={{ width: "100%" }}
+                                    value={searchParams.status}
+                                    onChange={(value) =>
+                                        setSearchParams({ ...searchParams, status: value })
+                                    }
+                                    allowClear
+                                >
+                                    <Option value="0">0</Option>
+                                    <Option value="1">1</Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     <Form.Item wrapperCol={{ offset: 10 }}>
-                        <Button type="primary" htmlType="submit" onClick={onClickSearch} >
-                            Tìm kiếm
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            icon={<SearchOutlined />}
+                            onClick={onClickSearch}
+                        >
+                            Search
                         </Button>
                     </Form.Item>
-                </div>
-            </div>,
+                </Form>
+            ),
+            style: panelStyle
+
         },
     ];
     const onChange = (key) => {
@@ -232,7 +245,7 @@ const Promotion = () => {
 
     return (
         <div>
-
+            <Divider orientation="left">Promotion</Divider>
             <Collapse items={items} defaultActiveKey={['1']} onChange={onChange} />
 
 
@@ -243,7 +256,7 @@ const Promotion = () => {
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
                 <Button type="primary" shape="round" onClick={showModalAdd}>
-                    Thêm Màu
+                    Add Promotion
                 </Button>
             </div>
 
