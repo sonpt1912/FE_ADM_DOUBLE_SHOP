@@ -4,7 +4,7 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import { useDispatch, useSelector } from "react-redux";
-import { login, loginGoogle } from "../config/api";
+import { loginGoogle, login } from "../config/LoginApi";
 import { selectIsAuthenticated } from "../store/slice/AuthReducer";
 
 const Login = () => {
