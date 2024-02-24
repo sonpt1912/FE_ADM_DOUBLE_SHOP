@@ -73,9 +73,14 @@ const Promotion = () => {
             key: "name",
         },
         {
-            title: "value",
-            dataIndex: "value",
-            key: "value",
+            title: "discountAmount",
+            dataIndex: "discountAmount",
+            key: "discountAmount",
+        },
+        {
+            title: "discountPercent",
+            dataIndex: "discountPercent",
+            key: "discountPercent",
         },
         {
             title: "startDate",

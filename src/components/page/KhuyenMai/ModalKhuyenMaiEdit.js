@@ -9,7 +9,8 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
   const [idState, setId] = useState('');
   const [codeState, setCode] = useState('');
   const [nameState, setName] = useState('');
-  const [valueState, setValue] = useState();
+  const [discountAmountState, setDiscountAmount] = useState('');
+  const [discountPercentState, setDiscountPercent] = useState('');
   const [startDateState, setStartDate] = useState('');
   const [endDateState, setEndDate] = useState('');
   const [statusState, setStatus] = useState('');
@@ -19,7 +20,8 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
       setId(KhuyenMais.id);
       setCode(KhuyenMais.code);
       setName(KhuyenMais.name);
-      setValue(KhuyenMais.value);
+      setDiscountAmount(KhuyenMais.discountAmount);
+      setDiscountPercent(KhuyenMais.discountPercent);
       setStartDate(KhuyenMais.startDate);
       setEndDate(KhuyenMais.endDate);
       setStatus(KhuyenMais.status);
@@ -37,8 +39,11 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
     else if (name === "name") {
       setName(value);
     }
-    else if (name === "value") {
-      setValue(parseInt(value));
+    else if (name === "discountAmount") {
+      setDiscountAmount(value);
+    }
+    else if (name === "discountPercent") {
+      setDiscountPercent(value);
     }
     else if (name === "startDate") {
       setStartDate(value);
@@ -52,6 +57,8 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
   const [payload, setPayload] = useState({
     code: "",
     name: "",
+    discountAmount: "",
+    discountPercent: "",
     value: "",
   });
 
@@ -59,7 +66,10 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
     try {
       const formData = {
         id: idState,
+        code: codeState,
         name: nameState,
+        discountAmount: discountAmountState,
+        discountPercent: discountPercentState,
         startDate: startDateState,
         endDate: endDateState,
         createdBy: 1,
@@ -93,6 +103,10 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
     setPayload({
       code: "",
       name: "",
+      discountAmount: "",
+      discountPercent: "",
+      startDate: null,
+      endDate: null,
       value: "",
     });
     closeModal();
@@ -138,14 +152,26 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
           }
           )}
         />
-        <h4>Value Promotion:</h4>
+        <h4>discountAmount Promotion:</h4>
         <Input
-          name="value"
+          name="discountAmount"
           placeholder="Input value promotion"
-          value={valueState}
+          value={discountAmountState}
           onChange={(e) => handleInputChange({
             target: {
-              name: 'value', value: e.target.value
+              name: 'discountAmount', value: e.target.value
+            }
+          }
+          )}
+        />
+        <h4>discountPercent Promotion:</h4>
+        <Input
+          name="discountPercent"
+          placeholder="Input value promotion"
+          value={discountPercentState}
+          onChange={(e) => handleInputChange({
+            target: {
+              name: 'discountPercent', value: e.target.value
             }
           }
           )}
@@ -155,21 +181,23 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
           name="startDate"
           label="StartDate:"
           placeholder="Input StartDate promotion"
-          value={startDateState}
+          type="Date"
           onChange={(e) => setStartDate(e.target.value)}
-        />
+          value={startDateState}
+          />
         <h4 className="mt-3">EndDate promotion:</h4>
         <Input
           name="endDate"
           label="EndDate:"
           placeholder="Input EndDate promotion"
+          type="Date"
           onChange={(e) => setEndDate(e.target.value)}
           value={endDateState}
         />
         <div className="mt-3 d-flex">
           <h4>Status:</h4>
           <Select className="ms-4"
-            value={statusState == "0" ? "chưa hoạt động" : statusState=="1" ? "đang hoạt động" : "hết hạn"}
+            value={statusState == "0" ? "chưa hoạt động" : statusState == "1" ? "đang hoạt động" : "hết hạn"}
             disabled
           >
           </Select>

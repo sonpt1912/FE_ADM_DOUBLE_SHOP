@@ -30,6 +30,9 @@ export const add = createAsyncThunk(
         `http://localhost:8072/promotion/add`, payload);
       return response.data;
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
       throw error;
     }
   });
@@ -37,14 +40,16 @@ export const add = createAsyncThunk(
 export const detail = createAsyncThunk(
   'promotions/detail', async (payload) => {
     try {
-      
+
       const response = await axios
         .get(`http://localhost:8072/promotion/hien-thi/${payload}`);
-        console.log("Object:"+ response.data.data )
+      console.log("Object:" + response.data.data)
       return response.data.data;
-      
-    } catch (error) {
 
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
       throw error;
     }
   });
@@ -52,13 +57,16 @@ export const detail = createAsyncThunk(
 export const update = createAsyncThunk(
   "promotions/update", async (payload) => {
     try {
-      
+
       const response = await axios
-        .put(`http://localhost:8072/promotion/update/${payload.id}`
+        .post(`http://localhost:8072/promotion/update/${payload.id}`
           , payload);
-        console.log("Object",response.data)
+      console.log("Object", response.data)
       return response.data;
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
     }
   }
 );
@@ -71,7 +79,9 @@ export const Delete = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.error('Error fetching detail data:', error);
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
     }
   }
 );

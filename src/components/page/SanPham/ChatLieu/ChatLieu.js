@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Space, Input, Table, Collapse, Form, Select, Button, Divider, Row, Col, theme} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 
 import ModalChatLieu from "./ModalChatLieuAdd";
 import ModalChatLieuEdit from "./ModalChatLieuEdit";
-import { SearchOutlined, EditOutlined, EyeOutlined, DeleteFilled} from "@ant-design/icons";
+import { SearchOutlined, EditOutlined, DeleteOutlined, EyeOutlined} from "@ant-design/icons";
 import { fetchMaterials, Delete, detail } from "../../../../store/slice/ChatLieuReducer";
-
-
 
 const Material = () => {
   const dispatch = useDispatch();
@@ -35,6 +32,36 @@ const Material = () => {
       })
     );
   }, [dispatch]);
+
+  // useEffect(() => {
+  //   const fetchMaterials = async () => {
+  //     try {
+  //       if (!modalVisible && !modalVisibleUpdate) {
+  //         const response = await dispatch(
+  //           fetchMaterials({
+  //             page: current - 1,
+  //             pageSize: pageSize,
+  //             name: searchParams.name,
+  //             status: searchParams.status,
+  //           })
+  //         );
+  //         if (response && response.error) {
+  //           if (
+  //             response.error.message === "Request failed with status code 401"
+  //           ) {
+  //             navigate("/login");
+  //             message.error(response.error.message);
+  //           }
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       message.error("Error fetching data. Please try again later.");
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [modalVisible, modalVisibleUpdate, current, pageSize]);
 
   const onClickSearch = () => {
     dispatch(
@@ -92,14 +119,13 @@ const Material = () => {
       key: "ChucNang",
       render: (text, record) => (
         <Space size="middle">
-          <FontAwesomeIcon icon={faEye} style={{ cursor: "pointer" }} />
-          <FontAwesomeIcon
-            icon={faEdit}
-            style={{ cursor: "pointer" }}
+          <Button icon={<EyeOutlined />} style={{ border: "none" }} />
+          <Button
+            icon={<EditOutlined />}
+            style={{ border: "none" }}
             onClick={() => openModalUpdate(record.id)}
-          // onClick={showEditModal}
           />
-          <DeleteFilled onClick={() => handleDelete(record.id)} disabled={record.status === 0}/>
+          <Button icon={<DeleteOutlined />} style={{ border: "none" }} onClick={() => handleDelete(record.id)} disabled={record.status === 0}/>
             
         </Space>
       ),
@@ -276,7 +302,6 @@ const Material = () => {
 
       <Table
         style={{
-          maxWidth: 1100,
           margin: "auto",
           display: "flex",
           flexDirection: "column",

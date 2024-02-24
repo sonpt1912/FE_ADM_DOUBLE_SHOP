@@ -16,6 +16,8 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
   const [payload, setPayload] = useState({
     code: "",
     name: "",
+    discountAmount: "",
+    discountPercent: "",
     startDate: null,
     endDate: null,
   });
@@ -38,6 +40,8 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
       setPayload({
         code: "",
         name: "",
+        discountAmount: "",
+        discountPercent: "",
         startDate: null,
         endDate: null,
       });
@@ -55,6 +59,8 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
     setPayload({
       code: "",
       name: "",
+      discountAmount: "",
+      discountPercent: "",
       startDate: null,
       endDate: null,
     });
@@ -65,11 +71,10 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
   return (
     <div>
       <Modal
-        title="Thêm mới chất liệu"
+        title="Add promotion"
         open={open}
         onOk={handleOk}
         onCancel={handleCancel}
-        // footer={null}
         confirmLoading={confirmLoading}
       >
         <form>
@@ -89,12 +94,20 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
             onChange={(e) => setPayload({ ...payload, name: e.target.value })}
             required
           />
-          <h4 className="mt-3">Value promotion:</h4>
+          <h4 className="mt-3">discountAmount promotion:</h4>
           <Input
-            name="value"
-            label="value:"
+            name="discountAmount"
+            label="discountAmount:"
             placeholder="Input value matertial"
-            onChange={(e) => setPayload({ ...payload, value: e.target.value })}
+            onChange={(e) => setPayload({ ...payload, discountAmount: e.target.value })}
+            required
+          />
+          <h4 className="mt-3">discountPercent promotion:</h4>
+          <Input
+            name="discountPercent"
+            label="discountPercent:"
+            placeholder="Input value matertial"
+            onChange={(e) => setPayload({ ...payload, discountPercent: e.target.value })}
             required
           />
           <h4 className="mt-3">Startdate promotion:</h4>
