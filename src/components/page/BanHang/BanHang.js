@@ -39,20 +39,12 @@ const initialItems = [
                   <Row>
                     <Col span={12}></Col>
                     <Col span={12}>
-                      <Card>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                        <p>Card content</p>
-                      </Card>
+                      <Card
+                        style={{
+                          minHeight: "450px",
+                        }}
+                        // loading={loading}
+                      ></Card>
                     </Col>
                   </Row>
                 </section>

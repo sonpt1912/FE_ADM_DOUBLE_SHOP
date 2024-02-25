@@ -248,7 +248,8 @@ const KichCo = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      width: 100,
+      render: (text) => (text === 1 ? "Hoat Dong" : "Ngung Hoat dong"),
+      width: 150,
     },
     {
       title: "Hành động",
@@ -298,7 +299,7 @@ const KichCo = () => {
       <>
         <Divider orientation="left">KÍCH CỠ</Divider>
         <Collapse
-          defaultActiveKey={["1"]}
+          defaultActiveKey={["0"]}
           expandIcon={({ isActive }) => (
             <CaretRightOutlined rotate={isActive ? 90 : 0} />
           )}

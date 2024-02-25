@@ -39,7 +39,6 @@ export const fetchSizes = createAsyncThunk(
       );
       console.log("siz", response.data)
       return response.data;
-      
     } catch (error) {
       throw error;
     }
