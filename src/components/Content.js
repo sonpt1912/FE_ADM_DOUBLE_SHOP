@@ -17,7 +17,7 @@ import Voucher from "./page/Voucher";
 import HangKhachHang from "./page/Hang/HangKhachHang";
 import Ao from "./page/SanPham/Ao/Ao";
 import ChatLieu from "./page/SanPham/ChatLieu";
-import CoAo from "./page/SanPham/CoAo";
+import CoAo from "./page/SanPham/CoAo/CoAo";
 import KichCo from "./page/SanPham/KichCo/KichCo";
 import Mau from "./page/SanPham/Mau/Mau";
 import Login from "./Login";
@@ -53,7 +53,7 @@ const CustomContent = () => {
         <Route path="/lienHe" element={<LienHe />} />
         <Route path="/sanPham/ao" element={<Ao />} />
         <Route path="/sanPham/chatLieu" element={<ChatLieu />} />
-        <Route path="/sanPham/coAo" element={<CoAo />} />
+        <Route path="/sanPham/coAo" element={<CoAo />}/>
         <Route path="/sanPham/kichCo" element={<KichCo />} />
         <Route path="/sanPham/mau" element={<Mau />} />
         <Route path="/nhanVien" element={<NhanVien />} />

@@ -72,6 +72,8 @@ export const updateSize = createAsyncThunk(
   }
 );
 
+
+
 export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password }) => {
@@ -100,3 +102,59 @@ export const loginGoogle = createAsyncThunk("auth/google", async (tokenId) => {
     throw error.response.data;
   }
 });
+
+// export const fetchCollars = createAsyncThunk(
+//   "collars/fetchCollars",
+//   async (payload) => {
+//     try {
+//       const response = await axios.post(
+//         "http://localhost:8072/collar/get-collar-by-condition",
+//         payload
+//       );
+//       console.log("siz", response.data)
+//       return response.data;
+      
+//     } catch (error) {
+//       throw error;
+//     }
+//   }
+// );
+
+// export const saveCollar = createAsyncThunk("collars/saveCollar", async (payload) => {
+//   try {
+//     const response = await axios.post(`${API_URL}/collar/save`, payload);
+//     return response.data;
+//   } catch (error) {
+//     if (error.response && error.response.status === 401) {
+//       message.error("Unauthorized: Please log in.");
+//     }
+//     throw error;
+//   }
+// });
+
+// export const updateCollar = createAsyncThunk(
+//   "collars/updateCollar",
+//   async (payload) => {
+//     try {
+//       const response = await axios.post(`${API_URL}/collar/update`, payload);
+//       return response.data;
+//     } catch (error) {
+//       if (error.response && error.response.status === 401) {
+//         message.error("Unauthorized: Please log in.");
+//       }
+//       throw error;
+//     }
+//   }
+// );
+
+// export const detailCollar = createAsyncThunk(
+//   'collars/detailCollar',
+//   async (collarId) => {
+//     try {
+//       const response = await axios.get(`http://localhost:8072/collar/get-collar-by-id/${collarId}`);
+//       return response.data;
+//     } catch (error) {
+      
+//       throw error;
+//     }
+//   });
