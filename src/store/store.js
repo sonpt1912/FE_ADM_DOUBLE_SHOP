@@ -7,6 +7,8 @@ import RankReducer from "./slice/RankReducer";
 import KichCoReducer from "./slice/KichCoReducer";
 import MauReducer from "./slice/MauReducer";
 import AuthReducer from "./slice/AuthReducer";
+import CollarReducer from "./slice/CollarReducer";
+
 
 const store = configureStore({
   reducer: {
@@ -14,7 +16,9 @@ const store = configureStore({
     rank: RankReducer,
     size: KichCoReducer,
     color: MauReducer,
+    collar: CollarReducer,
     auth: AuthReducer,
+  
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });
