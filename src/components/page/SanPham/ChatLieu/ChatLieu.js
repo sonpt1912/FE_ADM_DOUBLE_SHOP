@@ -33,36 +33,6 @@ const Material = () => {
     );
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   const fetchMaterials = async () => {
-  //     try {
-  //       if (!modalVisible && !modalVisibleUpdate) {
-  //         const response = await dispatch(
-  //           fetchMaterials({
-  //             page: current - 1,
-  //             pageSize: pageSize,
-  //             name: searchParams.name,
-  //             status: searchParams.status,
-  //           })
-  //         );
-  //         if (response && response.error) {
-  //           if (
-  //             response.error.message === "Request failed with status code 401"
-  //           ) {
-  //             navigate("/login");
-  //             message.error(response.error.message);
-  //           }
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //       message.error("Error fetching data. Please try again later.");
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [modalVisible, modalVisibleUpdate, current, pageSize]);
-
   const onClickSearch = () => {
     dispatch(
       fetchMaterials({

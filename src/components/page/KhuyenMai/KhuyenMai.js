@@ -136,6 +136,7 @@ const Promotion = () => {
                         pageSize: 5,
                         code: searchParams.code,
                         name: searchParams.name,
+                        status: searchParams.status
                     })
                 )
             });
@@ -157,9 +158,7 @@ const Promotion = () => {
     const [promotionData, setPromotionData] = useState();
     const openModalUpdate = async (id) => {
         const response = await dispatch(detail(id));
-        console.log("Response from detailPromotion:", response);
         setPromotionData(response.payload);
-        console.log("Promotion Data:", promotionData);
         setIsModalOpenUpdate(true);
     };
 
@@ -275,7 +274,7 @@ const Promotion = () => {
                     total: pagination.totalItems,
                     showSizeChanger: true,
                     showQuickJumper: true,
-                    showTotal: (totalPages) => `Total ${totalPages} items`,
+                    // showTotal: (totalPages) => `Total ${totalPages} items`,
                 }}
                 scroll={{
                     x: 1000,
