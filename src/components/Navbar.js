@@ -18,7 +18,7 @@ import {
 
 import logo from "../assets/logo.png";
 
-import { Modal, Menu, Layout } from "antd";
+import { Modal, Menu, Layout, Result, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 
@@ -163,13 +163,24 @@ const Navbar = ({ collapsed }) => {
       </Menu>
 
       <Modal
-        title="Xác nhận đăng xuất"
+        title={
+          <Result
+            status="warning"
+            title="Đăng xuất khỏi ứng dụng"
+            extra={[
+              <Button type="primary" key="console" onClick={handleLogout}>
+                Đăng xuất
+              </Button>,
+              <Button key="buy" onClick={handleCancel}>
+                Hủy
+              </Button>,
+            ]}
+          />
+        }
         visible={logoutModalVisible}
-        onOk={handleLogout}
-        onCancel={handleCancel}
-      >
-        <p>Bạn có chắc muốn đăng xuất?</p>
-      </Modal>
+        onOk={false}
+        onCancel={undefined}
+      ></Modal>
     </Sider>
   );
 };
