@@ -101,6 +101,8 @@ const Navbar = ({ collapsed }) => {
           <Menu.Item key="/dashboard/sanPham/kichCo">Kích cỡ</Menu.Item>
           <Menu.Item key="/dashboard/sanPham/coAo">Cổ áo</Menu.Item>
           <Menu.Item key="/dashboard/sanPham/chatLieu">Chất liệu</Menu.Item>
+          <Menu.Item key="/dashboard/sanPham/category">Loại sản phẩm</Menu.Item>
+          <Menu.Item key="/dashboard/sanPham/brand">Thương hiệu</Menu.Item>
         </SubMenu>
         <Menu.Item
           className="menu-item"
