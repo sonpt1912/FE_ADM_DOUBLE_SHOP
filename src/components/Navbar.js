@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartSimple,
@@ -18,7 +18,7 @@ import {
 
 import logo from "../assets/logo.png";
 
-import { Modal, Menu, Layout } from "antd";
+import { Menu, Layout } from "antd";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 
@@ -27,20 +27,6 @@ const { SubMenu } = Menu;
 
 const Navbar = ({ collapsed }) => {
   const navigate = useNavigate();
-  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
-
-  const showLogoutModal = () => {
-    setLogoutModalVisible(true);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
-  const handleCancel = () => {
-    setLogoutModalVisible(false);
-  };
 
   return (
     <Sider
@@ -152,22 +138,12 @@ const Navbar = ({ collapsed }) => {
         </SubMenu>
 
         <Menu.Item
+          key="/dashboard/logout"
           icon={<FontAwesomeIcon icon={faArrowRightFromBracket} />}
-          key={"/dashboard/logout"}
-          onClick={showLogoutModal}
         >
           Đăng xuất
         </Menu.Item>
       </Menu>
-
-      <Modal
-        title="Xác nhận đăng xuất"
-        visible={logoutModalVisible}
-        onOk={handleLogout}
-        onCancel={handleCancel}
-      >
-        <p>Bạn có chắc muốn đăng xuất?</p>
-      </Modal>
     </Sider>
   );
 };
