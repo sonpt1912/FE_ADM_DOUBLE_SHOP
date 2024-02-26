@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:8072";
 
@@ -16,6 +17,7 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 export const fetchAllColors = async () => {
   try {
     const response = await axios.get(`${API_URL}/color/get-all`);
@@ -37,9 +39,6 @@ export const fetchSizes = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        message.error("Unauthorized: Please log in.");
-      }
       throw error;
     }
   }
@@ -72,36 +71,4 @@ export const updateSize = createAsyncThunk(
   }
 );
 
-export const login = createAsyncThunk(
-  "auth/login",
-  async ({ username, password }) => {
-    try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
-        username,
-        password,
-      });
-      localStorage.setItem("token", response.data.jwtToken);
-      return response.data.jwtToken;
-    } catch (error) {
-      throw error.response.data;
-    }
-  }
-);
 
-export const loginGoogle = createAsyncThunk(
-  "auth/loginGoogle",
-  async (tokenId) => {
-    try {
-      const response = await axios.post(`${API_URL}/auth/google`, {
-        crenditial: tokenId,
-      });
-      localStorage.setItem("token", response.data.jwtToken);
-      return response.data.jwtToken;
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        message.error("Unauthorized: Please log in.");
-      }
-      throw error.response.data;
-    }
-  }
-);

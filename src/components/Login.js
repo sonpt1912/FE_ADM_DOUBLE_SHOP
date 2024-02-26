@@ -1,14 +1,25 @@
-import React from "react";
-import { Form, Input, Button, Checkbox } from "antd";
+import React, { useEffect } from "react";
+import { Form, Input, Button, Checkbox, message } from "antd";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
-import { useDispatch } from "react-redux";
-import { login, loginGoogle } from "../config/api";
+import { useDispatch, useSelector } from "react-redux";
+import { loginGoogle, login } from "../config/LoginApi";
+import { selectIsAuthenticated } from "../store/slice/AuthReducer";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token || token === "undefined") {
+      navigate("/login");
+    } else if (isAuthenticated) {
+      navigate("/dashboard/thongKe");
+    }
+  }, [isAuthenticated, navigate]);
 
   const onFailureGoogle = (error) => {
     if (error.response && error.response.status === 401) {
@@ -18,16 +29,21 @@ const Login = () => {
       console.error("Google login failed:", error);
     }
   };
+
   const onFinish = async (values) => {
     try {
-      const result = await login({
-        username: values.username,
-        password: values.password,
-      });
-      navigate("/thongKe");
-      console.log("Success:", result);
+      const result = await dispatch(
+        login({ username: values.username, password: values.password })
+      );
+
+      if (result.payload.code === 200) {
+        navigate("/dashboard/thongKe");
+      } else {
+        message.error("Thông tin tài khoản không chính xác");
+        navigate("/login");
+      }
     } catch (error) {
-      console.error("Failed:", error);
+      message.error("Thông tin tài khoản không chính xác");
     }
   };
 
@@ -35,14 +51,27 @@ const Login = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const onSuccessGoogle = (response) => {
-    dispatch(loginGoogle(response.credential));
-    navigate("/dashboard/thongKe");
+  const onSuccessGoogle = async (response) => {
+    try {
+      const result = await dispatch(loginGoogle(response.credential));
+      if (
+        result.error &&
+        result.error.message ===
+          "Access Denied !! Full authentication is required to access this resource"
+      ) {
+        message.error(
+          "Access Denied !! Full authentication is required to access this resource"
+        );
+      } else {
+        navigate("/dashboard/thongKe");
+      }
+    } catch (error) {
+      message.error("Login failed:");
+    }
   };
 
   return (
     <GoogleOAuthProvider clientId="371453517569-sdlqpnul2t1iihsrk3u2apb6qvik0cvh.apps.googleusercontent.com">
-      {" "}
       <div className="login-page">
         <div className="login-box">
           <div className="illustration-wrapper">
@@ -54,16 +83,15 @@ const Login = () => {
           <Form
             id="login-form"
             name="login-form"
-            initialValues={{ remember: true }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
           >
             <p className="form-title">Welcome back</p>
-            <p>Login to the Dashboard</p>
+            <p></p>
             <Form.Item
               name="username"
               rules={[
-                { required: true, message: "Please input your username!" },
+                { required: true, message: "Vui lòng nhập tên tài khoản!" },
               ]}
             >
               <Input placeholder="Username" />
@@ -71,24 +99,20 @@ const Login = () => {
 
             <Form.Item
               name="password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
             >
               <Input.Password placeholder="Password" />
-            </Form.Item>
-
-            <Form.Item name="remember" valuePropName="checked">
-              <Checkbox>Remember me</Checkbox>
             </Form.Item>
 
             <Form.Item>
               <GoogleLogin
                 onSuccess={onSuccessGoogle}
                 onFailure={onFailureGoogle}
+                shape="square"
+                useOneTap="true"
               />
             </Form.Item>
-
+            <hr></hr>
             <Form.Item>
               <Button
                 type="primary"

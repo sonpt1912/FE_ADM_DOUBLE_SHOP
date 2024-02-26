@@ -1,6 +1,5 @@
 import { CaretRightOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import qs from "qs";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Collapse,
@@ -24,6 +23,7 @@ import {
   EyeOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import { fetchSizes, updateSize } from "../../../../config/api";
 import ModalAddSize from "./modalAddSize";
 import ModalUpdateSize from "./modalUpdateSize";
@@ -34,6 +34,7 @@ const { RangePicker } = DatePicker;
 
 const KichCo = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const sizes = useSelector((state) => state.size.sizes);
   const pagination = useSelector((state) => state.size.pagination);
   const [pageSize, setPageSize] = useState(5);
@@ -83,25 +84,41 @@ const KichCo = () => {
 
     dispatch(
       fetchSizes({
-        page: pagination.current ,
+        page: pagination.current,
         pageSize: pageSize,
       })
     );
   };
 
   useEffect(() => {
-    if (!modalVisible && !modalVisibleUpdate) {
-      dispatch(
-        fetchSizes({
-          page: current - 1,
-          pageSize: pageSize,
-          name: searchParams.name,
-          status: searchParams.status,
-        })
-      );
-    }
-  }, [modalVisible, modalVisibleUpdate, current, pageSize, searchParams]);
-  
+    const fetchData = async () => {
+      try {
+        if (!modalVisible && !modalVisibleUpdate) {
+          const response = await dispatch(
+            fetchSizes({
+              page: current - 1,
+              pageSize: pageSize,
+              name: searchParams.name,
+              status: searchParams.status,
+            })
+          );
+          if (response && response.error) {
+            if (
+              response.error.message === "Request failed with status code 401"
+            ) {
+              navigate("/login");
+              message.error(response.error.message);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        message.error("Error fetching data. Please try again later.");
+      }
+    };
+
+    fetchData();
+  }, [modalVisible, modalVisibleUpdate, current, pageSize]);
 
   const onClickEdit = (record) => {
     setPayload({
@@ -116,7 +133,7 @@ const KichCo = () => {
   const onClickSearch = () => {
     dispatch(
       fetchSizes({
-        page: pagination.current ,
+        page: pagination.current,
         pageSize: pageSize,
         name: searchParams.name,
         status: searchParams.status,
