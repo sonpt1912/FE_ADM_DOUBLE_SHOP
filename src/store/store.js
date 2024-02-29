@@ -8,7 +8,7 @@ import KichCoReducer from "./slice/KichCoReducer";
 import MauReducer from "./slice/MauReducer";
 import AuthReducer from "./slice/AuthReducer";
 import CollarReducer from "./slice/CollarReducer";
-
+import VoucherReducer from "./slice/VoucherReducer";
 
 const store = configureStore({
   reducer: {
@@ -18,7 +18,7 @@ const store = configureStore({
     color: MauReducer,
     collar: CollarReducer,
     auth: AuthReducer,
-  
+    voucher:VoucherReducer
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });
