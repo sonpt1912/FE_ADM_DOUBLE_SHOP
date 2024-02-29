@@ -481,10 +481,10 @@ const Voucher = () => {
       width: 150,
       render: (text, record) => (
         <Space size="middle">
-          <Button style={{ border: "none" }} icon={<EyeOutlined />} onClick={() => openModalDetail(record.id)}/>
+          <Button style={{ border: "none" }} icon={<EyeFilled />} onClick={() => openModalDetail(record.id)}/>
           <Button
             style={{ border: "none" }}
-            icon={<EditOutlined />}
+            icon={<EditFilled />}
             onClick={() => onClickEdit(record)}
           />
           <Popconfirm
@@ -497,7 +497,7 @@ const Voucher = () => {
             <Button
               style={{ border: "none" }}
               disabled={record.status === 0}
-              icon={<DeleteOutlined />}
+              icon={<DeleteFilled />}
             />
           </Popconfirm>
         </Space>
