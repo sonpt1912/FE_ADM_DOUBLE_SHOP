@@ -13,7 +13,7 @@ import LienHe from "./page/LienHe";
 import NhanVien from "./page/NhanVien/NhanVien";
 import SanPham from "./page/SanPham";
 import ThongKe from "./page/ThongKe";
-import Voucher from "./page/Voucher";
+import Voucher from "./page/Voucher/Voucher";
 import HangKhachHang from "./page/Hang/HangKhachHang";
 import Ao from "./page/SanPham/Ao/Ao";
 import ChatLieu from "./page/SanPham/ChatLieu";
