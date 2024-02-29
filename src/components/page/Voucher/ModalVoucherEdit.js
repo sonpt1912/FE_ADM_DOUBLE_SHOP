@@ -115,7 +115,7 @@ const handleChange = (date, dateString) => {
           }
         ]}
         >
-          <Input readOnly/>
+          <Input disabled/>
         </Form.Item>
         <Form.Item label="Tên" name="name" labelCol={{span:9}} wrapperCol={{span:16}} labelAlign="left" 
         rules={[

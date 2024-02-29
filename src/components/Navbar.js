@@ -163,24 +163,12 @@ const Navbar = ({ collapsed }) => {
       </Menu>
 
       <Modal
-        title={
-          <Result
-            status="warning"
-            title="Đăng xuất khỏi ứng dụng"
-            extra={[
-              <Button type="primary" key="console" onClick={handleLogout}>
-                Đăng xuất
-              </Button>,
-              <Button key="buy" onClick={handleCancel}>
-                Hủy
-              </Button>,
-            ]}
-          />
-        }
-        visible={logoutModalVisible}
-        onOk={false}
-        onCancel={undefined}
-      ></Modal>
+      title="Xác nhận đăng xuất"
+      visible={logoutModalVisible}
+      onOk={handleLogout}
+      onCancel={handleCancel}
+    >
+      <p>Bạn có chắc muốn đăng xuất?</p></Modal>
     </Sider>
   );
 };

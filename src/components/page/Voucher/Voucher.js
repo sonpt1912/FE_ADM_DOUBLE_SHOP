@@ -100,8 +100,8 @@ const Voucher = () => {
         discountPercent:record.discountPercent,
         minimumOrder:record.minimumOrder,
         startDate: record.startDate,
-        endDate:record.endDate ,
-        status:record.status 
+        endDate:record.endDate 
+        
     };
     const newStatus = record.status === 1 ? 0 : 1;
     setUpdateStatus({ status: newStatus });

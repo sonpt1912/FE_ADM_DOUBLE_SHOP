@@ -36,8 +36,8 @@ const KichCo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const sizes = useSelector((state) => 
-  console.log(state)
-  // state.size.sizes
+ 
+  state.size.sizes
   
   );
   const pagination = useSelector((state) => state.size.pagination);
