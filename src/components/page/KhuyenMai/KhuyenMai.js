@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import ModalKhuyenMai from "./ModalKhuyenMaiAdd";
 import ModalKhuyenMaiEdit from "./ModalKhuyenMaiEdit";
-import { SearchOutlined, EditOutlined, EyeOutlined, DeleteFilled } from "@ant-design/icons";
+import ModalKhuyenMaiDetail from "./ModalKhuyenMaiChiTiet";
+import Material from "../SanPham/ChatLieu/ChatLieu";
+import { SearchOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 import { fetchPromotions, Delete, detail } from "../../../store/slice/KhuyenMaiReducer";
 const Promotion = () => {
@@ -104,14 +106,21 @@ const Promotion = () => {
             key: "ChucNang",
             render: (text, record) => (
                 <Space size="middle">
-                    <FontAwesomeIcon icon={faEye} style={{ cursor: "pointer" }} />
-                    <FontAwesomeIcon
-                        icon={faEdit}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => openModalUpdate(record.id)}
-                    // onClick={showEditModal}
+                    <Button
+                        icon={<EyeOutlined />}
+                        style={{ border: "none" }}
+                        onClick={() => openModalDetail(record.id)}
                     />
-                    <DeleteFilled onClick={() => handleDelete(record.id)} disabled={record.status === "0"} />
+                    <Button
+                        icon={<EditOutlined />}
+                        style={{ border: "none" }}
+                        onClick={() => openModalUpdate(record.id)}
+                    />
+                    <Button
+                        icon={<DeleteOutlined />}
+                        style={{ border: "none" }}
+                        onClick={() => handleDelete(record.id)} disabled={record.status === 0} />
+
                 </Space>
             ),
         },
@@ -142,6 +151,16 @@ const Promotion = () => {
             });
     };
 
+    //eye
+    const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+    const openModalDetail = async (id) => {
+        const response = await dispatch(detail(id));
+        setPromotionData(response.payload);
+        setIsModalOpenDetail(true);
+    };
+    const closeModalDetail = () => {
+        setIsModalOpenDetail(false);
+    };
     // Modal add
     const [modalAdd, setModalAdd] = useState(false);
 
@@ -289,6 +308,12 @@ const Promotion = () => {
             <ModalKhuyenMaiEdit
                 visible={isModalOpenUpdate}
                 closeModal={closeModalUpdate}
+                KhuyenMais={promotionData}
+            />
+
+            <ModalKhuyenMaiDetail
+                visible={isModalOpenDetail}
+                closeModal={closeModalDetail}
                 KhuyenMais={promotionData}
             />
         </div>

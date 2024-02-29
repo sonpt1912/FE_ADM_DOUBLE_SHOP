@@ -9,6 +9,23 @@ const initialState = {
   pagination: {},
 };
 
+export const getAll = createAsyncThunk(
+  "promotions/fetchPromotions", async (payload) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8072/promotion/hien-thi",
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
+      throw error;
+    }
+  }
+);
+
 export const fetchPromotions = createAsyncThunk(
   "promotions/fetchPromotions", async (payload) => {
     try {
@@ -18,6 +35,9 @@ export const fetchPromotions = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
       throw error;
     }
   }
