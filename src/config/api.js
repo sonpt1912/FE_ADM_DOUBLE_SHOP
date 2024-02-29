@@ -37,9 +37,8 @@ export const fetchSizes = createAsyncThunk(
         `${API_URL}/size/get-size-by-condition`,
         payload
       );
-      console.log("siz", response.data)
+      console.log("siz", response.data);
       return response.data;
-      
     } catch (error) {
       throw error;
     }
