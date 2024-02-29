@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message, DatePicker,TimePicker ,Radio} from "antd";
 import { useDispatch } from "react-redux";
-import { saveVoucher } from "../../../config/api2";
+import { saveVoucher } from "../../../config/voucherApi";
 
 const { TextArea } = Input;
 
@@ -31,9 +31,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
      startDate:"",
      endDate:""
   });
-  const formatNumberWithCommas = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+
   const handleOk = async () => {
    
     try {
@@ -42,15 +40,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
       await dispatch(saveVoucher({ ...formValues, discountType }));
       message.success("Voucher added successfully");
       closeModal();
-      setPayload({
-        name:"",
-        discountAmount:"",
-        discountPercent:"",
-        quantity:"",
-        minimumOrder:"",
-        startDate:"",
-        endDate:""
-      });
+      
       form.resetFields();
     } catch (error) {
       message.error("Please fill in all required fields");
@@ -72,14 +62,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
     closeModal();
     form.resetFields();
   };
-  const handleNumberChange = (value, fieldName) => {
-    if (value < 0) {
-      message.error(`Giá trị ${fieldName} không được âm`);
-    } else {
-      message.error("");
-      setPayload({ ...payload, [fieldName]: value });
-    }
-  };
+  
 
   return (
     <Modal
@@ -154,8 +137,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           >
             <Input type="number" placeholder="VNĐ" 
           
-            min={0}
-            onChange={(e) => handleNumberChange(parseInt(e.target.value), "quantity")} // Thêm sự kiện onChange để kiểm tra giá trị nhập vào
+            
             />
           </Form.Item>
         )}

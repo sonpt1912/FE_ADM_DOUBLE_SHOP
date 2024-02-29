@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message } from "antd";
 import { useDispatch } from "react-redux";
-import { saveCollar } from "../../../../config/api1";
+import { saveCollar } from "../../../../config/collarApi";
 
 const { TextArea } = Input;
 

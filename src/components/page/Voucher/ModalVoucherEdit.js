@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message, Select, DatePicker } from "antd";
 import { useDispatch } from "react-redux";
-import { updateVoucher } from "../../../config/api2";
+import { updateVoucher } from "../../../config/voucherApi";
 import moment from 'moment';
 import 'moment/locale/vi'; // Import Vietnamese locale data
 const { TextArea } = Input;

@@ -25,7 +25,7 @@ import {
   DeleteFilled,EyeOutlined,EditOutlined,DeleteOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchVouchers,updateVoucher,detailVoucher } from "../../../config/api2";
+import { fetchVouchers,updateVoucher,detailVoucher } from "../../../config/voucherApi";
 import ModalAddVoucher from "./ModalVoucherAdd";
 import ModalUpdateVoucher from "./ModalVoucherEdit";
 import ModalVoucherDetail from "./ModalDetailVoucher";
@@ -115,7 +115,13 @@ const Voucher = () => {
       })
     );
   };
-  
+  const updateExpiredVouchers = async () => {
+    vouchers.forEach(async (voucher) => {
+      if (moment(voucher.endDate).isBefore(moment()) && voucher.status === 1) {
+        await handleChangeStatus(voucher);
+      }
+    });
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -200,8 +206,25 @@ const Voucher = () => {
     };
 
     fetchData();
-  }, [modalVisible, modalVisibleUpdate, current, pageSize,isSearching]);  
+    updateExpiredVouchers();
 
+
+    
+  }, [modalVisible, modalVisibleUpdate, current, pageSize,isSearching]);  
+  useEffect(() => {
+    const updateExpiredVouchers = async () => {
+      vouchers.forEach(async (voucher) => {
+        if (
+          moment(voucher.endDate).isBefore(moment()) &&
+          voucher.status === 1
+        ) {
+          await handleChangeStatus(voucher);
+        }
+      });
+    };
+
+    updateExpiredVouchers();
+  }, [vouchers]);
   const onClickEdit = (record) => {
     setPayload({
         code: record.code,
@@ -512,12 +535,14 @@ const Voucher = () => {
       </Button>
     </div>
   );
-
+ 
   const handleTableChange = (pagination) => {
     const { current } = pagination;
     if (pagination.pageSize !== pageSize) {
       setPageSize(pagination.pageSize);
     }
+    // Kiểm tra và cập nhật trạng thái của phiếu giảm giá khi ngày kết thúc đã qua
+ 
     setCurrent(current);
  
   };

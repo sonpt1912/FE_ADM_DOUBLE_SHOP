@@ -1,6 +1,6 @@
 // sizeSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchCollars,updateCollar,saveCollar } from "../../config/api1";
+import { fetchCollars,updateCollar,saveCollar } from "../../config/collarApi";
 
 const initialState = {
   collars: [],
