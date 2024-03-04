@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Space, Input, theme, Table, Collapse, Button, DatePicker, Form, Select, Col, Row, Upload, message, Radio } from "antd";
+import { Space, Input, theme, Table, Collapse, Button, DatePicker, Form, Select, Col, Row, Upload, message, Radio, Modal } from "antd";
 import { } from 'antd';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { addCustomer, fetchCustomer, getAddress } from "../../../store/slice/KhachHangReducer";
 import { Link } from "react-router-dom";
-const AddKhachHang = () => {
+import AddressApi from "../../../config/AddressApi";
+const AddKhachHang = ({ isOpen, onCancel1, cusAdd }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const [imageUrl, setImageUrl] = useState();
+    const [description, setDescription] = useState('');
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -25,43 +27,9 @@ const AddKhachHang = () => {
     const [status, setStatus] = useState('')
     const [rank, setRank] = useState('')
     const [username, setUsername] = useState('')
+    const addressApi = AddressApi();
 
-    const handleChange = (info) => {
-        if (info.file.status === 'uploading') {
-            setLoading(true);
-            return;
-        }
-    }
 
-    const beforeUpload = (file) => {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-        if (!isJpgOrPng) {
-            message.error('You can only upload JPG/PNG file!');
-        }
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-            message.error('Image must smaller than 2MB!');
-        }
-        return isJpgOrPng && isLt2M;
-    };
-    const uploadButton = (
-        <button
-            style={{
-                border: 0,
-                background: 'none',
-            }}
-            type="button"
-        >
-            {loading ? <LoadingOutlined /> : <PlusOutlined />}
-            <div
-                style={{
-                    marginTop: 8,
-                }}
-            >
-                Upload
-            </div>
-        </button>
-    );
     const [cityData, setCityData] = useState([]);
     const [selectedCity, setSelectedCity] = useState(
         ''
@@ -74,7 +42,6 @@ const AddKhachHang = () => {
         ''
     );
     const [warData, setWarData] = useState([]);
-
     const dataCity = async () => {
         try {
             const response = await fetch(`https://vapi.vnappmob.com/api/province`).then((res) => { return res.json() }).then((data) => {
@@ -88,27 +55,26 @@ const AddKhachHang = () => {
         try {
             const response = await axios.get(`https://vapi.vnappmob.com/api/province/district/${selectedCityCode}`);
             setDisData(response.data.results.map(city => ({ label: city.district_name, value: city.district_id })));
-            console.log("dis", disData)
+            
         } catch (error) {
             console.error("Error fetching city data:", error);
         }
     };
     const dataWar = async (selectedDisCode) => {
         try {
-            console.log("1", selectedDisCode)
-            console.log("aa", disData)
             const response = await axios.get(`https://vapi.vnappmob.com/api/province/ward/${selectedDisCode}`);
             setWarData(response.data.results.map(city => ({ label: city.ward_name, value: city.ward_id })));
         } catch (error) {
             console.error("Error fetching city data:", error);
         }
     };
-
     const handleCityChange = (value) => {
         setSelectedCity(value);
+
         const selectedCityCode = cityData.find(city => city.value === value)?.value;
         const selectedCityName = cityData.find(city => city.value === value)?.label;
         setCity(selectedCityName);
+        addressApi.dataDis(selectedCityCode)
         dataDis(selectedCityCode);
         setSelectedDis("");
     };
@@ -118,8 +84,7 @@ const AddKhachHang = () => {
         const selectedDisCode = disData.find(dis => dis.value === value)?.value;
         const selectedDisName = disData.find(dis => dis.value === value)?.label;
         setDistrict(selectedDisName);
-
-        dataWar(selectedDisCode);
+       dataWar(selectedDisCode);
         setSelectedWar("");
     };
 
@@ -131,6 +96,7 @@ const AddKhachHang = () => {
 
     useEffect(() => {
         dataCity();
+        
     }, []);
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -141,7 +107,8 @@ const AddKhachHang = () => {
         } else if (name === "name") {
             setName(value);
         } else if (name === "birthDay") {
-            setBirthday(value);
+            setBirthday(value.format("MM/DD/YYYY"));
+
         } else if (name === "email") {
             setEmail(value);
         } else if (name === "gender") {
@@ -154,258 +121,215 @@ const AddKhachHang = () => {
             setWard(value);
         } else if (name === "ngo") {
             setNgo(value);
+        } else if (name === "description") {
+            setDescription(value);
         }
 
     };
+    const handleCancel = () => {
+        onCancel1();
+        form.resetFields();
+    };
     const handleOk = async () => {
         try {
-            const formData = {
-                name: name,
-                birthday: birthday,
-                district: district,
-                ward: ward,
-                city: city,
-                gender: 1,
-                phone: phone,
-                ngo: ngo,
-                email: email,
-                createdBy: "ss",
-                updated_by: "aa",
-                status: 1,
-                username: "hai",
-                password: '1'
-
-            };
-            setConfirmLoading(true);
-            await dispatch(addCustomer(formData));
-            console.log("form", formData)
-            message.success("Thêm màu thành công");
-            form.resetFields();
-
+            
+            form.validateFields().then(async (values) => {
+                
+                const formData = {
+                    name: name,
+                    birthday: birthday,
+                    gender: 1,
+                    phone: phone,
+                    ngo: ngo,
+                    email: email,
+                    createdBy: "ss",
+                    updated_by: "aa",
+                    status: 1,
+                    username: "hai",
+                    password: '1',
+                    address: [
+                        {
+                            district: district,
+                            province: ward,
+                            city: city,
+                            description: description,
+                        }
+                    ]
+                };
+    
+                await dispatch(addCustomer(formData));
+                message.success("Thêm khách hàng thành công");
+                form.resetFields();
+                onCancel1();
+            }).catch((error) => {
+                
+                message.error('Vui lòng điền đầy đủ thông tin bắt buộc.');
+            });
         } catch (error) {
-            message.error("Failed to add size");
+            onCancel1();
+            message.error(error.message || "Thêm khách hàng không thành công");
         } finally {
-
-            form.resetFields();
-
             setConfirmLoading(false);
         }
-
-    }
+    };
     return (
         <div>
-            <Form
+            <Modal title="Thêm màu"
+                open={isOpen}
+                onOk={handleOk}
                 confirmLoading={confirmLoading}
-                labelCol={{ span: 9 }}
-                wrapperCol={{ span: 18 }}
-                labelWrap
-                form={form}
-                name="basic"
+                onCancel1={handleCancel}
+                footer={[
+                    <Button type="primary" htmlType="submit" onClick={handleOk}>
+                        Thêm
+                    </Button>,
+                    <Button type="primary" onClick={handleCancel}>
+                        Canel
+                    </Button>
+                ]
+                }
             >
-                <Row gutter={16}>
-                    <Col span={4}>
-                        <Upload
-                            name="avatar"
-                            listType="picture-circle"
-                            className="avatar-uploader"
-                            showUploadList={false}
-                            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-                            beforeUpload={beforeUpload}
-                            onChange={handleChange}
+                <Form
+                    confirmLoading={confirmLoading}
+                    labelCol={{ span: 9 }}
+                    wrapperCol={{ span: 18 }}
+                    labelWrap
+                    form={form}
+                    name="basic"
+                >
+                    <Form.Item
+                        label="Tên khách hàng"
+                        name="name"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập tên',
+                            },
+                        ]}
+                    >
+                        <Input value={name} onChange={(e) => handleInputChange({ target: { name: 'name', value: e.target.value } })} />
+                    </Form.Item>
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                      
+                        style={{ marginTop: '70px' }}
+                    >
+                        <Input value={email} onChange={(e) => handleInputChange({ target: { name: 'email', value: e.target.value } })} />
+                    </Form.Item>
+                    <Form.Item
+                        label="SDT"
+                        name="phone"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập số điện thoại',
+                            },
+                        ]}
+                        style={{ marginTop: '70px' }}
+                    >
+                        <Input placeholder="Số điện thoaị" value={phone} onChange={(e) => handleInputChange({ target: { name: 'phone', value: e.target.value } })} />
+                    </Form.Item>
+                    <Form.Item
+                        label="Tỉnh/Thành phố"
+                        name="city"
 
-                        >
-                            {imageUrl ? (
-                                <img
-                                    src={imageUrl}
-                                    alt="avatar"
-                                    style={{
-                                        width: '500px',
-                                        height: '500px'
-                                    }}
-                                />
-                            ) : (
-                                uploadButton
-                            )}
-                        </Upload>
-                    </Col>
-                    <Col span={10}>
-                        <Form.Item
-                            label="Tên khách hàng"
-                            name="name"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Nhap ten',
-                                },
-                            ]}
-                        >
-                            <Input value={name} onChange={(e) => handleInputChange({ target: { name: 'name', value: e.target.value } })} />
-                        </Form.Item>
-                        <Form.Item
-                            label="Email"
-                            name="email"
-                            style={{ marginTop: '70px' }}
-                        >
-                            <Input value={email} onChange={(e) => handleInputChange({ target: { name: 'email', value: e.target.value } })} />
-                        </Form.Item>
-                        <Form.Item
-                            label="Tỉnh/Thành phố"
-                            name="city"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng chọn Thành Phố',
+                            },
+                        ]}
+                        style={{ marginTop: '70px' }}
+                    >
+                        <Select
+                            showSearch
+                            placeholder="--- Chọn Tỉnh/Thành phố ---"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                            filterSort={(optionA, optionB) =>
+                                (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                            }
+                            options={cityData}
+                            onChange={handleCityChange}
+                            value={selectedCity}
 
-                            // rules={[
-                            //     {
-                            //         required: true,
-                            //         message: 'Please input your username!',
-                            //     },
-                            // ]}
-                            style={{ marginTop: '70px' }}
-                        >
-                            <Select
-                                showSearch
-                                placeholder="--- Chọn Tỉnh/Thành phố ---"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                                filterSort={(optionA, optionB) =>
-                                    (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                                }
-                                options={cityData}
-                                onChange={handleCityChange}
-                                value={selectedCity}
+                        />
 
-                            />
+                    </Form.Item>
+                    <Form.Item
+                        label="Quận/Huyện"
+                        name="dis"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng chọn Quận/Huyện!',
+                            },
+                        ]}
+                        style={{ marginTop: '70px' }}
+                    >
+                        <Select
+                            showSearch
+                            placeholder="--- Chọn Quận/Huyện ---"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                           
+                            options={disData}
+                            onChange={handleDisChange}
+                            value={selectedDis}
 
-                        </Form.Item>
-                        <Form.Item
-                            label="Xã/Phường"
-                            name="war"
-                            // rules={[
-                            //     {
-                            //         required: true,
-                            //         message: 'Please input your username!',
-                            //     },
-                            // ]}
-                            style={{ marginTop: '70px' }}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="Xã/Phường"
+                        name="war"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng chọn Xã/Phường',
+                            },
+                        ]}
+                        style={{ marginTop: '70px' }}
 
-                        >
-                            <Select
-                                showSearch
-                                placeholder="--- Chọn Xã/Phường ---"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                                filterSort={(optionA, optionB) =>
-                                    (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                                }
-                                options={warData}
-                                onChange={handleWarChange}
-                                value={selectedWar}
-                            />
-                        </Form.Item>
-
-
-                    </Col>
-                    <Col span={10}>
-                        <Form.Item
-                            label="Ngày sinh"
-                            name="birthDay"
-
-
-                        >
-                            <DatePicker placeholder="dd/mm/yyyy" value={birthday} onChange={(e) => handleInputChange({ target: { name: 'birthDay', value: e.target.value } })} />
-
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Giới Tính"
-                            name="gender"
-                            // rules={[
-                            //     {
-                            //         required: true,
-                            //         message: 'Please input your username!',
-                            //     },
-                            // ]}
-                            style={{ marginTop: '70px' }}
-                        >
-                            <Radio.Group >
-                                <Radio checked>A</Radio>
-                                <Radio value={1}>B</Radio>
-                            </Radio.Group>
-                        </Form.Item>
-                        <Form.Item
-                            label="SDT"
-                            name="phone"
-                            // rules={[
-                            //     {
-                            //         required: true,
-                            //         message: 'Please input your username!',
-                            //     },
-                            // ]}
-                            style={{ marginTop: '70px' }}
-                        >
-                            <Input placeholder="Số điện thoaị" value={phone} onChange={(e) => handleInputChange({ target: { name: 'phone', value: e.target.value } })} />
-                        </Form.Item>
-                        <Form.Item
-                            label="Quận/Huyện"
-                            name="dis"
-                            // rules={[
-                            //     {
-                            //         required: true,
-                            //         message: 'Please input your username!',
-                            //     },
-                            // ]}
-                            style={{ marginTop: '70px' }}
-                        >
-                            <Select
-                                showSearch
-                                placeholder="--- Chọn Quận/Huyện ---"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                                // filterSort={(optionA, optionB) =>
-                                //     (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                                // }
-                                options={disData}
-                                onChange={handleDisChange}
-                                value={selectedDis}
-
-                            />
-                        </Form.Item>
+                    >
+                        <Select
+                            showSearch
+                            placeholder="--- Chọn Xã/Phường ---"
+                            optionFilterProp="children"
+                            filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                            filterSort={(optionA, optionB) =>
+                                (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                            }
+                            options={warData}
+                            onChange={handleWarChange}
+                            value={selectedWar}
+                        />
+                    </Form.Item>                  
+                  
 
 
-                        <Form.Item
-                            label="Số Nhà/Ngõ/Đường"
-                            name="ngo"
-                            // rules={[
-                            //     {
-                            //         required: true,
-                            //         message: 'Please input your username!',
-                            //     },
-                            // ]}
-                            style={{ marginTop: '70px' }}
-                        >
+                    <Form.Item
+                        label="Số Nhà/Ngõ/Đường"
+                        name="ngo"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập Số nhà/Ngõ/Đường',
+                            },
+                        ]}
+                        style={{ marginTop: '70px' }}
+                    >
 
-                            <Input placeholder="Số nhà/ngõ/đường" value={ngo} onChange={(e) => handleInputChange({ target: { name: 'ngo', value: e.target.value } })} />
-                        </Form.Item>
-                    </Col>
+                        <Input placeholder="Số nhà/ngõ/đường" value={description} name="description" onChange={(e) => handleInputChange({ target: { name: 'description', value: e.target.value } })} />
+                    </Form.Item>
+                   
+                </Form>
 
-                </Row>
-                <Button type="primary" htmlType="submit" onClick={handleOk} >
-                Thêm
-            </Button>
-            </Form>
-            <Button type="primary" htmlType="submit" onClick={handleOk} >
-                Thêm
-            </Button>
-            <Button type="primary" htmlType="submit" >
-                Huỷ
-            </Button>
+            </Modal>
         </div>
 
-        // * <form>
-        // <Button type="primary" htmlType="submit" onClick={handleOk} >
-        //                 Thêm
-        //             </Button>\ <Button type="primary" htmlType="submit" >
-        //                 Huỷ
-        //             </Button>
-        // </form> *
+
+
     );
 };
 export default AddKhachHang;

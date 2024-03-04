@@ -43,6 +43,10 @@ const ModalColorUpdate = ({ isOpen, onCancel1, colors }) => {
     }
   };
   const handleOk = async () => {
+    if (!name || !code || !description ) {
+      message.error('Vui lòng điền đầy đủ thông tin.');
+      return;
+  }
     try {
       const formData = {
         code: code,
@@ -59,7 +63,7 @@ const ModalColorUpdate = ({ isOpen, onCancel1, colors }) => {
       onCancel1();
       form.resetFields();
     } catch (error) {
-      message.error("Failed to add size");
+      message.error("Sửa màu không thành công");
     } finally {
       onCancel1();
       form.resetFields();
@@ -69,7 +73,7 @@ const ModalColorUpdate = ({ isOpen, onCancel1, colors }) => {
   return (
 
     <Modal
-      title="Update chất liệu"
+      title="Update Màu"
       visible={isOpen}
       footer={[
         <Button key="cancel" onClick={onCancel1}>

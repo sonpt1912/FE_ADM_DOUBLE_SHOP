@@ -1,12 +1,19 @@
 
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { Space, Input, theme, Table, Collapse, Button, DatePicker, Form, Select, } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
+import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled, PlusOutlined } from "@ant-design/icons";
 
 import { } from 'antd';
 import { Link } from "react-router-dom";
-import { fetchCustomer } from "../../../store/slice/KhachHangReducer";
+import moment from 'moment';
+import { deleteCustomer, detailCustomer, fetchCustomer, updateCustomer } from "../../../store/slice/KhachHangReducer";
+import ModalAddAddress from "./ModalAddAddress";
+import UpdateKhachHang from "./UpdateKhachHang";
+import AddKhachHang from "./AddKhachHang";
+import DetailKhachHang from "./DetailModal";
+
 
 
 
@@ -14,35 +21,61 @@ const { Option } = Select;
 
 const KhachHang = () => {
   const dispatch = useDispatch();
-  const customer = useSelector((state) => 
-  
+  const customer = useSelector((state) =>
     state.khachHang.customer
-    
-  
   );
   const loading = useSelector((state) => state.color.status === "loading");
-  const pagination = useSelector((state) => state.color.pagination);
+  const pagination = useSelector((state) => state.khachHang.pagination);
+
   const [searchParams, setSearchParams] = useState({
-    name: "",
-    code: "",
+    phone: "",
+    status: "",
   });
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
-  };
-  
+
+
 
   useEffect(() => {
     dispatch(
       fetchCustomer({
         page: pagination.page,
         pageSize: pagination.pageSize,
-       
-      }),
+        // b: searchParams.name,
+        phone: searchParams.phone,
+        status: searchParams.status
+      })
 
-    );
+    )
 
   }, [dispatch]);
+  const onClickSearch = () => {
+    dispatch(
+      fetchCustomer({
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        phone: searchParams.phone,
+        status: searchParams.status
+      })
+    );
+   
+  }
+  const handleDelete = (id) => {
 
+    dispatch(deleteCustomer(id))
+      .then(() => {
+        dispatch(
+          fetchCustomer({
+            page: pagination.page,
+            pageSize: pagination.pageSize,
+            phone: searchParams.phone,
+            status: searchParams.status
+
+          })
+        );
+      }).catch((error) => {
+        console.error("Lỗi khi xoá màu:", error);
+      });
+
+  };
 
   const { token } = theme.useToken();
   const panelStyle = {
@@ -55,8 +88,38 @@ const KhachHang = () => {
   }
 
 
- 
-   
+  const [customerUpdate, setCustomerUpdate] = useState();
+
+
+
+  const [isModalOpenAddAddress, setIsModalOpenAddAddress] = useState(false);
+
+  const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+  const [cusData, setCusData] = useState();
+  const openModalDetail = async (id) => {
+    const response = await dispatch(detailCustomer(id));
+
+    setCustomerUpdate(response.payload);
+    setCusData(response.payload.address)
+    setIsModalOpenDetail(true);
+  };
+  const closeModalDetail = () => {
+    setIsModalOpenDetail(false);
+  };
+  //add
+  const [isModalOpenAddCus, setIsModalOpenAddCus] = useState(false);
+
+  const openModalAdd = async (id) => {
+    setIsModalOpenAddCus(true);
+
+  };
+
+  const closeModalAdd = () => {
+    setIsModalOpenAddCus(false);
+  };
+  const formatDate = (date) => {
+    return moment(date).format("YYYY-MM-DD"); // Định dạng ngày tháng theo ý muốn, ví dụ: "YYYY-MM-DD HH:mm:ss"
+  };
   const columns = [
     {
       title: 'STT',
@@ -65,12 +128,7 @@ const KhachHang = () => {
       render: (text, record, index) => index + 1,
       sorter: (a, b) => a.index - b.index,
     },
-    {
-      title: 'Ảnh',
-      dataIndex: 'image',
-      key: 'image',
 
-    },
     {
       title: 'Tên Khách Hàng',
       dataIndex: 'name',
@@ -80,15 +138,7 @@ const KhachHang = () => {
         multiple: 2,
       },
     },
-    {
-      title: 'CCCD',
-      dataIndex: 'phone',
-      key: 'phone',
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 2,
-      },
-    },
+
 
     {
       title: 'Số điện thoại',
@@ -99,15 +149,8 @@ const KhachHang = () => {
         multiple: 2,
       },
     },
-    {
-      title: 'Ngày sinh',
-      dataIndex: 'birtDay',
-      key: 'birtDay',
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 2,
-      },
-    },
+  
+    // },
     {
       title: 'Trạng Thái',
       dataIndex: 'status',
@@ -120,16 +163,41 @@ const KhachHang = () => {
       key: 'action',
       render:
         (text, record) => (
+
           <Space >
-            <EyeFilled style={{ fontSize: '23px' }}  ></EyeFilled>
-            <EditFilled style={{ fontSize: '23px' }} ></EditFilled>
-            <DeleteFilled style={{ fontSize: '23px' }}  ></DeleteFilled>
+            <EyeFilled style={{ fontSize: '23px' }} onClick={() => openDetail(record.id)} ></EyeFilled>
+            <EditFilled style={{ fontSize: '23px' }} onClick={() => openModalDetail(record.id)} ></EditFilled>
+            <DeleteFilled style={{ fontSize: '23px' }} onClick={() => handleDelete(record.id)} ></DeleteFilled>
+            <PlusOutlined onClick={() => openAddAddress(record.id)} />
           </Space>
+
         ),
     },
 
-  ];
+  ]
+  //detail
+  const [isModalDetail, setIsModalDetail] = useState(false);
+  const [cusDataDetail, setCusDataDetail] = useState();
+  const openDetail = async (id) => {
+    const response = await dispatch(detailCustomer(id));
+    setCusDataDetail(response.payload);
+    setIsModalDetail(true);
+  };
+  const closeDetail = () => {
+    setIsModalDetail(false);
+  };
+  //add address
 
+  const [isModalAddAddress, setIsModalAddAddress] = useState(false);
+  const [cusDataAddress, setCusDataAddress] = useState();
+  const openAddAddress = async (id) => {
+    const response = await dispatch(detailCustomer(id));
+    setCusDataAddress(response.payload);
+    setIsModalAddAddress(true);
+  };
+  const closeAddress = () => {
+    setIsModalAddAddress(false);
+  };
 
   //add
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -143,31 +211,7 @@ const KhachHang = () => {
     setIsModalOpenAdd(false);
   };
 
-  //detail
-  // const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
-  // const [colorDataDetail, setColorDataDetail] = useState();
-  // const openModalDetail = async (id) => {
-  //   const response = await dispatch(detailColor(id));
 
-  //   setColorDataDetail(response.payload);
-
-  //   setIsModalOpenDetail(true);
-  // };
-  // const closeModalDetail = () => {
-  //   setIsModalOpenDetail(false);
-  // };
-  //update
-
-  // const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
-  // const [colorData, setColorData] = useState();
-  // const openModalUpdate = async (id) => {
-  //   const response = await dispatch(detailColor(id));
-  //   setColorData(response.payload);
-  //   setIsModalOpenUpdate(true);
-  // };
-  // const closeModalUpdate = () => {
-  //   setIsModalOpenUpdate(false);
-  // };
   const containerStyle = {
     display: 'flex',
     alignItems: 'center',
@@ -200,21 +244,18 @@ const KhachHang = () => {
           >
             <div style={containerStyle}>
               <Form.Item label="Tìm kiếm" >
-                <Input placeholder="Tên khách hàng và số điện thoại" style={{ width: "270px" }} value={searchParams.name}
+                <Input placeholder="Tim số điện thoại" style={{ width: "400px" }} value={searchParams.phone}
                   onChange={(e) =>
-                    setSearchParams({ ...searchParams, name: e.target.value })
+                    setSearchParams({ ...searchParams, phone: e.target.value })
                   }
 
                 />
               </Form.Item>
-              <Form.Item label="Ngày Sinh" style={{ marginLeft: "30px" }} >
-              <DatePicker placeholder="Ngày sinh" onChange={onChange}style={{ width: "270px" }} />
-              </Form.Item>
-
+              
 
               <Form.Item label="Trạng Thái" style={{ marginLeft: "30px" }}>
                 <Select
-                  style={{ width: "270px", }}
+                  style={{ width: "400px", }}
                   value={searchParams.status}
                   onChange={(value) =>
                     setSearchParams({ ...searchParams, status: value })
@@ -229,7 +270,7 @@ const KhachHang = () => {
 
           </div>
           <Form.Item wrapperCol={{ offset: 10 }}>
-            <Button type="primary" htmlType="submit" >
+            <Button type="primary"  onClick={onClickSearch}>
               Tìm kiếm
             </Button>
           </Form.Item>
@@ -247,9 +288,15 @@ const KhachHang = () => {
         items={getItems()}
       />
       <div style={{ display: "flex", justifyContent: "space-between" }}>
+
+
         <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
-        <Link to="/dashboard/khachHang/taoKhachHang" >Tạo Khách hàng</Link>
+        <Button type="primary" shape="round" onClick={openModalAdd}>
+          Thêm Khách
+        </Button>
+
       </div>
+
       <Table
 
         columns={columns}
@@ -269,7 +316,33 @@ const KhachHang = () => {
           y: 300,
         }}
       />
-   
+      <ModalAddAddress
+        isOpen={isModalOpenAddAddress}
+      // colors={colorData}
+      // onCancel1={closeModalAddAddress}
+      />
+      <UpdateKhachHang
+        isOpen={isModalOpenDetail}
+        cusUpdate={customerUpdate}
+        cusAddress={cusData}
+        onCancel1={closeModalDetail}
+      />
+      <DetailKhachHang
+
+        isOpenDetail={isModalDetail}
+        cus={cusDataDetail}
+        onCancel1={closeDetail}
+      />
+      <AddKhachHang
+        isOpen={isModalOpenAddCus}
+        onCancel1={closeModalAdd}
+      />
+      <ModalAddAddress
+        isOpen={isModalAddAddress}
+        dataAdd={cusDataAddress}
+        onCancel1={closeAddress}
+      />
+
     </div>
   )
 };
