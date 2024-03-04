@@ -35,11 +35,7 @@ const { RangePicker } = DatePicker;
 const KichCo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const sizes = useSelector((state) => 
- 
-  state.size.sizes
-  
-  );
+  const sizes = useSelector((state) => state.size.sizes);
   const pagination = useSelector((state) => state.size.pagination);
   const [pageSize, setPageSize] = useState(5);
   const [current, setCurrent] = useState(1);
@@ -108,7 +104,7 @@ const KichCo = () => {
           );
           if (response && response.error) {
             if (
-              response.error.message === "Request failed with status code 401"
+              response.error.message === "Request failed with status code 403"
             ) {
               navigate("/login");
               message.error(response.error.message);
