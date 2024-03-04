@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Form, Input, Select, message, Date, Tree, Col } from "antd";
+import { Modal, Button, Form, Input, Select, message, Date, Tree, Col, DatePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { add, fetchPromotions } from "../../../store/slice/KhuyenMaiReducer";
 import axios from "axios";
@@ -17,11 +17,20 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
     endDate: null,
   });
 
+  const onDateTimeChange = (date, dateString) => {
+    console.log(date, dateString);
+    setPayload({
+      ...payload,
+      startDate: dateString,
+      endDate: dateString// Lưu chuỗi ngày bắt đầu
+    });
+  };
 
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      await dispatch(add(payload))
+      const formValues = await form.validateFields();
+      await dispatch(add({ ...formValues, payload }))
         .then(() => {
           dispatch(
             fetchPromotions({
@@ -173,73 +182,149 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
   return (
     <div>
       <Modal
-        title="Add promotion"
+        title="add promotion"
         open={open}
         onOk={handleOk}
-        onCancel={handleCancel}
         confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+        width={1000}
       >
         <div style={{ display: "flex" }}>
-          <Col lg={12} md={6} sm={6}>
-            <form>
-              <h4 className="mt-3">Code promotion:</h4>
-              <Input
+          <Col lg={14} md={24} sm={24}>
+            <Form
+              form={form}
+              name="basic"
+              labelCol={{
+                span: 5,
+              }}
+              wrapperCol={{
+                span: 17,
+              }}
+              style={{
+                maxWidth: 1000,
+                marginTop: "30px",
+
+              }}
+            >
+              <Form.Item
+                label="code"
                 name="code"
-                label="code:"
-                placeholder="Input code matertial"
-                onChange={(e) => setPayload({ ...payload, code: e.target.value })}
-                required
-              />
-              <h4 className="mt-3">Name promotion:</h4>
-              <Input
+                labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
+                labelCol={{
+                  span: 9, // Đặt chiều rộng cho nhãn
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập code phiếu giảm giá"
+                  }
+                ]}
+                onChange={(e) =>
+                  setPayload({ ...payload, code: e.target.value })
+                }
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                label="name"
                 name="name"
-                label="name:"
-                placeholder="Input name matertial"
-                onChange={(e) => setPayload({ ...payload, name: e.target.value })}
-                required
-              />
-              <h4 className="mt-3">discountAmount promotion:</h4>
-              <Input
+                labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
+                labelCol={{
+                  span: 9, // Đặt chiều rộng cho nhãn
+                }}
+
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập tên phiếu giảm giá"
+                  }
+                ]}
+                onChange={(e) =>
+                  setPayload({ ...payload, name: e.target.value })
+                }
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
+                onChange={(e) =>
+                  setPayload({ ...payload, discountAmount: e.target.value })
+                }
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập giảm giá theo tiền"
+                  }
+                ]}
+                labelCol={{
+                  span: 9, // Đặt chiều rộng cho nhãn
+                }}
+                label="Giảm giá theo tiền"
                 name="discountAmount"
-                label="discountAmount:"
-                placeholder="Input value matertial"
-                onChange={(e) => setPayload({ ...payload, discountAmount: e.target.value })}
-                required
-              />
-              <h4 className="mt-3">discountPercent promotion:</h4>
-              <Input
+              // Rest of your code
+              >
+                <Input type="number" placeholder="VNĐ" min={0}
+                />
+              </Form.Item>
+
+              <Form.Item
+                labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
+                onChange={(e) =>
+                  setPayload({ ...payload, discountPercent: e.target.value })
+                }
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập giảm giá theo phần trăm"
+                  }
+                ]}
+                labelCol={{
+                  span: 9, // Đặt chiều rộng cho nhãn
+                }}
+                label="Giảm giá theo phần trăm"
                 name="discountPercent"
-                label="discountPercent:"
-                placeholder="Input value matertial"
-                onChange={(e) => setPayload({ ...payload, discountPercent: e.target.value })}
-                required
-              />
-              <h4 className="mt-3">Startdate promotion:</h4>
-              <Input
+              // Rest of your code
+              >
+                <Input type="number" placeholder="%" min={0} />
+              </Form.Item>
+
+              <Form.Item
+                labelAlign="left"
                 name="startDate"
-                label="startDate:"
-                // placeholder="Input name matertial"
-                type="Date"
-                onChange={(e) => setPayload({ ...payload, startDate: e.target.value })}
-                required
-              />
-              <h4 className="mt-3">Enddate promotion:</h4>
-              <Input
+                label="startDate"
+                labelCol={{
+                  span: 9, // Đặt chiều rộng cho nhãn
+                }}
+                rules={[{ required: true }]}
+              >
+                <Input
+                  type="Date"
+                  onChange={(e) => setPayload({ ...payload, startDate: e.target.value })}
+                  required
+                />
+              </Form.Item>
+              <Form.Item
+                labelAlign="left"
                 name="endDate"
-                label="endDate:"
-                // placeholder="Input name matertial"
-                type="Date"
-                onChange={(e) => setPayload({ ...payload, endDate: e.target.value })}
-                required
-              />
+                label="endDate"
+                labelCol={{
+                  span: 9, // Đặt chiều rộng cho nhãn
+                }}
+                rules={[{ required: true }]}
 
-
-              {/* <Button htmlType="submit" onClick={handleOk}>Update</Button>
-            <Button onClick={handleCancel}>Cancel</Button> */}
-            </form>
+              >
+                <Input
+                  type="Date"
+                  onChange={(e) => setPayload({ ...payload, startDate: e.target.value })}
+                  required
+                />
+              </Form.Item>
+            </Form>
           </Col>
-          <Col lg={12} md={6} sm={6}>
-            <h5>Chọn sản phẩm</h5>
+          <Col style={{ marginLeft: "30px" }} lg={9} md={24} sm={24}>
+            <h3 >Chọn sản phẩm</h3>
             <Tree
               checkable
               onExpand={onExpand}
@@ -251,7 +336,6 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
               selectedKeys={selectedKeys}
               treeData={tree}
             />
-            {/* {treeData.map(rootNode => renderTree(rootNode))} */}
           </Col>
         </div>
       </Modal>

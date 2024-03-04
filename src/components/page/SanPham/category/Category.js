@@ -35,11 +35,7 @@ const { RangePicker } = DatePicker;
 const KichCo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const sizes = useSelector((state) => 
- 
-  state.size.sizes
-  
-  );
+  const sizes = useSelector((state) => state.size.sizes);
   const pagination = useSelector((state) => state.size.pagination);
   const [pageSize, setPageSize] = useState(5);
   const [current, setCurrent] = useState(1);
@@ -252,8 +248,7 @@ const KichCo = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (text) => (text === 1 ? "Hoat Dong" : "Ngung Hoat dong"),
-      width: 150,
+      width: 100,
     },
     {
       title: "Hành động",
@@ -303,7 +298,7 @@ const KichCo = () => {
       <>
         <Divider orientation="left">KÍCH CỠ</Divider>
         <Collapse
-          defaultActiveKey={["0"]}
+          defaultActiveKey={["1"]}
           expandIcon={({ isActive }) => (
             <CaretRightOutlined rotate={isActive ? 90 : 0} />
           )}

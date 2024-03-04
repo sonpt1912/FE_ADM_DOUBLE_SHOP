@@ -1,5 +1,6 @@
 import { CaretRightOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
+import qs from "qs";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Collapse,
@@ -15,36 +16,35 @@ import {
   Col,
   Row,
   message,
-  Popconfirm,
+  Popconfirm,Pagination
 } from "antd";
 import {
   SearchOutlined,
-  EditOutlined,
-  EyeOutlined,
-  DeleteOutlined,
+  EditFilled,
+  EyeFilled,
+  DeleteFilled,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchSizes, updateSize } from "../../../../config/api";
-import ModalAddSize from "./modalAddSize";
-import ModalUpdateSize from "./modalUpdateSize";
-
+import { fetchCollars,updateCollar,detailCollar } from "../../../../config/api1";
+import ModalAddCollar from "./ModalCollarAdd";
+import ModalUpdateCollar from "./ModalCollarEdit";
+import ModalCollarDetail from "./ModalDetailCollar";
 const { Option } = Select;
 
 const { RangePicker } = DatePicker;
 
-const KichCo = () => {
+const CoAo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const sizes = useSelector((state) => 
+  const collars = useSelector((state) => 
+  state.collar.collars
  
-  state.size.sizes
-  
   );
-  const pagination = useSelector((state) => state.size.pagination);
-  const [pageSize, setPageSize] = useState(5);
+  const pagination = useSelector((state) => state.collar.pagination);
+  const [pageSize, setPageSize] = useState(10);
   const [current, setCurrent] = useState(1);
-  const loading = useSelector((state) => state.size.status === "loading");
-
+  const loading = useSelector((state) => state.collar.status === "loading");
+  const [isSearching, setIsSearching] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleUpdate, setModalVisibleUpdate] = useState(false);
 
@@ -52,6 +52,7 @@ const KichCo = () => {
     code: "",
     name: "",
     description: "",
+    status:""
   });
 
   const [updateStatus, setUpdateStatus] = useState({ status: 0 });
@@ -72,6 +73,7 @@ const KichCo = () => {
   };
 
   const [searchParams, setSearchParams] = useState({
+    code:"",
     name: "",
     status: "",
   });
@@ -83,35 +85,84 @@ const KichCo = () => {
     };
     const newStatus = record.status === 1 ? 0 : 1;
     setUpdateStatus({ status: newStatus });
-    await dispatch(updateSize({ ...payloadStatus, ...updateStatus }));
-    message.success("Size updated successfully");
+    await dispatch(updateCollar({ ...payloadStatus, ...updateStatus }));
+    message.success("Collar updated successfully");
 
     dispatch(
-      fetchSizes({
-        page: pagination.current,
+      fetchCollars({
+        page: pagination.current ,
         pageSize: pageSize,
       })
     );
   };
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (!modalVisible && !modalVisibleUpdate) {
           const response = await dispatch(
-            fetchSizes({
+            fetchCollars({
               page: current - 1,
               pageSize: pageSize,
+              code:searchParams.code,
               name: searchParams.name,
               status: searchParams.status,
             })
           );
+
           if (response && response.error) {
             if (
-              response.error.message === "Request failed with status code 401"
+              response.error.message ===
+              "Access Denied !! Full authentication is required to access this resource"
             ) {
-              navigate("/login");
-              message.error(response.error.message);
+              let count = 5;
+
+              const countdownMessage = () => {
+                if (count === 0) {
+                  navigate("/login");
+                  return;
+                }
+
+                const errorMessage =
+                  count === 5
+                    ? "Access Denied !! Full authentication is required to access this resource."
+                    : `Redirecting to login page in ${count} seconds...`;
+                message.loading({
+                  content: errorMessage,
+                  duration: 1,
+                  onClose: () => {
+                    count--;
+                    countdownMessage();
+                  },
+                });
+              };
+
+              countdownMessage();
+            } else {
+              message.error("Error fetching data. Please try again later.");
+              let count = 5;
+
+              const countdownMessage = () => {
+                if (count === 0) {
+                  navigate("/login");
+                  return;
+                }
+                const errorMessage =
+                  count === 5
+                    ? "Error fetching data. Please try again later."
+                    : `Redirecting to login page in ${count} seconds...`;
+
+                message.loading({
+                  content: errorMessage,
+                  duration: 1,
+                  onClose: () => {
+                    count--;
+                    countdownMessage();
+                  },
+                });
+              };
+
+              countdownMessage();
             }
           }
         }
@@ -122,7 +173,7 @@ const KichCo = () => {
     };
 
     fetchData();
-  }, [modalVisible, modalVisibleUpdate, current, pageSize]);
+  }, [modalVisible, modalVisibleUpdate, current, pageSize,isSearching]);  
 
   const onClickEdit = (record) => {
     setPayload({
@@ -133,16 +184,36 @@ const KichCo = () => {
     });
     openModalUpdate();
   };
+  
+  const onClickSearch = async () => {
+    setIsSearching(true);
+     
+    console.log(isSearching);
 
-  const onClickSearch = () => {
-    dispatch(
-      fetchSizes({
-        page: pagination.current,
+   await dispatch(
+      fetchCollars({
+        page: pagination.current ,
         pageSize: pageSize,
+        code:searchParams.code,
         name: searchParams.name,
         status: searchParams.status,
       })
     );
+    setIsSearching(false);
+    console.log(isSearching);
+  };
+
+  const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+  const [collarDataDetail, setCollarDataDetail] = useState();
+  const openModalDetail = async (id) => {
+    const response = await dispatch(detailCollar(id));
+
+    setCollarDataDetail(response.payload);
+
+    setIsModalOpenDetail(true);
+  };
+  const closeModalDetail = () => {
+    setIsModalOpenDetail(false);
   };
 
   const { token } = theme.useToken();
@@ -173,6 +244,7 @@ const KichCo = () => {
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, name: e.target.value })
                   }
+                  disabled={console.log(isSearching) || isSearching}
                 />
               </Form.Item>
             </Col>
@@ -185,6 +257,7 @@ const KichCo = () => {
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, code: e.target.value })
                   }
+                  disabled={console.log(isSearching) || isSearching}
                 />
               </Form.Item>
             </Col>
@@ -196,10 +269,11 @@ const KichCo = () => {
                   onChange={(value) =>
                     setSearchParams({ ...searchParams, status: value })
                   }
+                  disabled={console.log(isSearching) || isSearching}
                   allowClear
                 >
-                  <Option value="0">0</Option>
-                  <Option value="1">1</Option>
+                  <Option value="0">Không hoạt động</Option>
+                  <Option value="1">Hoạt động</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -210,6 +284,7 @@ const KichCo = () => {
               htmlType="submit"
               icon={<SearchOutlined />}
               onClick={onClickSearch}
+              disabled={isSearching}
             >
               Search
             </Button>
@@ -252,8 +327,8 @@ const KichCo = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (text) => (text === 1 ? "Hoat Dong" : "Ngung Hoat dong"),
-      width: 150,
+      width: 100,
+      render: (text) => (text == "0" ? "Không Hoạt Động" : " Hoạt Động")
     },
     {
       title: "Hành động",
@@ -261,14 +336,14 @@ const KichCo = () => {
       width: 150,
       render: (text, record) => (
         <Space size="middle">
-          <Button style={{ border: "none" }} icon={<EyeOutlined />} />
+          <Button style={{ border: "none" }} icon={<EyeFilled />} onClick={() => openModalDetail(record.id)}/>
           <Button
             style={{ border: "none" }}
-            icon={<EditOutlined />}
+            icon={<EditFilled />}
             onClick={() => onClickEdit(record)}
           />
           <Popconfirm
-            title="Are you sure you want to delete this size?"
+            title="Are you sure you want to delete this collar?"
             onConfirm={() => handleChangeStatus(record)}
             okText="Yes"
             cancelText="No"
@@ -277,7 +352,7 @@ const KichCo = () => {
             <Button
               style={{ border: "none" }}
               disabled={record.status === 0}
-              icon={<DeleteOutlined />}
+              icon={<DeleteFilled />}
             />
           </Popconfirm>
         </Space>
@@ -286,62 +361,74 @@ const KichCo = () => {
   ];
   const getTitle = () => (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <span style={{ marginRight: 8 }}>Danh Sách Size</span>
+      <span style={{ marginRight: 8 }}>Danh Sách Cổ Áo</span>
       <Button type="primary" shape="round" onClick={openModal}>
-        Thêm Kích Cỡ
+        Thêm Cổ Áo
       </Button>
     </div>
   );
 
   const handleTableChange = (pagination) => {
-    const { current, pageSize } = pagination;
+    const { current } = pagination;
+    if (pagination.pageSize !== pageSize) {
+      setPageSize(pagination.pageSize);
+    }
     setCurrent(current);
+ 
   };
+
 
   return (
     <div>
       <>
-        <Divider orientation="left">KÍCH CỠ</Divider>
+        <Divider orientation="left">Cổ Áo</Divider>
         <Collapse
-          defaultActiveKey={["0"]}
-          expandIcon={({ isActive }) => (
-            <CaretRightOutlined rotate={isActive ? 90 : 0} />
-          )}
-          style={{
-            background: token.colorBgContainer,
-          }}
+          // defaultActiveKey={["1"]}
+          // expandIcon={({ isActive }) => (
+          //   <CaretRightOutlined rotate={isActive ? 90 : 0} />
+          // )}
+          // style={{
+          //   background: token.colorBgContainer,
+          // }}
           items={getItems()}
         />
+       
         <Table
-          columns={columns}
-          rowKey={(record) => record.id}
-          dataSource={sizes}
-          pagination={{
-            pageSize: pageSize,
-            total: pagination.totalItems,
-            current: current,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (totalPages) => `Total ${totalPages} items`,
-          }}
-          scroll={{
-            x: 1000,
-            y: 300,
-          }}
-          loading={loading}
-          title={getTitle}
-          onChange={handleTableChange}
+         columns={columns}
+         rowKey={(record) => record.id}
+         dataSource={collars}
+         pagination={{
+           pageSize: pageSize,
+           total: pagination.totalItems,
+           current: current,
+           showSizeChanger: true, // Thêm thuộc tính showSizeChanger vào đây
+           showQuickJumper: true,
+           showTotal: (totalPages) => `Total ${totalPages} items`,
+           
+         }}
+         scroll={{
+           x: 1000,
+           y: 300,
+         }}
+         loading={loading}
+         title={getTitle}
+         onChange={handleTableChange}
         />
-        <ModalAddSize open={modalVisible} closeModal={closeModal} />
-        <ModalUpdateSize
+        <ModalAddCollar open={modalVisible} closeModal={closeModal} />
+        <ModalUpdateCollar
           open={modalVisibleUpdate}
           loading={loading}
           closeModal={closeModalUpdate}
           payload={payload}
         />
+        <ModalCollarDetail
+        isOpen={isModalOpenDetail}
+        collars={collarDataDetail}
+        onCancel1={closeModalDetail}
+      />
       </>
     </div>
   );
 };
 
-export default KichCo;
+export default CoAo;

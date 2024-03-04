@@ -9,6 +9,9 @@ import MauReducer from "./slice/MauReducer";
 import AuthReducer from "./slice/AuthReducer";
 import ChatLieuReducer from "./slice/ChatLieuReducer";
 import KhuyenMaiReducer from "./slice/KhuyenMaiReducer";
+import CollarReducer from "./slice/CollarReducer";
+import VoucherReducer from "./slice/VoucherReducer";
+
 const store = configureStore({
   reducer: {
     khachHang : KhachHangReducer,
@@ -17,7 +20,9 @@ const store = configureStore({
     material: ChatLieuReducer,
     promotion: KhuyenMaiReducer,
     color: MauReducer,
+    collar: CollarReducer,
     auth: AuthReducer,
+    voucher:VoucherReducer
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });

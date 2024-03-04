@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Space, Input, Table, Collapse, Form, Select, Button, Divider, Row, Col, theme } from "antd";
+import { Space, Input, Table, Collapse, Form, Select, Button, Divider, Row, Col, theme, message, Popconfirm } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-
+import moment from "moment";
 import ModalKhuyenMai from "./ModalKhuyenMaiAdd";
 import ModalKhuyenMaiEdit from "./ModalKhuyenMaiEdit";
 import ModalKhuyenMaiDetail from "./ModalKhuyenMaiChiTiet";
 import Material from "../SanPham/ChatLieu/ChatLieu";
 import { SearchOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
-import { fetchPromotions, Delete, detail } from "../../../store/slice/KhuyenMaiReducer";
+import { fetchPromotions, Delete, detail, update } from "../../../store/slice/KhuyenMaiReducer";
 const Promotion = () => {
     const dispatch = useDispatch();
+    // const [updateStatus, setUpdateStatus] = useState({ status: 0 });
     const promotions = useSelector((state) => state.promotion.promotions);
     const pagination = useSelector((state) => state.promotion.pagination);
+    const [pageSize, setPageSize] = useState();
     console.log("Pagination", pagination);
     const loading = useSelector((state) => state.promotion.status === "loading");
 
@@ -34,6 +36,21 @@ const Promotion = () => {
             })
         );
     }, [dispatch]);
+
+    // useEffect(() => {
+    //     const updateExpiredPromotion = async () => {
+    //         promotions.forEach(async (promotion) => {
+    //             if (
+    //                 moment(promotion.endDate).isBefore(moment()) &&
+    //                 promotion.status === 1
+    //             ) {
+    //                 await handleChangeStatus(promotion);
+    //             }
+    //         });
+    //     };
+
+    //     updateExpiredPromotion();
+    // }, [promotions]);
 
     const onClickSearch = () => {
         dispatch(
@@ -119,8 +136,21 @@ const Promotion = () => {
                     <Button
                         icon={<DeleteOutlined />}
                         style={{ border: "none" }}
-                        onClick={() => handleDelete(record.id)} disabled={record.status === 0} />
-
+                        onClick={() => handleDelete(record.id)} disabled={record.status === 0} 
+                        />
+                    {/* <Popconfirm
+                        title="Are you sure you want to delete this voucher?"
+                        onConfirm={() => handleChangeStatus(record.id)}
+                        okText="Yes"
+                        cancelText="No"
+                        loading={loading}
+                    >
+                        <Button
+                            style={{ border: "none" }}
+                            disabled={record.status === 0}
+                            icon={<DeleteOutlined />}
+                        />
+                    </Popconfirm> */}
                 </Space>
             ),
         },
@@ -184,6 +214,28 @@ const Promotion = () => {
     const closeModalUpdate = () => {
         setIsModalOpenUpdate(false);
     };
+
+    // const handleChangeStatus = async (record) => {
+    //     const payloadStatus = {
+    //         code: record.code,
+    //         name: record.name,
+    //         discountAmount: record.discountAmount,
+    //         discountPercent: record.discountPercent,
+    //         startDate: record.startDate,
+    //         endDate: record.endDate
+
+    //     };
+    //     const newStatus = record.status === 1 ? 0 : 1;
+    //     setUpdateStatus({ status: newStatus });
+    //     await dispatch(update({ ...payloadStatus, ...updateStatus }));
+    //     message.success("Promotion updated successfully");
+    //     dispatch(
+    //         fetchPromotions({
+    //             page: pagination.current,
+    //             pageSize: pageSize,
+    //         })
+    //     );
+    // };
 
     const { Option } = Select;
 
