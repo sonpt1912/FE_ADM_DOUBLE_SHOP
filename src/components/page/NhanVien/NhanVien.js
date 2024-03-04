@@ -64,6 +64,7 @@ const NhanVien = () => {
     name: "",
     phone: "",
     email: "",
+    status: "",
     city: "",
     district: "",
     provice: "",
