@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message, DatePicker,TimePicker ,Radio} from "antd";
 import { useDispatch } from "react-redux";
 import { saveVoucher } from "../../../config/voucherApi";
-
+import moment from "moment";
 const { TextArea } = Input;
 
 const ModalAddVoucher = ({ open, closeModal }) => {
@@ -18,8 +18,8 @@ const ModalAddVoucher = ({ open, closeModal }) => {
     console.log(date, dateString);
     setPayload({
       ...payload,
-      startDate: dateString, 
-      endDate:dateString// Lưu chuỗi ngày bắt đầu
+      startDate: moment(dateString).format("YYYY-MM-DD HH:mm:ss"),
+      endDate: moment(dateString).format("YYYY-MM-DD HH:mm:ss")
     });
   };
   const [payload, setPayload] = useState({
@@ -93,7 +93,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           name="name"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
       
           rules={[
@@ -109,7 +109,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           <Input />
         </Form.Item>
      
-          <Form.Item label="Loại giảm giá" required="true" labelCol={{ span: 8 }}>
+          <Form.Item label="Loại giảm giá" required="true" labelCol={{ span: 9 }} labelAlign="left">
           <Radio.Group onChange={handleDiscountTypeChange} value={discountType} style={{ display: 'flex', flexDirection: 'column' }}>
             <Radio value="amount" >Giảm theo tiền</Radio>
             <Radio value="percent">Giảm theo phần trăm</Radio>
@@ -129,7 +129,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
             }
           ]}
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
             label="Giảm giá theo tiền"
             name="discountAmount"
@@ -170,7 +170,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           name="quantity"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
           rules={[
             {
@@ -191,7 +191,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           name="minimumOrder"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
           rules={[
             {
@@ -212,7 +212,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           name="startDate"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
           rules={[
             {
@@ -222,14 +222,14 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           ]}
         
         >
-          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange} />
+          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange}  format="YYYY-MM-DD HH:mm:ss"/>
         </Form.Item>
         <Form.Item
           label="Ngày kết thúc"
           name="endDate"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
           rules={[
             {
@@ -239,7 +239,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           ]}
           
         >
-          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange}/>
+          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange}  format="YYYY-MM-DD HH:mm:ss"/>
         </Form.Item>
       </Form>
     </Modal>

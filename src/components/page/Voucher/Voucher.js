@@ -99,9 +99,9 @@ const Voucher = () => {
         discountAmount:record.discountAmount,
         discountPercent:record.discountPercent,
         minimumOrder:record.minimumOrder,
-        startDate: record.startDate,
-        endDate:record.endDate 
-        
+        startDate: moment(record.startDate).format("YYYY-MM-DD HH:mm:ss"),
+        endDate:moment(record.endDate).format("YYYY-MM-DD HH:mm:ss")
+      
     };
     const newStatus = record.status === 1 ? 0 : 1;
     setUpdateStatus({ status: newStatus });
@@ -233,8 +233,8 @@ const Voucher = () => {
         discountAmount:record.discountAmount,
         discountPercent:record.discountPercent,
         minimumOrder:record.minimumOrder,
-        startDate: record.startDate,
-        endDate:record.endDate ,
+        startDate: moment(record.startDate).format("YYYY-MM-DD HH:mm:ss"),
+        endDate:moment(record.endDate).format("YYYY-MM-DD HH:mm:ss") ,
         status:record.status 
     });
     openModalUpdate();
@@ -496,7 +496,7 @@ const Voucher = () => {
       dataIndex: "status",
       key: "status",
       width: 100,
-      render: (text) => (text == "0" ? "Không Hoạt Động" : " Hoạt Động")
+      render: (text) => (text == "1" ? "Hoạt động" : "Không hoạt động")
     },
     {
       title: "Hành động",

@@ -104,7 +104,7 @@ const ModalVoucherDetail = ({ isOpen, onCancel1, vouchers }) => {
             <Input
           name="endDate"
          
-         value={moment(formatDate(startDate))}
+         value={moment(formatDate(endDate))}
          
           />
           

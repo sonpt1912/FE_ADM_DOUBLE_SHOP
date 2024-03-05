@@ -3,7 +3,7 @@ import { Modal, Form, Input, message, Select, DatePicker } from "antd";
 import { useDispatch } from "react-redux";
 import { updateVoucher } from "../../../config/voucherApi";
 import moment from 'moment';
-import 'moment/locale/vi'; // Import Vietnamese locale data
+
 const { TextArea } = Input;
 
 const ModalUpdateVoucher = ({ open, closeModal, payload }) => {
@@ -17,19 +17,26 @@ const ModalUpdateVoucher = ({ open, closeModal, payload }) => {
     discountPercent:"",
     minimumOrder:"",
     startDate:"",
-    endDate:""
+    endDate:"",
+ 
   });
   const [editableDiscountAmount, setEditableDiscountAmount] = useState(true);
   const [editableDiscountPercent, setEditableDiscountPercent] = useState(true);
 
 
-const handleChange = (date, dateString) => {
-  setUpdatedValues(prevState => ({
-    ...prevState,
-    startDate: dateString,
-    endDate: dateString
-  }));
-};
+  const handleStartDateChange = (date, dateString) => {
+    setUpdatedValues(prevState => ({
+      ...prevState,
+      startDate: moment(dateString).format("YYYY-MM-DD HH:mm:ss")
+    }));
+  };
+  
+  const handleEndDateChange = (date, dateString) => {
+    setUpdatedValues(prevState => ({
+      ...prevState,
+      endDate: moment(dateString).format("YYYY-MM-DD HH:mm:ss")
+    }));
+  };
   useEffect(() => {
     form.setFieldsValue({
       code: payload.code,
@@ -40,23 +47,24 @@ const handleChange = (date, dateString) => {
       minimumOrder:payload.minimumOrder,
       startDate: payload.startDate ? moment(payload.startDate) : null,
       endDate: payload.endDate ? moment(payload.endDate) : null,
-      status: payload.status,
+      status: payload.status
     });
     setEditableDiscountAmount(payload.discountAmount > 0);
     setEditableDiscountPercent(payload.discountPercent > 0);
+    
   }, [form, payload]);
 
   const handleValuesChange = (_, allValues) => {
     setUpdatedValues({
       name: allValues.name,
-   
+    
     quantity:allValues.quantity,
     discountAmount:allValues.discountAmount,
     discountPercent:allValues.discountPercent,
     minimumOrder:allValues.minimumOrder,
     startDate: allValues.startDate ? moment(allValues.startDate).format("YYYY-MM-DD HH:mm:ss") : "",
-    endDate: allValues.endDate ? moment(allValues.endDate).format("YYYY-MM-DD HH:mm:ss") : ""
-      
+    endDate: allValues.endDate ? moment(allValues.endDate).format("YYYY-MM-DD HH:mm:ss") : "",
+    
     });
   };
    
@@ -177,7 +185,7 @@ rules={[
           }
         ]}
         >
-        <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime onChange={handleChange} />
+        <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime onChange={handleStartDateChange} />
 
 
         </Form.Item>
@@ -189,7 +197,7 @@ rules={[
           }
         ]}
         >
-        <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime onChange={handleChange} 
+        <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime onChange={handleEndDateChange} 
           />
 
         </Form.Item>
