@@ -22,7 +22,7 @@ const sizeSlice = createSlice({
         state.status = "succeeded";
         state.sizes = action.payload.data.listData;
         state.pagination = {
-          totalItems: action.payload.totalRecord,
+          totalItems: action.payload.data.totalRecord,
         };
       })
       .addCase(fetchSizes.rejected, (state, action) => {

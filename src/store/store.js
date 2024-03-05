@@ -9,6 +9,7 @@ import MauReducer from "./slice/MauReducer";
 import AuthReducer from "./slice/AuthReducer";
 import CollarReducer from "./slice/CollarReducer";
 import VoucherReducer from "./slice/VoucherReducer";
+import EmployeeReducer from "./slice/EmployeeReducer";
 
 const store = configureStore({
   reducer: {
@@ -18,7 +19,8 @@ const store = configureStore({
     color: MauReducer,
     collar: CollarReducer,
     auth: AuthReducer,
-    voucher:VoucherReducer
+    voucher:VoucherReducer,
+    employee: EmployeeReducer
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });
