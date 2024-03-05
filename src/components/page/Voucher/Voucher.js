@@ -501,16 +501,16 @@ const Voucher = () => {
     {
       title: "Hành động",
       key: "actions",
-      width: 150,
+      width: 100,
       render: (text, record) => (
-        <Space size="middle">
+        <Space size="middle" >
           <Button style={{ border: "none" }} icon={<EyeFilled />} onClick={() => openModalDetail(record.id)}/>
           <Button
             style={{ border: "none" }}
             icon={<EditFilled />}
             onClick={() => onClickEdit(record)}
           />
-          <Popconfirm
+          {/* <Popconfirm
             title="Are you sure you want to delete this voucher?"
             onConfirm={() => handleChangeStatus(record)}
             okText="Yes"
@@ -522,7 +522,7 @@ const Voucher = () => {
               disabled={record.status === 0}
               icon={<DeleteFilled />}
             />
-          </Popconfirm>
+          </Popconfirm> */}
         </Space>
       ),
     },
