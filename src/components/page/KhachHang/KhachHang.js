@@ -8,7 +8,8 @@ import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled, PlusO
 import { } from 'antd';
 import { Link } from "react-router-dom";
 import moment from 'moment';
-import { deleteCustomer, detailCustomer, fetchCustomer, updateCustomer } from "../../../store/slice/KhachHangReducer";
+import { deleteCustomer,detailCustomer,fetchCustomer } from "../../../config/KhachHangApi";
+
 import ModalAddAddress from "./ModalAddAddress";
 import UpdateKhachHang from "./UpdateKhachHang";
 import AddKhachHang from "./AddKhachHang";

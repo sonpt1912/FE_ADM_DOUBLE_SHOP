@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
+import { fetchColors,deleteColor,detailColor,addColor,updateColor } from "../../config/MauApi";
 
 const initialState = {
   colors: [],
@@ -9,71 +9,6 @@ const initialState = {
   pagination: {},
 
 }
-export const fetchColors = createAsyncThunk(
-  "colors/fetchColors",
-  async (payload) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8072/color/get-all",
-        payload
-      );
-      console.log("sss", response.data)
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
-export const deleteColor = createAsyncThunk(
-  'colors/deleteColor',
-  async (colorId) => {
-    try {
-      const response = await axios.post(`http://localhost:8072/color/delete/${colorId}`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
-export const addColor = createAsyncThunk(
-  'colors/addColor',
-  async (colorData) => {
-    try {
-      const response = await axios.post('http://localhost:8072/color/save', colorData);
-      return response.data;
-    } catch (error) {
-
-      throw error;
-    }
-  },
-
-
-);
-export const detailColor = createAsyncThunk(
-  'colors/detailColor',
-  async (colorId) => {
-    try {
-      const response = await axios.get(`http://localhost:8072/color/get-one-by-id/${colorId}`);
-      return response.data;
-    } catch (error) {
-
-      throw error;
-    }
-  });
-export const updateColor = createAsyncThunk(
-  'colors/updateColor',
-  async (colorId1) => {
-    try {
-
-      const response = await axios.put(`http://localhost:8072/color/update/${colorId1.id}`, colorId1);
-
-      return response.data;
-
-    } catch (error) {
-
-      throw error;
-    }
-  });
 
 
 

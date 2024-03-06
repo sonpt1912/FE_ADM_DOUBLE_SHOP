@@ -7,7 +7,7 @@ import { } from 'antd';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { addCustomer, detailCustomer, fetchCustomer, getAddress, updateCustomer, updateCustomerAddress ,detailCustomerAddress} from "../../../store/slice/KhachHangReducer";
+import { detailCustomer,updateCustomer,detailCustomerAddress } from "../../../config/KhachHangApi";
 import { Link } from "react-router-dom";
 import TabPane from "antd/es/tabs/TabPane";
 import ModalUpdateAddress from "./ModalUpdateAddress";
@@ -301,7 +301,7 @@ const UpdateKhachHang = ({ isOpen, onCancel1, cusUpdate, cusAddress }) => {
                                             value={b.province}
                                         />
                                         <h4 className="mt-3">Số nhà/ngõ/đường</h4>
-                                        <Input name="description" value={description} onChange={(e) => handleInputChange({ target: { name: 'description', value: e.target.value } })} />
+                                        <Input name="description" value={b.description} onChange={(e) => handleInputChange({ target: { name: 'description', value: e.target.value } })} />
                                         
                                     </form>
                                     <h4 className="mt-3"></h4>

@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 
 import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled } from "@ant-design/icons";
+import { fetchColors,deleteColor,detailColor } from "../../../../config/MauApi";
 
-import { fetchColors, deleteColor,detailColor, addColor } from "../../../../store/slice/MauReducer";
 import { } from 'antd';
 
 import ModalColor from "./ModalColorAdd";

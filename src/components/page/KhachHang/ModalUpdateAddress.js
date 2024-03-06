@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux';
 import { Button, Modal, Form, Input, Select, ColorPicker, message, Radio } from 'antd';
 
 import TextArea from 'antd/es/input/TextArea';
-import AddressApi from '../../../config/AddressApi';
-import { addCustomerAddress, updateCustomerAddress } from '../../../store/slice/KhachHangReducer';
+import { addCustomerAddress, updateCustomerAddress } from '../../../config/KhachHangApi';
+
 import axios from "axios";
 const { Option } = Select;
 
@@ -34,7 +34,7 @@ const ModalUpdateAddress = ({ isOpen, onCancel1, dataUpdate, idCus }) => {
     const [username, setUsername] = useState('')
     const [id1, setId1] = useState('')
     const [description, setDescription] = useState('');
-    const addressApi = AddressApi();
+    
 
     const [id, setId] = useState('')
     const [cityData, setCityData] = useState([]);
@@ -144,7 +144,8 @@ const ModalUpdateAddress = ({ isOpen, onCancel1, dataUpdate, idCus }) => {
                 is_defaul:is_defaul
 
             };
-            await dispatch(updateCustomerAddress(formData ));
+            console.log("idddd", formData)
+            await dispatch(updateCustomerAddress({id1, id,payload: formData}));
             
             message.success("Sửa địa chỉ khách hàng thành công");
             form.resetFields();

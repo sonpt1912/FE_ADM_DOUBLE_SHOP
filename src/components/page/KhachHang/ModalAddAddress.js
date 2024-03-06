@@ -4,7 +4,8 @@ import { useDispatch } from 'react-redux';
 import { Button, Modal, Form, Input, Select, ColorPicker, message, Radio } from 'antd';
 
 import TextArea from 'antd/es/input/TextArea';
-import { addCustomerAddress } from '../../../store/slice/KhachHangReducer';
+import { addCustomerAddress } from '../../../config/KhachHangApi';
+
 import axios from "axios";
 const { Option } = Select;
 
@@ -128,8 +129,10 @@ const ModalAddAddress = ({ isOpen, onCancel1, dataAdd }) => {
                 is_defaul: is_defaul
 
             };
+            console.log(formData)
             await dispatch(addCustomerAddress(formData));
             message.success("Thêm địa chỉ thành công");
+            form.resetFields();
             onCancel1();
         } catch (error) {
             onCancel1();
@@ -143,12 +146,12 @@ const ModalAddAddress = ({ isOpen, onCancel1, dataAdd }) => {
     }
     useEffect(() => {
 
-        // if (dataAdd) {
+        if (dataAdd) {
 
-        //     setId(dataAdd.id)
+            setId(dataAdd.id)
 
 
-        // }
+        }
 
     }, [dataAdd]);
 

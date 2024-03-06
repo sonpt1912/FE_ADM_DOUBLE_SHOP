@@ -4,7 +4,7 @@ import { } from 'antd';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { addCustomer, fetchCustomer, getAddress } from "../../../store/slice/KhachHangReducer";
+import { addCustomer } from "../../../config/KhachHangApi";
 import { Link } from "react-router-dom";
 import AddressApi from "../../../config/AddressApi";
 const AddKhachHang = ({ isOpen, onCancel1, cusAdd }) => {
@@ -93,7 +93,12 @@ const AddKhachHang = ({ isOpen, onCancel1, cusAdd }) => {
         const selectedWarName = warData.find(war => war.value === value)?.label;
         setWard(selectedWarName);
     };
-
+    useEffect(() => {
+        if (isOpen) {
+            // Reset form fields when modal opens
+            form.resetFields();
+        }
+    }, [isOpen]);
     useEffect(() => {
         dataCity();
         
@@ -156,13 +161,13 @@ const AddKhachHang = ({ isOpen, onCancel1, cusAdd }) => {
                         }
                     ]
                 };
-    
-                await dispatch(addCustomer(formData));
+                setConfirmLoading(true);
+                dispatch(addCustomer(formData));
                 message.success("Thêm khách hàng thành công");
+                // dispatch(fetchCustomer());
                 form.resetFields();
                 onCancel1();
             }).catch((error) => {
-                
                 message.error('Vui lòng điền đầy đủ thông tin bắt buộc.');
             });
         } catch (error) {

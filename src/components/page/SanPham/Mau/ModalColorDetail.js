@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Modal, Form, Input, Select, ColorPicker, message } from 'antd';
-import { detailColor, updateColor } from '../../../../store/slice/MauReducer';
+
 import TextArea from 'antd/es/input/TextArea';
 const { Option } = Select;
 

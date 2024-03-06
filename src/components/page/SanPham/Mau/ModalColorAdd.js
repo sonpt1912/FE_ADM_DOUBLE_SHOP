@@ -1,7 +1,7 @@
 // Modal.js
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addColor } from '../../../../store/slice/MauReducer';
+import { addColor } from '../../../../config/MauApi';
 import { Button, Modal, Form, Input, Select, ColorPicker, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 const { Option } = Select;
@@ -32,7 +32,7 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
     }
 
   };
-  
+
   const handleCancel = () => {
     onCancel1();
     form.resetFields();
@@ -40,32 +40,33 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
   const handleOk = async () => {
     try {
       form.validateFields().then(async (values) => {
-      const formData = {
-        code: code,
-        name: name,
-        createdBy: 1,
-        updated_by: 1,
-        status: 1,
-        description: description
-      };
-      setConfirmLoading(true);
-       dispatch(addColor(formData));
-      
-      message.success("Thêm màu thành công");
-      onCancel1();
+        const formData = {
+          code: code,
+          name: name,
+          createdBy: 1,
+          updated_by: 1,
+          status: 1,
+          description: description
+        };
+        setConfirmLoading(true);
+        dispatch(addColor(formData));
 
-      form.resetFields();
-    }).catch((error) => {
-                
-      message.error('Vui lòng điền đầy đủ thông tin bắt buộc.');
-  });
-} catch (error) {
-  onCancel1();
-  message.error(error.message || "Thêm màu không thành công");
-} finally {
-  setConfirmLoading(false);
-}}
- 
+        message.success("Thêm màu thành công");
+        onCancel1();
+
+        form.resetFields();
+      }).catch((error) => {
+
+        message.error('Vui lòng điền đầy đủ thông tin bắt buộc.');
+      });
+    } catch (error) {
+      onCancel1();
+      message.error(error.message || "Thêm màu không thành công");
+    } finally {
+      setConfirmLoading(false);
+    }
+  }
+
 
 
   return (

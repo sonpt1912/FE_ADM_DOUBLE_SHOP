@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { fetchCustomer,deleteCustomer,detailCustomer,detailCustomerAddress,updateCustomer,updateCustomerAddress,addCustomerAddress ,addCustomer} from "../../config/KhachHangApi";
 
 
 const initialState = {
@@ -9,122 +10,6 @@ const initialState = {
   pagination: {},
 
 }
-export const fetchCustomer = createAsyncThunk(
-  "customer/fetchCustomer",
-  async (payload) => {
-    try {
-      console.log("sss1",payload)
-      const response = await axios.post(
-        "http://localhost:8072/customer/get-all",
-        payload
-      );
-      console.log("data",response.data)
-      return response.data;
-      
-    } catch (error) {
-      throw error;
-    }
-  }
-);
-
-export const deleteCustomer = createAsyncThunk(
-  'customer/deleteCustomer',
-  async (payload) => {
-    try {
-      console.log("payload3", payload)
-      const response = await axios.post(`http://localhost:8072/customer/delete/${payload}`);
-      console.log("payloa4", response.data.data)
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
-export const addCustomer = createAsyncThunk(
-  'customer/addCustomer',
-  async (payload) => {
-    try {
-
-      const response = await axios.post('http://localhost:8072/customer/save', payload);
-      console.log("payload2", response.data)
-      return response.data;
-    } catch (error) {
-
-      throw error;
-    }
-  },
-
-
-);
-export const addCustomerAddress = createAsyncThunk(
-  'customer/addCustomerAddress',
-  async (payload) => {
-    try {
-      const response = await axios.post(`http://localhost:8072/customer/add-address/${payload.id}`, payload);
-      return response.data;
-    } catch (error) {
-
-      throw error;
-    }
-  },
-
-
-);
-export const updateCustomerAddress = createAsyncThunk(
-  'customer/updateCustomerAddress',
-  async (payload) => {
-    try {
-
-      console.log("sss", payload)
-      const response = await axios.post(`http://localhost:8072/address/update/${payload.id}`, payload);
-console.log("a", response.data)
-      return response.data;
-    } catch (error) {
-
-      throw error;
-    }
-  },
-
-
-);
-
-export const detailCustomer = createAsyncThunk(
-  'customer/detailCustomer',
-  async (payload) => {
-    try {
-      const response = await axios.get(`http://localhost:8072/customer/get-one-by-id/${payload}`);
-      return response.data;
-    } catch (error) {
-
-      throw error;
-    }
-  });
-export const updateCustomer = createAsyncThunk(
-  'customer/updateCustomer',
-  async (payload) => {
-    try {
-      const response = await axios.post(`http://localhost:8072/customer/update/${payload.id}`, payload);
-      return response.data;
-
-    } catch (error) {
-
-      throw error;
-    }
-  });
-
-
-
-export const detailCustomerAddress = createAsyncThunk(
-  'customer/detailCustomerAddress',
-  async ({ id1, id }) => {
-    try {
-      const response = await axios.get(`http://localhost:8072/customer/get-address-by-id/${id1}/${id}`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
 
 const customerSlice = createSlice({
   name: "customer",
