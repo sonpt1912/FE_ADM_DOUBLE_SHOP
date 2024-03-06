@@ -259,12 +259,11 @@ const Material = () => {
       </div>
 
       <div className="mt-4"></div>
-      <hr />
       {/* <Collapse components={components} /> */}
       <div style={{ marginBottom: "30px" }}></div>
 
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
+        <h3 style={{ marginRight: 8 }}>Danh Sách chất liệu</h3>
         <Button type="primary" shape="round" onClick={showModalAdd}>
           Add Material
         </Button>

@@ -325,11 +325,10 @@ const Promotion = () => {
 
 
             <div className="mt-4"></div>
-            <hr />
             <div style={{ marginBottom: "30px" }}></div>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
+                <h3 style={{ marginRight: 8 }}>Danh Sách Khuyến mãi</h3>
                 <Button type="primary" shape="round" onClick={showModalAdd}>
                     Add Promotion
                 </Button>
