@@ -157,7 +157,10 @@ const ModalAddNhanVien = ({ open, closeModal }) => {
       onOk={handleOk}
       confirmLoading={confirmLoading}
       onCancel={handleCancel}
-      width={1000}
+      width={1200}
+      style={{
+        top: 20,
+      }}
     >
       <Form
         form={form}
@@ -232,21 +235,7 @@ const ModalAddNhanVien = ({ open, closeModal }) => {
               <Input />
             </Form.Item>
           </Col>
-          <Col span={12}>
-            {" "}
-            <Form.Item
-              label="Ngày sinh"
-              name="birthDay"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng chọn ngày sinh",
-                },
-              ]}
-            >
-              <DatePicker placeholder="dd/mm/yyyy" style={{ width: "100%" }} />
-            </Form.Item>
-          </Col>
+
           <Col span={12}>
             {" "}
             <Form.Item
@@ -260,6 +249,21 @@ const ModalAddNhanVien = ({ open, closeModal }) => {
               ]}
             >
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            {" "}
+            <Form.Item
+              label="Ngày sinh"
+              name="birthDay"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn ngày sinh",
+                },
+              ]}
+            >
+              <DatePicker placeholder="dd/mm/yyyy" style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -344,8 +348,7 @@ const ModalAddNhanVien = ({ open, closeModal }) => {
             </Form.Item>
           </Col>
 
-          <Col span={43}>
-            {" "}
+          <Col span={24}>
             <Form.Item
               label="Mô tả"
               name="description"
