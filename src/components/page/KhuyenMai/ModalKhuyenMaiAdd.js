@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { add, fetchPromotions } from "../../../store/slice/KhuyenMaiReducer";
 import axios from "axios";
 
+
 const ModalKhuyenMai = ({ open, closeModal }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
