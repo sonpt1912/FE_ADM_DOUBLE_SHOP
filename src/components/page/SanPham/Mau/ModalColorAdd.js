@@ -1,7 +1,7 @@
 // Modal.js
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addColor } from '../../../../store/slice/MauReducer';
+import { addColor } from '../../../../config/MauApi';
 import { Button, Modal, Form, Input, Select, ColorPicker, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 const { Option } = Select;
@@ -32,44 +32,41 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
     }
 
   };
+
   const handleCancel = () => {
     onCancel1();
     form.resetFields();
   };
   const handleOk = async () => {
     try {
-      const formData = {
-        code: code,
-        name: name,
-        createdBy: 1,
-        updated_by: 1,
-        status: 1,
-        description: description
-      };
-      setConfirmLoading(true);
-       dispatch(addColor(formData));
-      
-      message.success("Thêm màu thành công");
-      onCancel1();
+      form.validateFields().then(async (values) => {
+        const formData = {
+          code: code,
+          name: name,
+          createdBy: 1,
+          updated_by: 1,
+          status: 1,
+          description: description
+        };
+        setConfirmLoading(true);
+        dispatch(addColor(formData));
 
-      form.resetFields();
+        message.success("Thêm màu thành công");
+        onCancel1();
+
+        form.resetFields();
+      }).catch((error) => {
+
+        message.error('Vui lòng điền đầy đủ thông tin bắt buộc.');
+      });
     } catch (error) {
-      message.error("Failed to add color");
-    } finally {
       onCancel1();
-      form.resetFields();
-
+      message.error(error.message || "Thêm màu không thành công");
+    } finally {
       setConfirmLoading(false);
     }
-
   }
-  const onFinish = () => {
-    onCancel1();
-  };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
 
 
   return (
@@ -102,8 +99,8 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
           initialValues={{
             remember: true,
           }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
+          // onFinish={onFinish}
+          // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
 
