@@ -1,7 +1,6 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { message } from "antd";
-import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:8072";
 
