@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Modal, Button, Form, Input, Select, message } from "antd";
 import { useDispatch } from "react-redux";
 import { add, fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 //bootstrap
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -19,19 +17,17 @@ const ModalChatLieu = ({ open, closeModal }) => {
     description: "",
   });
 
-
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      await dispatch(add(payload))
-        .then(() => {
-          dispatch(
-            fetchMaterials({
-              page: 0,
-              pageSize: 5
-            })
-          )
-        });
+      await dispatch(add(payload)).then(() => {
+        dispatch(
+          fetchMaterials({
+            page: 0,
+            pageSize: 5,
+          })
+        );
+      });
       message.success("Material added successfully");
       closeModal();
       setPayload({
@@ -91,13 +87,14 @@ const ModalChatLieu = ({ open, closeModal }) => {
             name="desciption"
             label="desciption :"
             placeholder="Nhập mieu tả"
-            onChange={(e) => setPayload({ ...payload, description: e.target.value })}
+            onChange={(e) =>
+              setPayload({ ...payload, description: e.target.value })
+            }
             required
           />
 
           {/* <Button htmlType="submit" onClick={handleOk}>Update</Button>
             <Button onClick={handleCancel}>Cancel</Button> */}
-
         </form>
       </Modal>
     </div>
