@@ -70,9 +70,26 @@ const ModalUpdateVoucher = ({ open, closeModal, payload }) => {
    
   const handleOk = async () => {
     try {
-     
-      const formValues = await form.validateFields();
       setConfirmLoading(true);
+       
+      const formValues = await form.validateFields();
+
+      if (moment(formValues.startDate).isValid() && moment(formValues.endDate).isValid()) {
+        if (moment(formValues.startDate).isAfter(moment(formValues.endDate))) {
+          // Ngày bắt đầu lớn hơn ngày kết thúc
+          message.error("Ngày bắt đầu không được lớn hơn ngày kết thúc");
+          return;
+        }
+      } else {
+        // Xử lý khi đối tượng Moment không hợp lệ
+        message.error("Ngày không hợp lệ");
+        return;
+      }
+          // Kiểm tra nếu loại giảm giá là theo phần trăm và giảm giá lớn hơn 70%
+    if ( formValues.discountPercent > 70) {
+      message.error("Giảm giá theo phần trăm không được lớn hơn 70%");
+      return; // Ngăn việc tiếp tục thực hiện lưu dữ liệu
+    }
       await dispatch(updateVoucher({ ...formValues, ...updatedValues }));
       message.success("Voucher updated successfully");
       closeModal();

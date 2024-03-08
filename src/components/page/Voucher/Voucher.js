@@ -311,16 +311,16 @@ const Voucher = () => {
           <Row gutter={16}>
            
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Code"
+              <Form.Item label="Name"
                labelCol={{ span: 7 }} // Định dạng width của label
                wrapperCol={{ span: 13 }} // Định dạng width của input
               >
                 <Input
-                  placeholder="Enter code"
+                  placeholder="Enter name"
                   style={{ width: "100%" }}
-                  value={searchParams.code}
+                  value={searchParams.name}
                   onChange={(e) =>
-                    setSearchParams({ ...searchParams, code: e.target.value })
+                    setSearchParams({ ...searchParams, name: e.target.value })
                   }
                   disabled={isSearching}
                 />

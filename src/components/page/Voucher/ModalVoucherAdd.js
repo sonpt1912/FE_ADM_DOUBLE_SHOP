@@ -37,6 +37,14 @@ const ModalAddVoucher = ({ open, closeModal }) => {
     try {
       setConfirmLoading(true);
       const formValues = await form.validateFields();
+       
+       
+       // Kiểm tra nếu loại giảm giá là theo phần trăm và giảm giá lớn hơn 70%
+    if (discountType === "percent" && formValues.discountPercent > 70) {
+      message.error("Giảm giá theo phần trăm không được lớn hơn 70%");
+      return; // Ngăn việc tiếp tục thực hiện lưu dữ liệu
+    }
+    
       await dispatch(saveVoucher({ ...formValues, discountType }));
       message.success("Voucher added successfully");
       closeModal();
