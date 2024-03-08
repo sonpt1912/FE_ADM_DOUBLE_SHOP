@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { fetchCustomer,deleteCustomer,detailCustomer,detailCustomerAddress,updateCustomer,updateCustomerAddress,addCustomerAddress ,addCustomer} from "../../config/KhachHangApi";
 
 
 const initialState = {
@@ -9,74 +10,6 @@ const initialState = {
   pagination: {},
 
 }
-export const fetchCustomer = createAsyncThunk(
-  "customer/fetchCustomer",
-  async (payload) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8072/customer/get-all",
-        payload
-      );
-      console.log("kh", response.data)
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
-export const deleteCustomer = createAsyncThunk(
-  'customer/deleteCustomer',
-  async (payload) => {
-    try {
-
-      const response = await axios.post(`http://localhost:8072/customer/delete/${payload}`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
-export const addCustomer = createAsyncThunk(
-  'customer/addCustomer',
-  async (payload) => {
-    try {
-      const response = await axios.post('http://localhost:8072/customer/save', payload);
-      return response.data;
-    } catch (error) {
-
-      throw error;
-    }
-  },
-
-
-);
-export const detailCustomer = createAsyncThunk(
-  'customer/detailCustomer',
-  async (payload) => {
-    try {
-      const response = await axios.get(`http://localhost:8072/customer/get-one-by-id/${payload}`);
-      return response.data;
-    } catch (error) {
-
-      throw error;
-    }
-  });
-export const updateCustomer = createAsyncThunk(
-  'customer/updateCustomer',
-  async (payload) => {
-    try {
-
-      const response = await axios.put(`http://localhost:8072/customer/update/${payload.id}`, payload);
-
-      return response.data;
-
-    } catch (error) {
-
-      throw error;
-    }
-  });
-
-
 
 const customerSlice = createSlice({
   name: "customer",
@@ -89,8 +22,8 @@ const customerSlice = createSlice({
       })
       .addCase(fetchCustomer.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.customer = action.payload.data.listData;
-        console.log("action", action.payload)
+        state.customer = action.payload.listData;
+        console.log("state cus", action.payload)
         state.pagination = {
           page: 0,
           pageSize: 5,
@@ -136,12 +69,26 @@ const customerSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
+      .addCase(detailCustomerAddress.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(detailCustomerAddress.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // Update the state with the detailed color data
+        state.selectedCustomer = action.payload;
+      })
+      .addCase(detailCustomerAddress.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
       .addCase(updateCustomer.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(updateCustomer.fulfilled, (state, action) => {
         state.status = 'succeeded';
+
         const customerIndex = state.customer.findIndex(customer => customer.id === action.payload.id);
+        console.log("aaa", action.payload.id)
         if (customerIndex !== -1) {
           state.customer[customerIndex] = action.payload;
         }
@@ -151,7 +98,29 @@ const customerSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
-     
+      .addCase(addCustomerAddress.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addCustomerAddress.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // state.colors = [...state.customer, action.payload];
+      })
+      .addCase(addCustomerAddress.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(updateCustomerAddress.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateCustomerAddress.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // state.colors = [...state.customer, action.payload];
+      })
+      .addCase(updateCustomerAddress.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+
   },
 });
 

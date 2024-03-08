@@ -21,6 +21,7 @@ const AddressApi = () => {
       const response = await axios.get(
         `https://vapi.vnappmob.com/api/province/district/${selectedCityCode}`
       );
+      
       return response.data.results.map((dis) => ({
         label: dis.district_name,
         value: dis.district_id,

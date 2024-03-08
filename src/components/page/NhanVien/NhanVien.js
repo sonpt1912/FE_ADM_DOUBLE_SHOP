@@ -142,7 +142,7 @@ const NhanVien = () => {
   const getItems = () => [
     {
       key: "1",
-      label: "Search",
+      label: "Tìm Kiếm",
       children: (
         <Form
           labelCol={{ span: 5 }}
@@ -152,9 +152,9 @@ const NhanVien = () => {
         >
           <Row gutter={16}>
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Name">
+              <Form.Item label="Họ và Tên">
                 <Input
-                  placeholder="Enter name"
+                  placeholder="vùi lòng nhập tên"
                   style={{ width: "100%" }}
                   value={searchParams.name}
                   onChange={(e) =>
@@ -304,7 +304,7 @@ const NhanVien = () => {
   ];
   const getTitle = () => (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <span style={{ marginRight: 8 }}>Danh Sách Size</span>
+      <span style={{ marginRight: 8 }}>Danh Sách Nhân viên</span>
       <Button type="primary" shape="round" onClick={openModal}>
         Thêm Nhân Viên
       </Button>
