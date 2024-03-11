@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { Form, Input, Button, Checkbox, message } from "antd";
+import { Form, Input, Button, message } from "antd";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import { useDispatch, useSelector } from "react-redux";
-import { login, loginGoogle } from "../config/api";
+import { login, loginGoogle } from "../config/LoginApi";
 import { selectIsAuthenticated } from "../store/slice/AuthReducer";
 
 const Login = () => {

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Modal, Form, Input, message } from "antd";
 import { useDispatch } from "react-redux";
-import { saveSize } from "../../../../config/api";
+import { saveSize } from "../../../../config/SizeApi";
 
 const { TextArea } = Input;
 
