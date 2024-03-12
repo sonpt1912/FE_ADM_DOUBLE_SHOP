@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, message, DatePicker, Select } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  message,
+  DatePicker,
+  Select,
+  Divider,
+  Col,
+  Row,
+} from "antd";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { updateEmployee } from "../../../config/NhanVienApi";
@@ -28,7 +38,7 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
     email: "",
     city: "",
     district: "",
-    status:"",
+    status: "",
     provice: "",
     gender: "",
     birthDay: null,
@@ -110,10 +120,10 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
     setSelectedWar(value);
     const selectedWarName = warData.find((war) => war.value === value)?.label;
     setWard(selectedWarName);
-  }
+  };
 
   useEffect(() => {
-    console.log("Starting",payload);
+    console.log("Starting", payload);
     form.setFieldsValue({
       username: payload.username,
       name: payload.name,
@@ -180,6 +190,10 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
       onOk={handleOk}
       confirmLoading={confirmLoading}
       onCancel={handleCancel}
+      width={1200}
+      style={{
+        top: 20,
+      }}
     >
       <Form
         form={form}
@@ -192,143 +206,164 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
         }}
         onValuesChange={handleValuesChange}
       >
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng nhập username",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Họ và tên"
-          name="name"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng nhập họ và tên",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Số điện thoại"
-          name="phone"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng nhập số điện thoại",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            {
-              type: "email",
-              message: "Vui lòng nhập đúng định dạng email",
-            },
-            {
-              required: true,
-              message: "Vui lòng nhập email",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Ngày sinh"
-          name="birthDay"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng chọn ngày sinh",
-            },
-          ]}
-        >
-          <DatePicker placeholder="dd/mm/yyyy" style={{ width: "100%" }} />
-        </Form.Item>
-        <Form.Item
-          label="Thành phố"
-          name="city"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng chọn thành phố",
-            },
-          ]}
-        >
-          <Select onChange={handleCityChange}>
-            {cityData.map((city) => (
-              <Option key={city.value} value={city.value}>
-                {city.label}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label="Quận/Huyện"
-          name="district"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng chọn quận/huyện",
-            },
-          ]}
-        >
-          <Select onChange={handleDisChange}>
-            {disData.map((dis) => (
-              <Option key={dis.value} value={dis.value}>
-                {dis.label}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label="Phường/Xã"
-          name="provice"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng chọn phường/xã",
-            },
-          ]}
-        >
-          <Select onChange={handleWarChange}>
-            {warData.map((war) => (
-              <Option key={war.value} value={war.value}>
-                {war.label}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label="Giới tính"
-          name="gender"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng chọn giới tính",
-            },
-          ]}
-        >
-          <Select>
-            <Option value={1}>Nam</Option>
-            <Option value={0}>Nữ</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label="Mô tả"
-          name="description"
-        >
+        <Row>
+          <Col span={12}>
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập username",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Họ và tên"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập họ và tên",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              label="Số điện thoại"
+              name="phone"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập số điện thoại",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                {
+                  type: "email",
+                  message: "Vui lòng nhập đúng định dạng email",
+                },
+                {
+                  required: true,
+                  message: "Vui lòng nhập email",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              label="Ngày sinh"
+              name="birthDay"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn ngày sinh",
+                },
+              ]}
+            >
+              <DatePicker placeholder="dd/mm/yyyy" style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              label="Thành phố"
+              name="city"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn thành phố",
+                },
+              ]}
+            >
+              <Select onChange={handleCityChange}>
+                {cityData.map((city) => (
+                  <Option key={city.value} value={city.value}>
+                    {city.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Quận/Huyện"
+              name="district"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn quận/huyện",
+                },
+              ]}
+            >
+              <Select onChange={handleDisChange}>
+                {disData.map((dis) => (
+                  <Option key={dis.value} value={dis.value}>
+                    {dis.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Phường/Xã"
+              name="provice"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn phường/xã",
+                },
+              ]}
+            >
+              <Select onChange={handleWarChange}>
+                {warData.map((war) => (
+                  <Option key={war.value} value={war.value}>
+                    {war.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Giới tính"
+              name="gender"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn giới tính",
+                },
+              ]}
+            >
+              <Select>
+                <Option value={1}>Nam</Option>
+                <Option value={0}>Nữ</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Form.Item label="Mô tả" name="description">
           <TextArea rows={4} />
         </Form.Item>
       </Form>

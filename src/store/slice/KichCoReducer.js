@@ -1,6 +1,6 @@
 // sizeSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchSizes, saveSize, updateSize } from "../../config/api";
+import { fetchSizes, saveSize, updateSize } from "../../config/SizeApi";
 
 const initialState = {
   sizes: [],

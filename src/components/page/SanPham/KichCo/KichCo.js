@@ -9,7 +9,6 @@ import {
   Input,
   Button,
   Select,
-  DatePicker,
   Divider,
   Space,
   Col,
@@ -24,13 +23,11 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchSizes, updateSize } from "../../../../config/api";
+import { fetchSizes,updateSize } from "../../../../config/SizeApi";
 import ModalAddSize from "./modalAddSize";
 import ModalUpdateSize from "./modalUpdateSize";
 
 const { Option } = Select;
-
-const { RangePicker } = DatePicker;
 
 const KichCo = () => {
   const dispatch = useDispatch();
@@ -118,7 +115,7 @@ const KichCo = () => {
     };
 
     fetchData();
-  }, [modalVisible, modalVisibleUpdate, current, pageSize]);
+  }, [modalVisible, modalVisibleUpdate, current, pageSize, dispatch, searchParams.name, searchParams.status, navigate]);
 
   const onClickEdit = (record) => {
     setPayload({
