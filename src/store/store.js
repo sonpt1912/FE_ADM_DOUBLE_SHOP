@@ -12,6 +12,7 @@ import KhuyenMaiReducer from "./slice/KhuyenMaiReducer";
 import CollarReducer from "./slice/CollarReducer";
 import VoucherReducer from "./slice/VoucherReducer";
 import EmployeeReducer from "./slice/EmployeeReducer";
+import DetailPromotionReducer from "./slice/DetailPromotionReducer";
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     size : KichCoReducer,
     material: ChatLieuReducer,
     promotion: KhuyenMaiReducer,
+    detailPromotion: DetailPromotionReducer,
     color: MauReducer,
     collar: CollarReducer,
     auth: AuthReducer,

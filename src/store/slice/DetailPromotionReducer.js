@@ -3,7 +3,7 @@ import axios from "axios";
 import { message } from "antd";
 
 const initialState = {
-  promotions: [],
+  detailPromotions: [],
   error: null,
   status: "idle",
   pagination: {},
@@ -12,7 +12,7 @@ const initialState = {
 // export const fetchDetailPromotions = createAsyncThunk(
 //   "detailPromotions/fetchDetailPromotions", async (payload) => {
 //     try {
-//       const response = await axios.post(
+//       const response = await axios.get(
 //         "http://localhost:8072/detail-promotion/hien-thi",
 //         payload
 //       );
@@ -119,7 +119,7 @@ const detailPromotionSlice = createSlice({
       })
       .addCase(fetchDetailPromotions.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.promotions = action.payload.data.listData;
+        state.detailPromotions = action.payload.data.listData;
         state.pagination = {
           page: 0,
           pageSize: 5,
@@ -130,47 +130,47 @@ const detailPromotionSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-      .addCase(add.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(add.fulfilled, (state) => {
-        state.status = "succeeded";
-      })
-      .addCase(add.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
-      .addCase(detail.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(detail.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.selectedPromotion = action.payload;
-      })
-      .addCase(detail.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
-      })
-      .addCase(update.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(update.fulfilled, (state, action) => {
-        state.status = "succeeded";
-      })
-      .addCase(update.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
-      .addCase(Delete.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(Delete.fulfilled, (state) => {
-        state.status = 'succeeded';
-      })
-      .addCase(Delete.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
-      });
+      // .addCase(add.pending, (state) => {
+      //   state.status = "loading";
+      // })
+      // .addCase(add.fulfilled, (state) => {
+      //   state.status = "succeeded";
+      // })
+      // .addCase(add.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.error.message;
+      // })
+      // .addCase(detail.pending, (state) => {
+      //   state.status = 'loading';
+      // })
+      // .addCase(detail.fulfilled, (state, action) => {
+      //   state.status = 'succeeded';
+      //   state.selectedDetailPromotion = action.payload;
+      // })
+      // .addCase(detail.rejected, (state, action) => {
+      //   state.status = 'failed';
+      //   state.error = action.error.message;
+      // })
+      // .addCase(update.pending, (state) => {
+      //   state.status = "loading";
+      // })
+      // .addCase(update.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+      // })
+      // .addCase(update.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.error.message;
+      // })
+      // .addCase(Delete.pending, (state) => {
+      //   state.status = 'loading';
+      // })
+      // .addCase(Delete.fulfilled, (state) => {
+      //   state.status = 'succeeded';
+      // })
+      // .addCase(Delete.rejected, (state, action) => {
+      //   state.status = 'failed';
+      //   state.error = action.error.message;
+      // });
   },
 
 });

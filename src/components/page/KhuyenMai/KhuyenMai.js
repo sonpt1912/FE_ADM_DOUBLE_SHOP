@@ -22,8 +22,8 @@ const Promotion = () => {
     const loading = useSelector((state) => state.promotion.status === "loading");
 
     const [searchParams, setSearchParams] = useState({
-        code: "",
-        name: "",
+        // code: "",
+        // name: "",
     });
 
     useEffect(() => {
@@ -31,9 +31,9 @@ const Promotion = () => {
             fetchDetailPromotions({
                 page: 0,
                 pageSize: 5,
-                code: searchParams.code,
-                name: searchParams.name,
-                status: searchParams.status
+                // code: searchParams.code,
+                // name: searchParams.name,
+                // status: searchParams.status
             })
         );
     }, [dispatch]);
@@ -43,15 +43,15 @@ const Promotion = () => {
             fetchDetailPromotions({
                 page: 0,
                 pageSize: 5,
-                code: searchParams.code,
-                name: searchParams.name,
-                status: searchParams.status
+                // code: searchParams.code,
+                // name: searchParams.name,
+                // status: searchParams.status
             })
         );
 
         setSearchParams({
-            code: "",
-            name: "",
+            // code: "",
+            // name: "",
         });
     };
 
@@ -155,42 +155,6 @@ const Promotion = () => {
             // sorter: (a, b) => a.index - b.index,
         },
         {
-            title: "code",
-            dataIndex: "code",
-            key: "code",
-        },
-        {
-            title: "name",
-            dataIndex: "name",
-            key: "name",
-        },
-        {
-            title: "discountAmount",
-            dataIndex: "discountAmount",
-            key: "discountAmount",
-        },
-        {
-            title: "discountPercent",
-            dataIndex: "discountPercent",
-            key: "discountPercent",
-        },
-        {
-            title: "startDate",
-            dataIndex: "startDate",
-            key: "startDate",
-        },
-        {
-            title: "endDate",
-            dataIndex: "endDate",
-            key: "endDate",
-        },
-        {
-            title: "status",
-            dataIndex: "status",
-            key: "status",
-            render: (text, record) => (record.status == "0" ? "Ngừng hoạt động" : record.status == "1" ? "Đang hoạt động" : "Chưa hoạt động"),
-        },
-        {
             title: "ChucNang",
             dataIndex: "ChucNang",
             key: "ChucNang",
@@ -209,8 +173,8 @@ const Promotion = () => {
                     <Button
                         icon={<DeleteOutlined />}
                         style={{ border: "none" }}
-                        onClick={() => handleDelete(record.id)} disabled={record.status === 0} 
-                        />
+                        onClick={() => handleDelete(record.id)} disabled={record.status === 0}
+                    />
                     {/* <Popconfirm
                         title="Are you sure you want to delete this voucher?"
                         onConfirm={() => handleChangeStatus(record.id)}
@@ -230,7 +194,7 @@ const Promotion = () => {
     ];
     const handleTableChange = (pagination) => {
         dispatch(
-            fetchPromotions({
+            fetchDetailPromotions({
                 page: pagination.current - 1,
                 pageSize: pagination.pageSize,
                 ...searchParams,
@@ -245,9 +209,9 @@ const Promotion = () => {
                     fetchDetailPromotions({
                         page: 0,
                         pageSize: 5,
-                        code: searchParams.code,
-                        name: searchParams.name,
-                        status: searchParams.status
+                        // code: searchParams.code,
+                        // name: searchParams.name,
+                        // status: searchParams.status
                     })
                 )
             });
