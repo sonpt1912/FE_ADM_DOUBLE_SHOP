@@ -74,12 +74,38 @@ const ModalUpdateVoucher = ({ open, closeModal, payload }) => {
        
       const formValues = await form.validateFields();
 
-      
-          // Kiểm tra nếu loại giảm giá là theo phần trăm và giảm giá lớn hơn 70%
-    if ( formValues.discountPercent > 70) {
-      message.error("Giảm giá theo phần trăm không được lớn hơn 70%");
-      return; // Ngăn việc tiếp tục thực hiện lưu dữ liệu
+  // Kiểm tra giảm giá theo tiền không được nhỏ hơn giá trị đơn tối thiểu
+  if (formValues.discountAmount > formValues.minimumOrder) {
+    message.error("Giảm giá theo tiền không được lớn hơn giá trị đơn tối thiểu");
+    return;
+}
+       // Kiểm tra giảm giá theo tiền và giảm giá theo phần trăm không được nhập số âm
+       if ( formValues.discountAmount < 0) {
+        message.error("Giảm giá theo tiền không được là số âm");
+        return;
     }
+    if ( formValues.discountPercent < 0) {
+        message.error("Giảm giá theo phần trăm không được là số âm");
+        return;
+    }
+
+    // Kiểm tra số lượng và giá trị đơn tối thiểu không được là số âm
+    if (formValues.quantity < 0) {
+        message.error("Số lượng không được là số âm");
+        return;
+    }
+    if (formValues.minimumOrder < 0) {
+        message.error("Giá trị đơn tối thiểu không được là số âm");
+        return;
+    }
+
+ // Kiểm tra nếu loại giảm giá là theo phần trăm và giảm giá lớn hơn 70%
+if (formValues.discountPercent > 70) {
+message.error("Giảm giá theo phần trăm không được lớn hơn 70%");
+return; // Ngăn việc tiếp tục thực hiện lưu dữ liệu
+}
+  
+ 
       await dispatch(updateVoucher({ ...formValues, ...updatedValues }));
       message.success("Voucher updated successfully");
       closeModal();

@@ -39,22 +39,42 @@ const ModalAddVoucher = ({ open, closeModal }) => {
     try {
       setConfirmLoading(true);
       const formValues = await form.validateFields();
-       
+         // Kiểm tra giảm giá theo tiền không được nhỏ hơn giá trị đơn tối thiểu
+         if (formValues.discountAmount > formValues.minimumOrder) {
+          message.error("Giảm giá theo tiền không được lớn hơn giá trị đơn tối thiểu");
+          return;
+      }
+             // Kiểm tra giảm giá theo tiền và giảm giá theo phần trăm không được nhập số âm
+             if (formValues.discountType === "amount" && formValues.discountAmount < 0) {
+              message.error("Giảm giá theo tiền không được là số âm");
+              return;
+          }
+          if (formValues.discountType === "percent" && formValues.discountPercent < 0) {
+              message.error("Giảm giá theo phần trăm không được là số âm");
+              return;
+          }
+  
+          // Kiểm tra số lượng và giá trị đơn tối thiểu không được là số âm
+          if (formValues.quantity < 0) {
+              message.error("Số lượng không được là số âm");
+              return;
+          }
+          if (formValues.minimumOrder < 0) {
+              message.error("Giá trị đơn tối thiểu không được là số âm");
+              return;
+          }
+           // Kiểm tra ngày bắt đầu không lớn hơn ngày kết thúc
+        if (moment(formValues.startDate).isAfter(moment(formValues.endDate))) {
+          message.error("Ngày bắt đầu không được lớn hơn ngày kết thúc");
+          return;
+      }
       
        // Kiểm tra nếu loại giảm giá là theo phần trăm và giảm giá lớn hơn 70%
     if (discountType === "percent" && formValues.discountPercent > 70) {
       message.error("Giảm giá theo phần trăm không được lớn hơn 70%");
       return; // Ngăn việc tiếp tục thực hiện lưu dữ liệu
     }
-    const startDate = form.getFieldValue("startDate");
-    const endDate = form.getFieldValue("endDate");
-
-    // Kiểm tra nếu ngày bắt đầu lớn hơn hoặc bằng ngày kết thúc, hiển thị thông báo lỗi
-    if (moment(startDate).isSameOrAfter(moment(endDate))) {
-      message.error("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
-      return;
-    }
-    
+   
       await dispatch(saveVoucher({ ...formValues, discountType }));
       message.success("Voucher added successfully");
       closeModal();
