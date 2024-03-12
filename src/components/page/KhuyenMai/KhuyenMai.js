@@ -11,11 +11,12 @@ import Material from "../SanPham/ChatLieu/ChatLieu";
 import { SearchOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 import { fetchPromotions, Delete, detail, update } from "../../../store/slice/KhuyenMaiReducer";
+import { fetchDetailPromotions } from "../../../store/slice/DetailPromotionReducer";
 const Promotion = () => {
     const dispatch = useDispatch();
     // const [updateStatus, setUpdateStatus] = useState({ status: 0 });
-    const promotions = useSelector((state) => state.promotion.promotions);
-    const pagination = useSelector((state) => state.promotion.pagination);
+    const detailPromotions = useSelector((state) => state.detailPromotion.detailPromotions);
+    const pagination = useSelector((state) => state.detailPromotion.pagination);
     const [pageSize, setPageSize] = useState();
     console.log("Pagination", pagination);
     const loading = useSelector((state) => state.promotion.status === "loading");
@@ -27,7 +28,7 @@ const Promotion = () => {
 
     useEffect(() => {
         dispatch(
-            fetchPromotions({
+            fetchDetailPromotions({
                 page: 0,
                 pageSize: 5,
                 code: searchParams.code,
@@ -37,24 +38,9 @@ const Promotion = () => {
         );
     }, [dispatch]);
 
-    // useEffect(() => {
-    //     const updateExpiredPromotion = async () => {
-    //         promotions.forEach(async (promotion) => {
-    //             if (
-    //                 moment(promotion.endDate).isBefore(moment()) &&
-    //                 promotion.status === 1
-    //             ) {
-    //                 await handleChangeStatus(promotion);
-    //             }
-    //         });
-    //     };
-
-    //     updateExpiredPromotion();
-    // }, [promotions]);
-
     const onClickSearch = () => {
         dispatch(
-            fetchPromotions({
+            fetchDetailPromotions({
                 page: 0,
                 pageSize: 5,
                 code: searchParams.code,
@@ -69,17 +55,104 @@ const Promotion = () => {
         });
     };
 
+    // const columns = [
+    //     {
+    //         // title: "id",
+    //         // dataIndex: "id",
+    //         // key: "id",
+    //         // // render: (text, record, index) => index + 1,
+    //         title: 'STT',
+    //         dataIndex: 'index',
+    //         key: 'index',
+    //         render: (text, record, index) => index + 1,
+    //         sorter: (a, b) => a.index - b.index,
+    //     },
+    //     {
+    //         title: "code",
+    //         dataIndex: "code",
+    //         key: "code",
+    //     },
+    //     {
+    //         title: "name",
+    //         dataIndex: "name",
+    //         key: "name",
+    //     },
+    //     {
+    //         title: "discountAmount",
+    //         dataIndex: "discountAmount",
+    //         key: "discountAmount",
+    //     },
+    //     {
+    //         title: "discountPercent",
+    //         dataIndex: "discountPercent",
+    //         key: "discountPercent",
+    //     },
+    //     {
+    //         title: "startDate",
+    //         dataIndex: "startDate",
+    //         key: "startDate",
+    //     },
+    //     {
+    //         title: "endDate",
+    //         dataIndex: "endDate",
+    //         key: "endDate",
+    //     },
+    //     {
+    //         title: "status",
+    //         dataIndex: "status",
+    //         key: "status",
+    //         render: (text, record) => (record.status == "0" ? "Ngừng hoạt động" : record.status == "1" ? "Đang hoạt động" : "Chưa hoạt động"),
+    //     },
+    //     {
+    //         title: "ChucNang",
+    //         dataIndex: "ChucNang",
+    //         key: "ChucNang",
+    //         render: (text, record) => (
+    //             <Space size="middle">
+    //                 <Button
+    //                     icon={<EyeOutlined />}
+    //                     style={{ border: "none" }}
+    //                     onClick={() => openModalDetail(record.id)}
+    //                 />
+    //                 <Button
+    //                     icon={<EditOutlined />}
+    //                     style={{ border: "none" }}
+    //                     onClick={() => openModalUpdate(record.id)}
+    //                 />
+    //                 <Button
+    //                     icon={<DeleteOutlined />}
+    //                     style={{ border: "none" }}
+    //                     onClick={() => handleDelete(record.id)} disabled={record.status === 0} 
+    //                     />
+    //                 {/* <Popconfirm
+    //                     title="Are you sure you want to delete this voucher?"
+    //                     onConfirm={() => handleChangeStatus(record.id)}
+    //                     okText="Yes"
+    //                     cancelText="No"
+    //                     loading={loading}
+    //                 >
+    //                     <Button
+    //                         style={{ border: "none" }}
+    //                         disabled={record.status === 0}
+    //                         icon={<DeleteOutlined />}
+    //                     />
+    //                 </Popconfirm> */}
+    //             </Space>
+    //         ),
+    //     },
+    // ];
+
     const columns = [
         {
-            // title: "id",
-            // dataIndex: "id",
-            // key: "id",
-            // // render: (text, record, index) => index + 1,
-            title: 'STT',
-            dataIndex: 'index',
-            key: 'index',
-            render: (text, record, index) => index + 1,
-            sorter: (a, b) => a.index - b.index,
+            title: "id",
+            dataIndex: "id",
+            key: "id",
+            // render: (text, record, index) => index + 1,
+            // title: 'STT',
+            // dataIndex: 'index',
+            // key: 'index',
+            // render: (text, record, index) => index + 1,
+            // sorter: (a, b) => a.index - b.index,
         },
         {
             title: "code",
@@ -155,7 +228,6 @@ const Promotion = () => {
             ),
         },
     ];
-
     const handleTableChange = (pagination) => {
         dispatch(
             fetchPromotions({
@@ -170,7 +242,7 @@ const Promotion = () => {
         dispatch(Delete(id))
             .then(() => {
                 dispatch(
-                    fetchPromotions({
+                    fetchDetailPromotions({
                         page: 0,
                         pageSize: 5,
                         code: searchParams.code,
@@ -337,7 +409,7 @@ const Promotion = () => {
             <Table
                 className="text-center"
                 columns={columns}
-                dataSource={promotions}
+                dataSource={detailPromotions}
                 bordered
                 pagination={{
                     pageSize: pagination.pageSize,
