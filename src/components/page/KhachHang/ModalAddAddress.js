@@ -17,7 +17,7 @@ const ModalAddAddress = ({ isOpen, onCancel1, dataAdd }) => {
     const [ward, setWard] = useState('')
     const [ngo, setNgo] = useState('')
     const [description, setDescription] = useState('');
-    const [is_defaul, setDefaul] = useState(1)
+    const [defaul, setDefaul] = useState(1)
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [id, setId] = useState('')
     const [idAdd, setIdAdd] = useState('')
@@ -105,7 +105,7 @@ const ModalAddAddress = ({ isOpen, onCancel1, dataAdd }) => {
             setDescription(value);
          
 
-        }else if (name === "is_defaul") {
+        }else if (name === "defaul") {
             setDefaul(parseInt(value));
         }
 
@@ -126,7 +126,7 @@ const ModalAddAddress = ({ isOpen, onCancel1, dataAdd }) => {
                 province: ward,
                 city: city,
                 description: description,
-                is_defaul: is_defaul
+                defaul: defaul
 
             };
             console.log(formData)
