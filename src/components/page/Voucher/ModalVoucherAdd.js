@@ -14,6 +14,8 @@ const ModalAddVoucher = ({ open, closeModal }) => {
   const handleDiscountTypeChange = (e) => {
     setDiscountType(e.target.value); // Cập nhật loại giảm giá đang được chọn khi người dùng thay đổi
   };
+
+
   const onDateTimeChange = (date, dateString) => {
     console.log(date, dateString);
     setPayload({
@@ -38,11 +40,19 @@ const ModalAddVoucher = ({ open, closeModal }) => {
       setConfirmLoading(true);
       const formValues = await form.validateFields();
        
-       
+      
        // Kiểm tra nếu loại giảm giá là theo phần trăm và giảm giá lớn hơn 70%
     if (discountType === "percent" && formValues.discountPercent > 70) {
       message.error("Giảm giá theo phần trăm không được lớn hơn 70%");
       return; // Ngăn việc tiếp tục thực hiện lưu dữ liệu
+    }
+    const startDate = form.getFieldValue("startDate");
+    const endDate = form.getFieldValue("endDate");
+
+    // Kiểm tra nếu ngày bắt đầu lớn hơn hoặc bằng ngày kết thúc, hiển thị thông báo lỗi
+    if (moment(startDate).isSameOrAfter(moment(endDate))) {
+      message.error("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
+      return;
     }
     
       await dispatch(saveVoucher({ ...formValues, discountType }));
@@ -145,7 +155,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           >
             <Input type="number" placeholder="VNĐ" 
           
-            
+
             />
           </Form.Item>
         )}
@@ -230,7 +240,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           ]}
         
         >
-          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange}  format="YYYY-MM-DD HH:mm:ss"/>
+          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange} format="YYYY-MM-DD HH:mm:ss"/>
         </Form.Item>
         <Form.Item
           label="Ngày kết thúc"
