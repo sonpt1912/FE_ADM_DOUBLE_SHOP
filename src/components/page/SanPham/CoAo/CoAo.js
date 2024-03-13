@@ -20,9 +20,9 @@ import {
 } from "antd";
 import {
   SearchOutlined,
-  EditFilled,
-  EyeFilled,
-  DeleteFilled,
+  EditOutlined,
+  EyeOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { fetchCollars,updateCollar,detailCollar } from "../../../../config/collarApi";
@@ -236,7 +236,7 @@ const CoAo = () => {
         >
           <Row gutter={16}>
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Name">
+              <Form.Item label="Tên">
                 <Input
                   placeholder="Enter name"
                   style={{ width: "100%" }}
@@ -249,7 +249,7 @@ const CoAo = () => {
               </Form.Item>
             </Col>
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Code">
+              <Form.Item label="Mã">
                 <Input
                   placeholder="Enter code"
                   style={{ width: "100%" }}
@@ -286,7 +286,7 @@ const CoAo = () => {
               onClick={onClickSearch}
               disabled={isSearching}
             >
-              Search
+              Tìm kiếm
             </Button>
           </Form.Item>
         </Form>
@@ -336,10 +336,10 @@ const CoAo = () => {
       width: 150,
       render: (text, record) => (
         <Space size="middle">
-          <Button style={{ border: "none" }} icon={<EyeFilled />} onClick={() => openModalDetail(record.id)}/>
+          <Button style={{ border: "none" }} icon={<EyeOutlined />} onClick={() => openModalDetail(record.id)}/>
           <Button
             style={{ border: "none" }}
-            icon={<EditFilled />}
+            icon={<EditOutlined />}
             onClick={() => onClickEdit(record)}
           />
           <Popconfirm
@@ -352,7 +352,7 @@ const CoAo = () => {
             <Button
               style={{ border: "none" }}
               disabled={record.status === 0}
-              icon={<DeleteFilled />}
+              icon={<DeleteOutlined />}
             />
           </Popconfirm>
         </Space>

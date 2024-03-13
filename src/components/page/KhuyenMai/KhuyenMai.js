@@ -14,7 +14,10 @@ import { fetchPromotions, Delete, detail, update } from "../../../store/slice/Kh
 const Promotion = () => {
     const dispatch = useDispatch();
     // const [updateStatus, setUpdateStatus] = useState({ status: 0 });
-    const promotions = useSelector((state) => state.promotion.promotions);
+    const promotions = useSelector((state) =>
+     state.promotion.promotions
+    
+    );
     const pagination = useSelector((state) => state.promotion.pagination);
     const [pageSize, setPageSize] = useState();
     console.log("Pagination", pagination);
@@ -71,15 +74,15 @@ const Promotion = () => {
 
     const columns = [
         {
-            // title: "id",
-            // dataIndex: "id",
-            // key: "id",
-            // // render: (text, record, index) => index + 1,
-            title: 'STT',
-            dataIndex: 'index',
-            key: 'index',
-            render: (text, record, index) => index + 1,
-            sorter: (a, b) => a.index - b.index,
+            title: "id",
+            dataIndex: "id",
+            key: "id",
+            // render: (text, record, index) => index + 1,
+            // title: 'STT',
+            // dataIndex: 'index',
+            // key: 'index',
+            // render: (text, record, index) => index + 1,
+            // sorter: (a, b) => a.index - b.index,
         },
         {
             title: "code",

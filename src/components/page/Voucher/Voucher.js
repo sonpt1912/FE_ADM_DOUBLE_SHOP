@@ -311,7 +311,7 @@ const Voucher = () => {
           <Row gutter={16}>
            
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Name"
+              <Form.Item label="Tên"
                labelCol={{ span: 7 }} // Định dạng width của label
                wrapperCol={{ span: 13 }} // Định dạng width của input
               >
@@ -426,7 +426,7 @@ const Voucher = () => {
             
 
             >
-              Search
+              Tìm kiếm
             </Button>
           </Form.Item>
         </Form>
@@ -504,10 +504,10 @@ const Voucher = () => {
       width: 100,
       render: (text, record) => (
         <Space size="middle" >
-          <Button style={{ border: "none" }} icon={<EyeFilled />} onClick={() => openModalDetail(record.id)}/>
+          <Button style={{ border: "none" }} icon={<EyeOutlined />} onClick={() => openModalDetail(record.id)}/>
           <Button
             style={{ border: "none" }}
-            icon={<EditFilled />}
+            icon={<EditOutlined />}
             onClick={() => onClickEdit(record)}
           />
           {/* <Popconfirm
