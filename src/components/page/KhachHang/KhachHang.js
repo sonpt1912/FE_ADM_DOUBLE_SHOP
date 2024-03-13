@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Space, Input, theme, Table, Collapse, Button, DatePicker, Form, Select, } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { ProfileFilled, FilterFilled, EyeFilled, EditFilled, DeleteFilled, PlusOutlined } from "@ant-design/icons";
+import { ProfileFilled, FilterFilled, EyeOutlined, EditOutlined, DeleteFilled, PlusOutlined ,DeleteOutlined} from "@ant-design/icons";
 
 import { } from 'antd';
 import { Link } from "react-router-dom";
@@ -159,16 +159,22 @@ const KhachHang = () => {
       render: (text) => (text == "0" ? "Ngừng Hoạt Động" : " Hoạt Động"),
     },
     {
-      title: 'Khác',
+      title: 'Hành động',
       dataIndex: 'action',
       key: 'action',
       render:
         (text, record) => (
 
           <Space >
-            <EyeFilled style={{ fontSize: '23px' }} onClick={() => openDetail(record.id)} ></EyeFilled>
-            <EditFilled style={{ fontSize: '23px' }} onClick={() => openModalDetail(record.id)} ></EditFilled>
-            <DeleteFilled style={{ fontSize: '23px' }} onClick={() => handleDelete(record.id)} ></DeleteFilled>
+            <EyeOutlined style={{ fontSize: '23px' }} onClick={() => openDetail(record.id)} ></EyeOutlined>
+            <EditOutlined style={{ fontSize: '23px' }} onClick={() => openModalDetail(record.id)} ></EditOutlined>
+            <Button
+             onClick={() => handleDelete(record.id)}
+              style={{ border: "none" }}
+              disabled={record.status === 0}
+              icon={<DeleteOutlined />}
+            />
+            {/* <DeleteFilled style={{ fontSize: '23px' }} onClick={() => handleDelete(record.id)} ></DeleteFilled> */}
             <PlusOutlined onClick={() => openAddAddress(record.id)} />
           </Space>
 

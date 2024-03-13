@@ -7,6 +7,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { addCustomer } from "../../../config/KhachHangApi";
 import { Link } from "react-router-dom";
 import AddressApi from "../../../config/AddressApi";
+import styled from "styled-components";
 const AddKhachHang = ({ isOpen, onCancel1, cusAdd }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
@@ -179,11 +180,13 @@ const AddKhachHang = ({ isOpen, onCancel1, cusAdd }) => {
     };
     return (
         <div>
-            <Modal title="Thêm màu"
+            <Modal 
+            title="Thêm khách hàng"
                 open={isOpen}
                 onOk={handleOk}
                 confirmLoading={confirmLoading}
                 onCancel1={handleCancel}
+                width={600}
                 footer={[
                     <Button type="primary" htmlType="submit" onClick={handleOk}>
                         Thêm
@@ -192,12 +195,13 @@ const AddKhachHang = ({ isOpen, onCancel1, cusAdd }) => {
                         Canel
                     </Button>
                 ]
+           
                 }
             >
                 <Form
                     confirmLoading={confirmLoading}
-                    labelCol={{ span: 9 }}
-                    wrapperCol={{ span: 18 }}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 20 }}
                     labelWrap
                     form={form}
                     name="basic"
