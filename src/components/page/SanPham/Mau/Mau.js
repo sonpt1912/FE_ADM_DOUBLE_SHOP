@@ -21,7 +21,7 @@ const Mau = () => {
   const dispatch = useDispatch();
   const colors = useSelector((state) => 
 state.color.colors
-    // console.log("sdds", state.color)
+
   
   );
   const loading = useSelector((state) => state.color.status === "loading");
@@ -30,7 +30,7 @@ state.color.colors
     name: "",
     code: "",
   });
-  console.log(colors)
+  
 
   useEffect(() => {
     dispatch(
