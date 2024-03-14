@@ -13,7 +13,7 @@ export const getAll = createAsyncThunk(
   "promotions/fetchPromotions", async (payload) => {
     try {
       const response = await axios.post(
-        "http://localhost:8072/detail-promotion/hien-thi/condition",
+        "http://localhost:8072/promotion/hien-thi",
         payload
       );
       return response.data;

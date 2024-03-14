@@ -63,12 +63,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
               message.error("Giá trị đơn tối thiểu không được là số âm");
               return;
           }
-           // Kiểm tra ngày bắt đầu không lớn hơn ngày kết thúc
-        if (moment(formValues.startDate).isAfter(moment(formValues.endDate))) {
-          message.error("Ngày bắt đầu không được lớn hơn ngày kết thúc");
-          return;
-      }
-      
+    
        // Kiểm tra nếu loại giảm giá là theo phần trăm và giảm giá lớn hơn 70%
     if (discountType === "percent" && formValues.discountPercent > 70) {
       message.error("Giảm giá theo phần trăm không được lớn hơn 70%");
