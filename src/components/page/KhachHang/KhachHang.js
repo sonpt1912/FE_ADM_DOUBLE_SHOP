@@ -184,6 +184,8 @@ const KhachHang = () => {
   ]
   //detail
   const [isModalDetail, setIsModalDetail] = useState(false);
+
+  
   const [cusDataDetail, setCusDataDetail] = useState();
   const openDetail = async (id) => {
     const response = await dispatch(detailCustomer(id));
