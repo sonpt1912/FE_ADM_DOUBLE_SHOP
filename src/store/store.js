@@ -12,6 +12,9 @@ import KhuyenMaiReducer from "./slice/KhuyenMaiReducer";
 import CollarReducer from "./slice/CollarReducer";
 import VoucherReducer from "./slice/VoucherReducer";
 import EmployeeReducer from "./slice/EmployeeReducer";
+import ProductReducer from "./slice/ProductReducer";
+import BrandReducer from "./slice/BrandReducer";
+import CategoryReducer from "./slice/CategoryReducer";
 
 const store = configureStore({
   reducer: {
@@ -24,7 +27,10 @@ const store = configureStore({
     collar: CollarReducer,
     auth: AuthReducer,
     voucher:VoucherReducer,
-    employee: EmployeeReducer
+    employee: EmployeeReducer,
+    products : ProductReducer,
+    brand: BrandReducer,
+    category : CategoryReducer
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });

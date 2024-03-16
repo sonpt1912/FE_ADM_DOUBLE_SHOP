@@ -3,7 +3,7 @@ import {
   fetchEmployee,
   createEmployee,
   updateEmployee,
-} from "../../config/NhanVienApi";
+} from "../../config/EmployeeApi";
 
 const initialState = {
   employee: [],

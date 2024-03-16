@@ -1,35 +1,35 @@
-// sizeSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchBrand } from "../../config/BrandApi";
+import { fetchCategory } from "../../config/CategoryApi";
 
 const initialState = {
-  brand: [],
+  category: [],
   error: null,
   status: "idle",
   pagination: {},
 };
 
-const brandSlice = createSlice({
-  name: "brand",
+const categorySlice = createSlice({
+  name: "category",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBrand.pending, (state) => {
+      .addCase(fetchCategory.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchBrand.fulfilled, (state, action) => {
+      .addCase(fetchCategory.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.brand = action.payload.listData;
+        console.log("Succeeded",action.payload );
+        state.category = action.payload.listData;
         state.pagination = {
           totalItems: action.payload.totalRecord,
         };
       })
-      .addCase(fetchBrand.rejected, (state, action) => {
+      .addCase(fetchCategory.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
   },
 });
 
-export default brandSlice.reducer;
+export default categorySlice.reducer;

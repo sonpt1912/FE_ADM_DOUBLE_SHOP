@@ -1,117 +1,250 @@
-import React, { useState } from "react";
-import { Modal, Button } from "antd";
-import InputField from "../../../form/InputField";
-import RadioComponent from "../../../form/RadioField";
-import { useDispatch } from "react-redux";
-import { addColor } from "../../../../store/slice/ColorSlice";
+import React, { useEffect, useState } from "react";
+import { Modal, Form, Input, message, Select, Button, Table } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCollars } from "../../../../config/api1";
+import { fetchSizes } from "../../../../config/SizeApi";
+import { fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
+import { fetchBrand } from "../../../../config/BrandApi";
+import { fetchCategory } from "../../../../config/CategoryApi";
+import { fetchColors } from "../../../../config/MauApi";
 
-const ModalAo = ({ visible, onCancel, onUpdateComplete }) => {
+const ModalAddAo = ({ open, closeModal }) => {
+  const sizes = useSelector((state) => state.size.sizes);
+  const collars = useSelector((state) => state.collar.collars);
+  const materials = useSelector((state) => state.material.materials);
+  const brand = useSelector((state) => state.brand.brand);
+  const category = useSelector((state) => state.category.category);
+  const colors = useSelector((state) => state.color.colors);
+
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColors, setSelectedColors] = useState([]); // State lưu trữ danh sách màu đã chọn
+  const [selectedItems, setSelectedItems] = useState([]); // State lưu trữ danh sách các mục đã chọn
   const dispatch = useDispatch();
-  const [code, setCode] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState(1);
-  const currentDate = new Date();
-  const currentDateTimeString = currentDate.toISOString();
+  const [form] = Form.useForm();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    dispatch(fetchCollars({}));
+    dispatch(fetchMaterials({}));
+    dispatch(fetchBrand({}));
+    dispatch(fetchCategory({}));
+    dispatch(fetchSizes({}));
+    dispatch(fetchColors({}));
+  }, [dispatch]);
 
-    if (name === "status") {
-      setStatus(parseInt(value));
-    } else if (name === "code") {
-      setCode(value);
-    } else if (name === "name") {
-      setName(value);
-    } else if (name === "description") {
-      setDescription(value);
+  const onChange = (value) => {
+    console.log(`selected ${value}`);
+  };
+  const onSearch = (value) => {
+    console.log("search:", value);
+  };
+  const filterOption = (input, option) =>
+    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+  const handleOk = async () => {
+    try {
+      setConfirmLoading(true);
+      closeModal();
+      form.resetFields();
+    } catch (error) {
+      message.error("Failed to add size");
+    } finally {
+      closeModal();
+      form.resetFields();
+      setConfirmLoading(false);
     }
   };
 
-  const handleOk = () => {
-    const formData = {
-      code: code,
-      name: name,
-      description: description,
-      createdBy: 1,
-      updated_by: 1,
-      createdTime: currentDateTimeString,
-      updatedTime: "",
-      status: status,
+  const handleCancel = () => {
+    closeModal();
+    form.resetFields();
+  };
+
+  const handleSizeSelect = (sizeId) => {
+    setSelectedSize(sizeId);
+  };
+
+  const handleColorSelect = (color) => {
+    setSelectedColors([...selectedColors, color]);
+  };
+
+  const handleAddItem = () => {
+    // Tạo một mục mới dựa trên thông tin đã chọn và thêm vào danh sách các mục đã chọn
+    const newItem = {
+      size: selectedSize,
+      colors: selectedColors,
     };
-    dispatch(addColor(formData));
-    setCode("");
-    setName("");
-    setDescription("");
-    onCancel();
-    if (onUpdateComplete) {
-      onUpdateComplete(); // Gọi hàm callback từ component cha
-    }
+    setSelectedItems([...selectedItems, newItem]);
+
+    // Reset thông tin đã chọn sau khi thêm vào danh sách
+    setSelectedSize(null);
+    setSelectedColors([]);
   };
 
-  /// api get brand
-  /// api get collar
-  /// api get color
-  /// api get size
-  /// api get matterial
+  const columns = [
+    {
+      title: "Size",
+      dataIndex: "size",
+      key: "size",
+    },
+    {
+      title: "Colors",
+      dataIndex: "colors",
+      key: "colors",
+      render: (colors) => (
+        <div>
+          {colors.map((color) => (
+            <div
+              key={color.id}
+              style={{
+                backgroundColor: color.code,
+                width: 20,
+                height: 20,
+                marginRight: 8,
+                display: "inline-block",
+              }}
+            />
+          ))}
+        </div>
+      ),
+    },
+  ];
 
   return (
     <Modal
-      title="Modal Color"
-      visible={visible}
-      onCancel={onCancel}
-      footer={[
-        <Button key="cancel" onClick={onCancel}>
-          Cancel
-        </Button>,
-        <Button key="ok" type="primary" onClick={handleOk}>
-          OK
-        </Button>,
-      ]}
+      title="Thêm Sản Phẩm"
+      visible={open}
+      onOk={handleOk}
+      confirmLoading={confirmLoading}
+      onCancel={handleCancel}
     >
-      <form>
-        <InputField
-          name="code"
-          label="Code Color :"
-          placeholder="Enter code color"
-          onChange={handleInputChange}
-          value={code}
-        />
-        <InputField
+      <Form
+        form={form}
+        name="newProductForm"
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 14 }}
+        initialValues={{ remember: true }}
+      >
+        <Form.Item
+          label="Name"
           name="name"
-          label="Name Color :"
-          placeholder="Enter name color"
-          customStyle={{
-            width: "450px",
-            marginRight: "10px",
-          }}
-          onChange={handleInputChange}
-          value={name}
+          rules={[{ required: true, message: "Please input the name!" }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label=" Cổ áo"
+          rules={[{ required: true, message: "Please input the collar!" }]}
+        >
+          <Select
+            showSearch
+            placeholder="Select a collar"
+            optionFilterProp="children"
+            onChange={onChange}
+            onSearch={onSearch}
+            filterOption={filterOption}
+            options={collars.map((product) => ({
+              value: product.id,
+              label: product.name,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Chất Liệu"
+          rules={[{ required: true, message: "Please input the collar!" }]}
+        >
+          <Select
+            showSearch
+            placeholder="Select a collar"
+            optionFilterProp="children"
+            onChange={onChange}
+            onSearch={onSearch}
+            filterOption={filterOption}
+            options={materials.map((product) => ({
+              value: product.id,
+              label: product.name,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Hãng"
+          rules={[{ required: true, message: "Please input the product ID!" }]}
+        >
+          <Select
+            showSearch
+            placeholder="Select size"
+            optionFilterProp="children"
+            onChange={onChange}
+            onSearch={onSearch}
+            filterOption={filterOption}
+            options={brand.map((product) => ({
+              value: product.id,
+              label: product.name,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Loại"
+          rules={[{ required: true, message: "Please input the product ID!" }]}
+        >
+          <Select
+            showSearch
+            placeholder="Select size"
+            optionFilterProp="children"
+            onChange={onChange}
+            onSearch={onSearch}
+            filterOption={filterOption}
+            options={category.map((product) => ({
+              value: product.id,
+              label: product.name,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Kích Cỡ"
+          rules={[{ required: true, message: "Please select size!" }]}
+        >
+          {sizes.map((size) => (
+            <Button
+              key={size.id}
+              onClick={() => handleSizeSelect(size.id)}
+              style={{ marginRight: 8, marginBottom: 8 }}
+            >
+              {size.name}
+            </Button>
+          ))}
+        </Form.Item>
+        {selectedSize && (
+          <Form.Item
+            label="Màu"
+            rules={[{ required: true, message: "Please select color!" }]}
+          >
+            {colors.map((color) => (
+              <Button
+                key={color.id}
+                onClick={() => handleColorSelect(color)}
+                style={{
+                  backgroundColor: color.code,
+                  marginRight: 8,
+                  marginBottom: 8,
+                }}
+              ></Button>
+            ))}
+          </Form.Item>
+        )}
+        {selectedColors.length > 0 && (
+          <Button onClick={handleAddItem} style={{ marginBottom: 16 }}>
+            Add Item
+          </Button>
+        )}
+        <Table
+          dataSource={selectedItems}
+          columns={columns}
+          pagination={false}
         />
-        <InputField
-          name="description"
-          label="Description Color :"
-          placeholder="Enter description color"
-          customStyle={{
-            width: "450px",
-            marginRight: "10px",
-          }}
-          onChange={handleInputChange}
-          value={description}
-        />
-        <RadioComponent
-          name="status"
-          options={[
-            { label: "Active", value: 1 },
-            { label: "Inactive", value: 2 },
-          ]}
-          onChange={handleInputChange}
-          label="Choose a status:"
-          value={status}
-        />
-      </form>
+      </Form>
     </Modal>
   );
 };
 
-export default ModalAo;
+export default ModalAddAo;
