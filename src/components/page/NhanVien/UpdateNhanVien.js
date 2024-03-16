@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { updateEmployee } from "../../../config/NhanVienApi";
+import { updateEmployee } from "../../../config/EmployeeApi";
 
 const { TextArea } = Input;
 const { Option } = Select;
