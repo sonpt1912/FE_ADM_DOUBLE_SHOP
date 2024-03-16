@@ -6,10 +6,9 @@ import { } from 'antd';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { addCustomer, detailCustomer, fetchCustomer, getAddress, updateCustomer } from "../../../store/slice/KhachHangReducer";
 import { Link } from "react-router-dom";
 import TabPane from "antd/es/tabs/TabPane";
-
+import { addCustomer, detailCustomer, fetchCustomer, getAddress, updateCustomer } from "../../../store/slice/CustomerReducer";
 
 const DetailKhachHang = ({ isOpenDetail, onCancel1, cus }) => {
     const [loading, setLoading] = useState(false);

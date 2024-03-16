@@ -6,7 +6,7 @@ import { fetchSizes } from "../../../../config/SizeApi";
 import { fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
 import { fetchBrand } from "../../../../config/BrandApi";
 import { fetchCategory } from "../../../../config/CategoryApi";
-import { fetchColors } from "../../../../config/MauApi";
+import { fetchColors } from "../../../../config/ColorApi";
 
 const ModalAddAo = ({ open, closeModal }) => {
   const sizes = useSelector((state) => state.size.sizes);

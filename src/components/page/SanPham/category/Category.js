@@ -24,22 +24,23 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchSizes, updateSize } from "../../../../config/api";
-import ModalAddSize from "./modalAddSize";
-import ModalUpdateSize from "./modalUpdateSize";
+
+import { fetchCategory, updateCategory } from "../../../../config/CategoryApi";
+import ModalAddCategory from "./AddCategory";
+import ModalUpdateCategory from "./UpdateCategory";
 
 const { Option } = Select;
 
 const { RangePicker } = DatePicker;
 
-const KichCo = () => {
+const Category = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const sizes = useSelector((state) => state.size.sizes);
+  const sizes = useSelector((state) => state.category.category);
   const pagination = useSelector((state) => state.size.pagination);
   const [pageSize, setPageSize] = useState(5);
   const [current, setCurrent] = useState(1);
-  const loading = useSelector((state) => state.size.status === "loading");
+  const loading = useSelector((state) => state.category.status === "loading");
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleUpdate, setModalVisibleUpdate] = useState(false);
@@ -79,11 +80,11 @@ const KichCo = () => {
     };
     const newStatus = record.status === 1 ? 0 : 1;
     setUpdateStatus({ status: newStatus });
-    await dispatch(updateSize({ ...payloadStatus, ...updateStatus }));
-    message.success("Size updated successfully");
+    await dispatch(updateCategory({ ...payloadStatus, ...updateStatus }));
+    message.success("Category updated successfully");
 
     dispatch(
-      fetchSizes({
+      fetchCategory({
         page: pagination.current,
         pageSize: pageSize,
       })
@@ -95,7 +96,7 @@ const KichCo = () => {
       try {
         if (!modalVisible && !modalVisibleUpdate) {
           const response = await dispatch(
-            fetchSizes({
+            fetchCategory({
               page: current - 1,
               pageSize: pageSize,
               name: searchParams.name,
@@ -132,7 +133,7 @@ const KichCo = () => {
 
   const onClickSearch = () => {
     dispatch(
-      fetchSizes({
+      fetchCategory({
         page: pagination.current,
         pageSize: pageSize,
         name: searchParams.name,
@@ -194,8 +195,8 @@ const KichCo = () => {
                   }
                   allowClear
                 >
-                  <Option value="0">0</Option>
-                  <Option value="1">1</Option>
+                 <Option value="0">Ngừng hoạt động</Option>
+                  <Option value="1">Hoạt động</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -249,6 +250,7 @@ const KichCo = () => {
       dataIndex: "status",
       key: "status",
       width: 100,
+      render: (text) => (text == "0" ? "Ngừng Hoạt Động" : " Hoạt Động"),
     },
     {
       title: "Hành động",
@@ -263,7 +265,7 @@ const KichCo = () => {
             onClick={() => onClickEdit(record)}
           />
           <Popconfirm
-            title="Are you sure you want to delete this size?"
+            title="Are you sure you want to delete this category?"
             onConfirm={() => handleChangeStatus(record)}
             okText="Yes"
             cancelText="No"
@@ -281,9 +283,9 @@ const KichCo = () => {
   ];
   const getTitle = () => (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <span style={{ marginRight: 8 }}>Danh Sách Size</span>
+      <span style={{ marginRight: 8 }}>Danh Sách Category</span>
       <Button type="primary" shape="round" onClick={openModal}>
-        Thêm Kích Cỡ
+        Thêm Loại Sp
       </Button>
     </div>
   );
@@ -296,7 +298,7 @@ const KichCo = () => {
   return (
     <div>
       <>
-        <Divider orientation="left">KÍCH CỠ</Divider>
+        <Divider orientation="left">Loại Sản Phẩm</Divider>
         <Collapse
           defaultActiveKey={["1"]}
           expandIcon={({ isActive }) => (
@@ -327,8 +329,8 @@ const KichCo = () => {
           title={getTitle}
           onChange={handleTableChange}
         />
-        <ModalAddSize open={modalVisible} closeModal={closeModal} />
-        <ModalUpdateSize
+        <ModalAddCategory open={modalVisible} closeModal={closeModal} />
+        <ModalUpdateCategory
           open={modalVisibleUpdate}
           loading={loading}
           closeModal={closeModalUpdate}
@@ -339,4 +341,4 @@ const KichCo = () => {
   );
 };
 
-export default KichCo;
+export default Category;

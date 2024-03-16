@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchCustomer,deleteCustomer,detailCustomer,detailCustomerAddress,updateCustomer,updateCustomerAddress,addCustomerAddress ,addCustomer} from "../../config/KhachHangApi";
+import { fetchCustomer,deleteCustomer,detailCustomer,detailCustomerAddress,updateCustomer,updateCustomerAddress,addCustomerAddress ,addCustomer} from "../../config/CustomerApi";
 
 
 const initialState = {
