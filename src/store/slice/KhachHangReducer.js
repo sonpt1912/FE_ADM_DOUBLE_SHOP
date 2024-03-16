@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchCustomer,deleteCustomer,detailCustomer,detailCustomerAddress,updateCustomer,updateCustomerAddress,addCustomerAddress ,addCustomer} from "../../config/KhachHangApi";
+import { fetchCustomer,deleteCustomer,detailCustomer,detailCustomerAddress,updateCustomer,updateCustomerAddress,addCustomerAddress ,addCustomer} from "../../config/CustomerApi";
 
 
 const initialState = {
@@ -23,7 +23,7 @@ const customerSlice = createSlice({
       .addCase(fetchCustomer.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.customer = action.payload.listData;
-        console.log("state cus", action.payload)
+        
         state.pagination = {
           page: 0,
           pageSize: 5,
@@ -88,7 +88,7 @@ const customerSlice = createSlice({
         state.status = 'succeeded';
 
         const customerIndex = state.customer.findIndex(customer => customer.id === action.payload.id);
-        console.log("aaa", action.payload.id)
+        
         if (customerIndex !== -1) {
           state.customer[customerIndex] = action.payload;
         }

@@ -1,7 +1,6 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchColors,deleteColor,detailColor,addColor,updateColor } from "../../config/MauApi";
-
+import { fetchColors, deleteColor, detailColor,addColor,updateColor } from "../../config/ColorApi";
 const initialState = {
   colors: [],
   error: null,

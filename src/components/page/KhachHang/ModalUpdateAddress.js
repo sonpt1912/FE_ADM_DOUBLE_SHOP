@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Button, Modal, Form, Input, Select, ColorPicker, message, Radio } from 'antd';
 
 import TextArea from 'antd/es/input/TextArea';
-import { addCustomerAddress, updateCustomerAddress } from '../../../config/KhachHangApi';
+import { addCustomerAddress, updateCustomerAddress } from '../../../config/CustomerApi';
 
 import axios from "axios";
 const { Option } = Select;

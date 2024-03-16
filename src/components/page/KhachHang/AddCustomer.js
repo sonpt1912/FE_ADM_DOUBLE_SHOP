@@ -4,11 +4,11 @@ import { } from 'antd';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { addCustomer } from "../../../config/KhachHangApi";
+import { addCustomer } from "../../../config/CustomerApi";
 import { Link } from "react-router-dom";
 import AddressApi from "../../../config/AddressApi";
 import styled from "styled-components";
-const AddKhachHang = ({ isOpen, onCancel1, cusAdd }) => {
+const AddCustomer = ({ isOpen, onCancel1, cusAdd }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const dispatch = useDispatch();
@@ -341,4 +341,4 @@ const AddKhachHang = ({ isOpen, onCancel1, cusAdd }) => {
 
     );
 };
-export default AddKhachHang;
+export default AddCustomer;
