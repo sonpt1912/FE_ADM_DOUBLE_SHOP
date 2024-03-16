@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message } from "antd";
 import { useDispatch } from "react-redux";
-import { saveSize } from "../../../../config/api";
+import { saveBrand } from "../../../../config/BrandApi";
 
 const { TextArea } = Input;
 
-const ModalAddSize = ({ open, closeModal }) => {
+const ModalAddBrand = ({ open, closeModal }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
@@ -17,8 +17,8 @@ const ModalAddSize = ({ open, closeModal }) => {
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      await dispatch(saveSize(payload));
-      message.success("Size added successfully");
+      await dispatch(saveBrand(payload));
+      message.success("Brand added successfully");
       closeModal();
       setPayload({
         name: "",
@@ -26,7 +26,7 @@ const ModalAddSize = ({ open, closeModal }) => {
       });
       form.resetFields();
     } catch (error) {
-      message.error("Failed to add size");
+      message.error("Failed to add brand");
     } finally {
       closeModal();
       form.resetFields();
@@ -87,4 +87,4 @@ const ModalAddSize = ({ open, closeModal }) => {
   );
 };
 
-export default ModalAddSize;
+export default ModalAddBrand;

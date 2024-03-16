@@ -21,6 +21,8 @@ import CoAo from "./page/SanPham/CoAo/CoAo";
 import KichCo from "./page/SanPham/KichCo/KichCo";
 import Color from "./page/SanPham/Mau/Color";
 import Login from "./Login";
+import Category from "./page/SanPham/category/Category";
+import Brand from "./page/SanPham/brand/Brand";
 
 
 const { Content } = Layout;
@@ -60,7 +62,8 @@ const CustomContent = () => {
         <Route path="/sanPham" element={<SanPham />} />
         <Route path="/thongKe" element={<ThongKe />} />
         <Route path="/voucher" element={<Voucher />} />
-        <Route path="/hang" element={<HangKhachHang />} />
+        <Route path="/sanPham/category" element={<Category />} />
+        <Route path="/sanPham/brand" element={<Brand />} />
       </Routes>
     </Content>
   );

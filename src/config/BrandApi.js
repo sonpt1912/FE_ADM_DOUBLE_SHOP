@@ -30,3 +30,28 @@ export const fetchBrand = createAsyncThunk(
     }
   }
 );
+export const saveBrand = createAsyncThunk( "brand/saveBrand", async (payload) => {
+  try {
+    const response = await axios.post(`${API_URL}/brand/save`, payload);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      message.error("Unauthorized: Please log in.");
+    }
+    throw error;
+  }
+});
+export const updateBrand = createAsyncThunk(
+  "brand/updateBrand",
+  async (payload) => {
+    try {
+      const response = await axios.post(`${API_URL}/brand/update`, payload);
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
+      throw error;
+    }
+  }
+);
