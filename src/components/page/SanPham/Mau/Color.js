@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 
 import { ProfileFilled, FilterFilled, EyeOutlined, EditOutlined, DeleteFilled, PlusOutlined ,DeleteOutlined} from "@ant-design/icons";
-import { fetchColors,deleteColor,detailColor } from "../../../../config/MauApi";
+import { fetchColors,deleteColor,detailColor } from "../../../../config/ColorApi";
 
 import { } from 'antd';
 
@@ -17,7 +17,7 @@ import ModalColorDetail from "./ModalColorDetail";
 
 const { Option } = Select;
 
-const Mau = () => {
+const Color = () => {
   const dispatch = useDispatch();
   const colors = useSelector((state) => 
 state.color.colors
@@ -329,4 +329,4 @@ state.color.colors
 };
 
 
-export default Mau;
+export default Color;
