@@ -25,7 +25,7 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchCollars,updateCollar,detailCollar } from "../../../../config/collarApi";
+import { fetchCollars,updateCollar,detailCollar } from "../../../../config/CollarApi";
 import ModalAddCollar from "./ModalCollarAdd";
 import ModalUpdateCollar from "./ModalCollarEdit";
 import ModalCollarDetail from "./ModalDetailCollar";

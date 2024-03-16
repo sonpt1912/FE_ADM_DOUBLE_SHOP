@@ -25,7 +25,7 @@ import {
   DeleteFilled,EyeOutlined,EditOutlined,DeleteOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchVouchers,updateVoucher,detailVoucher } from "../../../config/voucherApi";
+import { fetchVouchers,updateVoucher,detailVoucher } from "../../../config/VoucherApi";
 import ModalAddVoucher from "./ModalVoucherAdd";
 import ModalUpdateVoucher from "./ModalVoucherEdit";
 import ModalVoucherDetail from "./ModalDetailVoucher";

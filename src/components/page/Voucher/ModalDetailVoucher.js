@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Modal, Form, Input, Select, ColorPicker, message, DatePicker } from 'antd';
-import { detailVoucher,updateVoucher } from '../../../config/voucherApi';
+import { detailVoucher,updateVoucher } from '../../../config/VoucherApi';
 import TextArea from 'antd/es/input/TextArea';
 import moment from 'moment';
 const { Option } = Select;

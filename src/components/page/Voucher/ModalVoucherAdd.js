@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message, DatePicker,TimePicker ,Radio} from "antd";
 import { useDispatch } from "react-redux";
-import { saveVoucher } from "../../../config/voucherApi";
+import { saveVoucher } from "../../../config/VoucherApi";
 import moment from "moment";
 const { TextArea } = Input;
 
