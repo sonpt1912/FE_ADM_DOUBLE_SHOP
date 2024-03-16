@@ -1,158 +1,117 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Space, Input, Table, Collapse, Form, Select, Button, Divider, Row, Col, theme, message, Popconfirm } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
 import ModalKhuyenMai from "./ModalKhuyenMaiAdd";
 import ModalKhuyenMaiEdit from "./ModalKhuyenMaiEdit";
 import ModalKhuyenMaiDetail from "./ModalKhuyenMaiChiTiet";
-import Material from "../SanPham/ChatLieu/ChatLieu";
 import { SearchOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
-import { fetchPromotions, Delete, detail, update } from "../../../store/slice/KhuyenMaiReducer";
-import { fetchDetailPromotions } from "../../../store/slice/DetailPromotionReducer";
+import { fetchPromotions, Delete, detail, update } from "../../../store/slice/PromotionReducer";
 const Promotion = () => {
     const dispatch = useDispatch();
     // const [updateStatus, setUpdateStatus] = useState({ status: 0 });
-    const detailPromotions = useSelector((state) => state.detailPromotion.detailPromotions);
-    const pagination = useSelector((state) => state.detailPromotion.pagination);
+    const promotions = useSelector((state) => state.promotion.promotions);
+    const pagination = useSelector((state) => state.promotion.pagination);
     const [pageSize, setPageSize] = useState();
     console.log("Pagination", pagination);
     const loading = useSelector((state) => state.promotion.status === "loading");
 
     const [searchParams, setSearchParams] = useState({
-        // code: "",
-        // name: "",
+        code: "",
+        name: "",
     });
 
     useEffect(() => {
         dispatch(
-            fetchDetailPromotions({
+            fetchPromotions({
                 page: 0,
                 pageSize: 5,
-                // code: searchParams.code,
-                // name: searchParams.name,
-                // status: searchParams.status
+                code: searchParams.code,
+                name: searchParams.name,
+                status: searchParams.status
             })
         );
     }, [dispatch]);
 
+    // useEffect(() => {
+    //     const updateExpiredPromotion = async () => {
+    //         promotions.forEach(async (promotion) => {
+    //             if (
+    //                 moment(promotion.endDate).isBefore(moment()) &&
+    //                 promotion.status === 1
+    //             ) {
+    //                 await handleChangeStatus(promotion);
+    //             }
+    //         });
+    //     };
+
+    //     updateExpiredPromotion();
+    // }, [promotions]);
+
     const onClickSearch = () => {
         dispatch(
-            fetchDetailPromotions({
+            fetchPromotions({
                 page: 0,
                 pageSize: 5,
-                // code: searchParams.code,
-                // name: searchParams.name,
-                // status: searchParams.status
+                code: searchParams.code,
+                name: searchParams.name,
+                status: searchParams.status
             })
         );
 
         setSearchParams({
-            // code: "",
-            // name: "",
+            code: "",
+            name: "",
         });
     };
 
-    // const columns = [
-    //     {
-    //         // title: "id",
-    //         // dataIndex: "id",
-    //         // key: "id",
-    //         // // render: (text, record, index) => index + 1,
-    //         title: 'STT',
-    //         dataIndex: 'index',
-    //         key: 'index',
-    //         render: (text, record, index) => index + 1,
-    //         sorter: (a, b) => a.index - b.index,
-    //     },
-    //     {
-    //         title: "code",
-    //         dataIndex: "code",
-    //         key: "code",
-    //     },
-    //     {
-    //         title: "name",
-    //         dataIndex: "name",
-    //         key: "name",
-    //     },
-    //     {
-    //         title: "discountAmount",
-    //         dataIndex: "discountAmount",
-    //         key: "discountAmount",
-    //     },
-    //     {
-    //         title: "discountPercent",
-    //         dataIndex: "discountPercent",
-    //         key: "discountPercent",
-    //     },
-    //     {
-    //         title: "startDate",
-    //         dataIndex: "startDate",
-    //         key: "startDate",
-    //     },
-    //     {
-    //         title: "endDate",
-    //         dataIndex: "endDate",
-    //         key: "endDate",
-    //     },
-    //     {
-    //         title: "status",
-    //         dataIndex: "status",
-    //         key: "status",
-    //         render: (text, record) => (record.status == "0" ? "Ngừng hoạt động" : record.status == "1" ? "Đang hoạt động" : "Chưa hoạt động"),
-    //     },
-    //     {
-    //         title: "ChucNang",
-    //         dataIndex: "ChucNang",
-    //         key: "ChucNang",
-    //         render: (text, record) => (
-    //             <Space size="middle">
-    //                 <Button
-    //                     icon={<EyeOutlined />}
-    //                     style={{ border: "none" }}
-    //                     onClick={() => openModalDetail(record.id)}
-    //                 />
-    //                 <Button
-    //                     icon={<EditOutlined />}
-    //                     style={{ border: "none" }}
-    //                     onClick={() => openModalUpdate(record.id)}
-    //                 />
-    //                 <Button
-    //                     icon={<DeleteOutlined />}
-    //                     style={{ border: "none" }}
-    //                     onClick={() => handleDelete(record.id)} disabled={record.status === 0} 
-    //                     />
-    //                 {/* <Popconfirm
-    //                     title="Are you sure you want to delete this voucher?"
-    //                     onConfirm={() => handleChangeStatus(record.id)}
-    //                     okText="Yes"
-    //                     cancelText="No"
-    //                     loading={loading}
-    //                 >
-    //                     <Button
-    //                         style={{ border: "none" }}
-    //                         disabled={record.status === 0}
-    //                         icon={<DeleteOutlined />}
-    //                     />
-    //                 </Popconfirm> */}
-    //             </Space>
-    //         ),
-    //     },
-    // ];
-
     const columns = [
         {
-            title: "id",
-            dataIndex: "id",
-            key: "id",
-            // render: (text, record, index) => index + 1,
-            // title: 'STT',
-            // dataIndex: 'index',
-            // key: 'index',
-            // render: (text, record, index) => index + 1,
-            // sorter: (a, b) => a.index - b.index,
+            // title: "id",
+            // dataIndex: "id",
+            // key: "id",
+            // // render: (text, record, index) => index + 1,
+            title: 'STT',
+            dataIndex: 'index',
+            key: 'index',
+            render: (text, record, index) => index + 1,
+            sorter: (a, b) => a.index - b.index,
+        },
+        {
+            title: "code",
+            dataIndex: "code",
+            key: "code",
+        },
+        {
+            title: "name",
+            dataIndex: "name",
+            key: "name",
+        },
+        {
+            title: "discountAmount",
+            dataIndex: "discountAmount",
+            key: "discountAmount",
+        },
+        {
+            title: "discountPercent",
+            dataIndex: "discountPercent",
+            key: "discountPercent",
+        },
+        {
+            title: "startDate",
+            dataIndex: "startDate",
+            key: "startDate",
+        },
+        {
+            title: "endDate",
+            dataIndex: "endDate",
+            key: "endDate",
+        },
+        {
+            title: "status",
+            dataIndex: "status",
+            key: "status",
+            render: (text, record) => (record.status == "0" ? "Ngừng hoạt động" : record.status == "1" ? "Đang hoạt động" : "Chưa hoạt động"),
         },
         {
             title: "ChucNang",
@@ -173,8 +132,8 @@ const Promotion = () => {
                     <Button
                         icon={<DeleteOutlined />}
                         style={{ border: "none" }}
-                        onClick={() => handleDelete(record.id)} disabled={record.status === 0}
-                    />
+                        onClick={() => handleDelete(record.id)} disabled={record.status === 0} 
+                        />
                     {/* <Popconfirm
                         title="Are you sure you want to delete this voucher?"
                         onConfirm={() => handleChangeStatus(record.id)}
@@ -192,9 +151,10 @@ const Promotion = () => {
             ),
         },
     ];
+
     const handleTableChange = (pagination) => {
         dispatch(
-            fetchDetailPromotions({
+            fetchPromotions({
                 page: pagination.current - 1,
                 pageSize: pagination.pageSize,
                 ...searchParams,
@@ -206,12 +166,12 @@ const Promotion = () => {
         dispatch(Delete(id))
             .then(() => {
                 dispatch(
-                    fetchDetailPromotions({
+                    fetchPromotions({
                         page: 0,
                         pageSize: 5,
-                        // code: searchParams.code,
-                        // name: searchParams.name,
-                        // status: searchParams.status
+                        code: searchParams.code,
+                        name: searchParams.name,
+                        status: searchParams.status
                     })
                 )
             });
@@ -221,6 +181,7 @@ const Promotion = () => {
     const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
     const openModalDetail = async (id) => {
         const response = await dispatch(detail(id));
+        console.log(response)
         setPromotionData(response.payload);
         setIsModalOpenDetail(true);
     };
@@ -373,7 +334,7 @@ const Promotion = () => {
             <Table
                 className="text-center"
                 columns={columns}
-                dataSource={detailPromotions}
+                dataSource={promotions}
                 bordered
                 pagination={{
                     pageSize: pagination.pageSize,

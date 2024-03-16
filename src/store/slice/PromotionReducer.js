@@ -13,7 +13,7 @@ export const getAll = createAsyncThunk(
   "promotions/fetchPromotions", async (payload) => {
     try {
       const response = await axios.post(
-        "http://localhost:8072/promotion/hien-thi",
+        "http://localhost:8072/promotion/show",
         payload
       );
       return response.data;
@@ -30,7 +30,7 @@ export const fetchPromotions = createAsyncThunk(
   "promotions/fetchPromotions", async (payload) => {
     try {
       const response = await axios.post(
-        "http://localhost:8072/promotion/hien-thi/condition",
+        "http://localhost:8072/promotion/show/condition",
         payload
       );
       return response.data;
@@ -62,7 +62,24 @@ export const detail = createAsyncThunk(
     try {
 
       const response = await axios
-        .get(`http://localhost:8072/promotion/hien-thi/${payload}`);
+        .get(`http://localhost:8072/promotion/show/${payload}`);
+      console.log("Object:" + response.data.data)
+      return response.data.data;
+
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Unauthorized: Please log in.");
+      }
+      throw error;
+    }
+  });
+
+export const detailPromotion = createAsyncThunk(
+  'promotions/detail', async ({ idPromotion, idDetailPromotion }) => {
+    try {
+
+      const response = await axios
+        .get(`http://localhost:8072//promotion/show/${idPromotion}/${idDetailPromotion}`);
       console.log("Object:" + response.data.data)
       return response.data.data;
 

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form, Input, Select, message, Date, Tree, Col, DatePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { add, fetchPromotions } from "../../../store/slice/KhuyenMaiReducer";
+import { add, fetchPromotions } from "../../../store/slice/PromotionReducer";
 import axios from "axios";
+import ModalKhuyenMaiDetail from "./ModalKhuyenMaiChiTiet";
 
-const ModalKhuyenMai = ({ open, closeModal }) => {
+const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
@@ -16,15 +17,6 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
     startDate: null,
     endDate: null,
   });
-
-  const onDateTimeChange = (date, dateString) => {
-    console.log(date, dateString);
-    setPayload({
-      ...payload,
-      startDate: dateString,
-      endDate: dateString// Lưu chuỗi ngày bắt đầu
-    });
-  };
 
   const handleOk = async () => {
     try {
@@ -51,7 +43,7 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
       });
       form.resetFields();
     } catch (error) {
-      message.error("Failed to add Promotion");
+      message.error("Vui lòng nhập đầy đủ thông tin");
     } finally {
       closeModal();
       form.resetFields();
@@ -139,22 +131,27 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
   const [treeData, setTreeData] = useState([]);
 
   useEffect(() => {
-    // Gọi API để lấy dữ liệu cây từ backend
-    axios.get('http://localhost:8072/promotion/hien-thi')
+    axios.get('http://localhost:8072/promotion/show')
       .then(response => {
-        setTreeData(response.data);
+        console.log('API response: ', response.data.data)
+        setTreeData(response.data.data);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
   }, []);
 
-  const renderTree = (node) => (
-    <ul key={node.code}>
-      <li>{node.name}</li>
-      {/* {node.children && node.children.map(child => renderTree(child))} */}
-    </ul>
-  );
+  const renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children && item.children.length > 0) {
+        return (
+          <Tree.TreeNode key={item.id} title={item.name}>
+            {renderTreeNodes(item.children)}
+          </Tree.TreeNode>
+        );
+      }
+      return <Tree.TreeNode key={item.id} title={item.name} />;
+    });
 
   // const [expandedKeys, setExpandedKeys] = useState(['0-0-0', '0-0-1']);
   // const [checkedKeys, setCheckedKeys] = useState(['0-0-0']);
@@ -164,14 +161,10 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
   const [selectedKeys, setSelectedKeys] = useState();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const onExpand = (expandedKeysValue) => {
-    console.log('onExpand', expandedKeysValue);
-    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // or, you can remove all expanded children keys.
     setExpandedKeys(expandedKeysValue);
     setAutoExpandParent(false);
   };
   const onCheck = (checkedKeysValue) => {
-    console.log('onCheck', checkedKeysValue);
     setCheckedKeys(checkedKeysValue);
   };
   const onSelect = (selectedKeysValue, info) => {
@@ -194,29 +187,19 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
             <Form
               form={form}
               name="basic"
-              labelCol={{
-                span: 5,
-              }}
-              wrapperCol={{
-                span: 17,
-              }}
-              style={{
-                maxWidth: 1000,
-                marginTop: "30px",
-
-              }}
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 17, }}
+              style={{ maxWidth: 1000, marginTop: "30px" }}
             >
               <Form.Item
                 label="code"
                 name="code"
-                labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
-                labelCol={{
-                  span: 9, // Đặt chiều rộng cho nhãn
-                }}
+                labelAlign="left"
+                labelCol={{ span: 9, }}
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng nhập code phiếu giảm giá"
+                    message: "Vui lòng nhập code"
                   }
                 ]}
                 onChange={(e) =>
@@ -230,9 +213,7 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
                 label="name"
                 name="name"
                 labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
-                labelCol={{
-                  span: 9, // Đặt chiều rộng cho nhãn
-                }}
+                labelCol={{ span: 9 }}
 
                 rules={[
                   {
@@ -258,9 +239,7 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
                     message: "Vui lòng nhập giảm giá theo tiền"
                   }
                 ]}
-                labelCol={{
-                  span: 9, // Đặt chiều rộng cho nhãn
-                }}
+                labelCol={{ span: 9 }}
                 label="Giảm giá theo tiền"
                 name="discountAmount"
               // Rest of your code
@@ -280,23 +259,18 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
                     message: "Vui lòng nhập giảm giá theo phần trăm"
                   }
                 ]}
-                labelCol={{
-                  span: 9, // Đặt chiều rộng cho nhãn
-                }}
+                labelCol={{ span: 9 }}
                 label="Giảm giá theo phần trăm"
                 name="discountPercent"
               // Rest of your code
               >
                 <Input type="number" placeholder="%" min={0} />
               </Form.Item>
-
               <Form.Item
                 labelAlign="left"
                 name="startDate"
                 label="startDate"
-                labelCol={{
-                  span: 9, // Đặt chiều rộng cho nhãn
-                }}
+                labelCol={{ span: 9 }}
                 rules={[{ required: true }]}
               >
                 <Input
@@ -309,9 +283,7 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
                 labelAlign="left"
                 name="endDate"
                 label="endDate"
-                labelCol={{
-                  span: 9, // Đặt chiều rộng cho nhãn
-                }}
+                labelCol={{ span: 9 }}
                 rules={[{ required: true }]}
 
               >
@@ -324,21 +296,35 @@ const ModalKhuyenMai = ({ open, closeModal }) => {
             </Form>
           </Col>
           <Col style={{ marginLeft: "30px" }} lg={9} md={24} sm={24}>
-            <h3 >Chọn sản phẩm</h3>
-            <Tree
-              checkable
-              onExpand={onExpand}
-              expandedKeys={expandedKeys}
-              autoExpandParent={autoExpandParent}
-              onCheck={onCheck}
-              checkedKeys={checkedKeys}
-              onSelect={onSelect}
-              selectedKeys={selectedKeys}
-              treeData={tree}
-            />
+            <div style={{ border: '3px solid black', padding: '10px', height: "350px", overflow: "auto" }}>
+              <h3 >Chọn sản phẩm</h3>
+              {/* <Tree
+                checkable
+                onExpand={onExpand}
+                expandedKeys={expandedKeys}
+                autoExpandParent={autoExpandParent}
+                onCheck={onCheck}
+                checkedKeys={checkedKeys}
+                onSelect={onSelect}
+                selectedKeys={selectedKeys}
+                treeData={tree}
+                showLine
+                defaultExpandAll
+                // expandedKeys={expandedKeys}
+                // onExpand={onExpand}
+              >
+                {renderTreeNodes(treeData)}
+              </Tree> */}
+              <Tree
+                checkable
+                checkedKeys={checkedKeys}
+                onCheck={onCheck}>
+                {renderTreeNodes(treeData)}
+              </Tree>
+            </div>
           </Col>
         </div>
-      </Modal>
+      </Modal >
 
 
     </div >
