@@ -17,7 +17,6 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-const API_SUCCESS = "success";
 
   export const fetchVouchers = createAsyncThunk(
     "vouchers/fetchVouchers",
