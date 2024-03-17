@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Space, Input, Table, Collapse, Form, Select, Button, Divider, Row, Col, theme, message, Popconfirm } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
-import ModalKhuyenMai from "./ModalKhuyenMaiAdd";
-import ModalKhuyenMaiEdit from "./ModalKhuyenMaiEdit";
-import ModalKhuyenMaiDetail from "./ModalKhuyenMaiChiTiet";
-import Material from "../SanPham/ChatLieu/ChatLieu";
+import ModalKhuyenMai from "./ModalPromotionAdd";
+import ModalKhuyenMaiEdit from "./ModalPromotionEdit";
+import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
 import { SearchOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
-import { fetchPromotions, Delete, detail, update } from "../../../store/slice/KhuyenMaiReducer";
+import { fetchPromotions, Delete, detail, update } from "../../../store/slice/PromotionReducer";
 const Promotion = () => {
     const dispatch = useDispatch();
     // const [updateStatus, setUpdateStatus] = useState({ status: 0 });
@@ -136,8 +132,8 @@ const Promotion = () => {
                     <Button
                         icon={<DeleteOutlined />}
                         style={{ border: "none" }}
-                        onClick={() => handleDelete(record.id)} disabled={record.status === 0} 
-                        />
+                        onClick={() => handleDelete(record.id)} disabled={record.status === 0}
+                    />
                     {/* <Popconfirm
                         title="Are you sure you want to delete this voucher?"
                         onConfirm={() => handleChangeStatus(record.id)}
@@ -185,6 +181,7 @@ const Promotion = () => {
     const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
     const openModalDetail = async (id) => {
         const response = await dispatch(detail(id));
+        console.log(response)
         setPromotionData(response.payload);
         setIsModalOpenDetail(true);
     };
@@ -325,11 +322,10 @@ const Promotion = () => {
 
 
             <div className="mt-4"></div>
-            <hr />
             <div style={{ marginBottom: "30px" }}></div>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <h3 style={{ marginRight: 8 }}>Danh Sách </h3>
+                <h3 style={{ marginRight: 8 }}>Danh Sách Khuyến mãi</h3>
                 <Button type="primary" shape="round" onClick={showModalAdd}>
                     Add Promotion
                 </Button>

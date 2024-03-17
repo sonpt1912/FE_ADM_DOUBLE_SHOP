@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Input, Select, Form, message } from "antd";
+import { Modal, Button, Input, Select, Form, message, Tabs } from "antd";
 import { useDispatch } from "react-redux";
-import { update, fetchPromotions } from "../../../store/slice/KhuyenMaiReducer";
+import { update, fetchPromotions } from "../../../store/slice/PromotionReducer";
+import TabPane from "antd/es/tabs/TabPane";
 
 const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
   const dispatch = useDispatch();
@@ -113,6 +114,12 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
     form.resetFields();
   };
 
+  const [activeTab, setActiveTab] = useState("form");
+
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+  };
+
   return (
     <Modal
       title="Update Promotion"
@@ -121,7 +128,9 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
       onCancel={handleCancel}
       confirmLoading={confirmLoading}
     >
-      <Form>
+      <Tabs activeKey={activeTab} onChange={handleTabChange}>
+        <TabPane tab="Thông tin" key="form">
+        <Form>
         <h4>ID:</h4>
         <Input
           name="id"
@@ -203,6 +212,22 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
           </Select>
         </div>
       </Form>
+        </TabPane>
+        <TabPane tab="Chi tiết sản phẩm" >
+          <div>
+            {KhuyenMais && KhuyenMais.detailPromotions.map((t, index) => (
+              <div key={index}>
+                <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
+                <p style={{marginLeft: 30, fontSize: 15}}>Màu sắc: [{t.detailProduct.color.name}]</p>
+                <p style={{marginLeft: 30, fontSize: 15}}>Kích cỡ: [{t.detailProduct.size.name}]</p>
+                <hr></hr>
+              </div>
+            ))}
+          </div>
+
+        </TabPane>
+      </Tabs>
+      
     </Modal>
   );
 };

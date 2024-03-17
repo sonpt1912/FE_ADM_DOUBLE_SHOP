@@ -7,8 +7,8 @@ import "../styles/Navbar.css";
 import BanHang from "./page/BanHang/BanHang";
 import ChiTietDonHang from "./page/ChiTietDonHang";
 import DanhGia from "./page/DanhGia/DanhGia";
+import Promotion from "./page/Promotion/Promotion";
 import Customer from "./page/KhachHang/Customer"
-import KhuyenMai from "./page/KhuyenMai/KhuyenMai";
 import LienHe from "./page/LienHe";
 import NhanVien from "./page/NhanVien/NhanVien";
 import SanPham from "./page/SanPham";
@@ -50,7 +50,7 @@ const CustomContent = () => {
         <Route path="/banHang" element={<BanHang />} />
         <Route path="/chiTietDonHang" element={<ChiTietDonHang />} />
         <Route path="/danhGia" element={<DanhGia />} />
-        <Route path="/khachHang" element={<Customer />} />
+        <Route path="/khachHang" element={<KhachHang />} />
         <Route path="/khuyenMai" element={<KhuyenMai />} />
         <Route path="/lienHe" element={<LienHe />} />
         <Route path="/sanPham/ao" element={<Ao />} />

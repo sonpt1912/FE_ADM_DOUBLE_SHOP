@@ -8,10 +8,11 @@ import KichCoReducer from "./slice/KichCoReducer";
 import ColorReducer from "./slice/ColorReducer";
 import AuthReducer from "./slice/AuthReducer";
 import ChatLieuReducer from "./slice/ChatLieuReducer";
-import KhuyenMaiReducer from "./slice/KhuyenMaiReducer";
 import CollarReducer from "./slice/CollarReducer";
 import VoucherReducer from "./slice/VoucherReducer";
 import EmployeeReducer from "./slice/EmployeeReducer";
+import DetailPromotionReducer from "./slice/DetailPromotionReducer";
+import PromotionReducer from "./slice/PromotionReducer";
 import ProductReducer from "./slice/ProductReducer";
 import BrandReducer from "./slice/BrandReducer";
 import CategoryReducer from "./slice/CategoryReducer";
@@ -22,7 +23,8 @@ const store = configureStore({
     rank : RankReducer,
     size : KichCoReducer,
     material: ChatLieuReducer,
-    promotion: KhuyenMaiReducer,
+    promotion: PromotionReducer,
+    detailPromotion: DetailPromotionReducer,
     color: ColorReducer,
     collar: CollarReducer,
     auth: AuthReducer,
