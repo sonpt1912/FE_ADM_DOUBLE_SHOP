@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form, Input, Select, message, Date, Tree, Col, DatePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { add, fetchPromotions } from "../../../store/slice/PromotionReducer";
+import { fetchPromotions } from "../../../store/slice/PromotionReducer";
+import { add } from "../../../store/slice/DetailPromotionReducer";
 import axios from "axios";
-import ModalKhuyenMaiDetail from "./ModalKhuyenMaiChiTiet";
+import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
 
 const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -131,7 +132,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   const [treeData, setTreeData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8072/promotion/show')
+    axios.get('http://localhost:8072/detail-product/show')
       .then(response => {
         console.log('API response: ', response.data.data)
         setTreeData(response.data.data);
@@ -145,7 +146,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     data.map(item => {
       if (item.children && item.children.length > 0) {
         return (
-          <Tree.TreeNode key={item.id} title={item.name}>
+          <Tree.TreeNode key={item.product} title={item.name}>
             {renderTreeNodes(item.children)}
           </Tree.TreeNode>
         );

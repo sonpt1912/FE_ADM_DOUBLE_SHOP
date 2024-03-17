@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Space, Input, Table, Collapse, Form, Select, Button, Divider, Row, Col, theme, message, Popconfirm } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import ModalKhuyenMai from "./ModalKhuyenMaiAdd";
-import ModalKhuyenMaiEdit from "./ModalKhuyenMaiEdit";
-import ModalKhuyenMaiDetail from "./ModalKhuyenMaiChiTiet";
+import ModalKhuyenMai from "./ModalPromotionAdd";
+import ModalKhuyenMaiEdit from "./ModalPromotionEdit";
+import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
 import { SearchOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 import { fetchPromotions, Delete, detail, update } from "../../../store/slice/PromotionReducer";
@@ -132,8 +132,8 @@ const Promotion = () => {
                     <Button
                         icon={<DeleteOutlined />}
                         style={{ border: "none" }}
-                        onClick={() => handleDelete(record.id)} disabled={record.status === 0} 
-                        />
+                        onClick={() => handleDelete(record.id)} disabled={record.status === 0}
+                    />
                     {/* <Popconfirm
                         title="Are you sure you want to delete this voucher?"
                         onConfirm={() => handleChangeStatus(record.id)}

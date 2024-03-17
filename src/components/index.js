@@ -2,7 +2,7 @@ import BanHang from "./page/BanHang";
 import ChiTietDonHang from "./page/ChiTietDonHang";
 import DanhGia from "./page/DanhGia/DanhGia";
 import KhachHang from "./page/KhachHang";
-import KhuyenMai from "./page/KhuyenMai";
+import Promotion from "./page/Promotion/Promotion";
 import LienHe from "./page/LienHe";
 import NhanVien from "./page/NhanVien";
 import SanPham from "./page/SanPham";
@@ -25,7 +25,7 @@ export {
   ChiTietDonHang,
   DanhGia,
   KhachHang,
-  KhuyenMai,
+  Promotion,
   LienHe,
   NhanVien,
   SanPham,

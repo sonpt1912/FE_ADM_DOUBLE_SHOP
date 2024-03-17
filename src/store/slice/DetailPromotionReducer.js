@@ -130,16 +130,16 @@ const detailPromotionSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-      // .addCase(add.pending, (state) => {
-      //   state.status = "loading";
-      // })
-      // .addCase(add.fulfilled, (state) => {
-      //   state.status = "succeeded";
-      // })
-      // .addCase(add.rejected, (state, action) => {
-      //   state.status = "failed";
-      //   state.error = action.error.message;
-      // })
+      .addCase(add.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(add.fulfilled, (state) => {
+        state.status = "succeeded";
+      })
+      .addCase(add.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
       // .addCase(detail.pending, (state) => {
       //   state.status = 'loading';
       // })
