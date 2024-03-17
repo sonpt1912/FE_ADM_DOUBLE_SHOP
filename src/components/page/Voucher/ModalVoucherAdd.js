@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message, DatePicker,TimePicker ,Radio} from "antd";
 import { useDispatch } from "react-redux";
-import { saveVoucher } from "../../../config/api2";
-
+import { saveVoucher } from "../../../config/VoucherApi";
+import moment from "moment";
 const { TextArea } = Input;
 
 const ModalAddVoucher = ({ open, closeModal }) => {
@@ -14,12 +14,14 @@ const ModalAddVoucher = ({ open, closeModal }) => {
   const handleDiscountTypeChange = (e) => {
     setDiscountType(e.target.value); // Cập nhật loại giảm giá đang được chọn khi người dùng thay đổi
   };
+
+
   const onDateTimeChange = (date, dateString) => {
     console.log(date, dateString);
     setPayload({
       ...payload,
-      startDate: dateString, 
-      endDate:dateString// Lưu chuỗi ngày bắt đầu
+      startDate: moment(dateString).format("YYYY-MM-DD HH:mm:ss"),
+      endDate: moment(dateString).format("YYYY-MM-DD HH:mm:ss")
     });
   };
   const [payload, setPayload] = useState({
@@ -31,26 +33,47 @@ const ModalAddVoucher = ({ open, closeModal }) => {
      startDate:"",
      endDate:""
   });
-  const formatNumberWithCommas = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+
   const handleOk = async () => {
    
     try {
       setConfirmLoading(true);
       const formValues = await form.validateFields();
+         // Kiểm tra giảm giá theo tiền không được nhỏ hơn giá trị đơn tối thiểu
+         if (formValues.discountAmount > formValues.minimumOrder) {
+          message.error("Giảm giá theo tiền không được lớn hơn giá trị đơn tối thiểu");
+          return;
+      }
+             // Kiểm tra giảm giá theo tiền và giảm giá theo phần trăm không được nhập số âm
+             if (formValues.discountType === "amount" && formValues.discountAmount < 0) {
+              message.error("Giảm giá theo tiền không được là số âm");
+              return;
+          }
+          if (formValues.discountType === "percent" && formValues.discountPercent < 0) {
+              message.error("Giảm giá theo phần trăm không được là số âm");
+              return;
+          }
+  
+          // Kiểm tra số lượng và giá trị đơn tối thiểu không được là số âm
+          if (formValues.quantity < 0) {
+              message.error("Số lượng không được là số âm");
+              return;
+          }
+          if (formValues.minimumOrder < 0) {
+              message.error("Giá trị đơn tối thiểu không được là số âm");
+              return;
+          }
+    
+       // Kiểm tra nếu loại giảm giá là theo phần trăm và giảm giá lớn hơn 70%
+    if (discountType === "percent" && formValues.discountPercent > 70) {
+      message.error("Giảm giá theo phần trăm không được lớn hơn 70%");
+      return; // Ngăn việc tiếp tục thực hiện lưu dữ liệu
+    }
+   
       await dispatch(saveVoucher({ ...formValues, discountType }));
       message.success("Voucher added successfully");
       closeModal();
-      setPayload({
-        name:"",
-        discountAmount:"",
-        discountPercent:"",
-        quantity:"",
-        minimumOrder:"",
-        startDate:"",
-        endDate:""
-      });
+      
       form.resetFields();
     } catch (error) {
       message.error("Please fill in all required fields");
@@ -72,14 +95,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
     closeModal();
     form.resetFields();
   };
-  const handleNumberChange = (value, fieldName) => {
-    if (value < 0) {
-      message.error(`Giá trị ${fieldName} không được âm`);
-    } else {
-      message.error("");
-      setPayload({ ...payload, [fieldName]: value });
-    }
-  };
+  
 
   return (
     <Modal
@@ -110,7 +126,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           name="name"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
       
           rules={[
@@ -126,7 +142,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           <Input />
         </Form.Item>
      
-          <Form.Item label="Loại giảm giá" required="true" labelCol={{ span: 8 }}>
+          <Form.Item label="Loại giảm giá" required="true" labelCol={{ span: 9 }} labelAlign="left">
           <Radio.Group onChange={handleDiscountTypeChange} value={discountType} style={{ display: 'flex', flexDirection: 'column' }}>
             <Radio value="amount" >Giảm theo tiền</Radio>
             <Radio value="percent">Giảm theo phần trăm</Radio>
@@ -146,7 +162,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
             }
           ]}
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
             label="Giảm giá theo tiền"
             name="discountAmount"
@@ -154,8 +170,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           >
             <Input type="number" placeholder="VNĐ" 
           
-            min={0}
-            onChange={(e) => handleNumberChange(parseInt(e.target.value), "quantity")} // Thêm sự kiện onChange để kiểm tra giá trị nhập vào
+
             />
           </Form.Item>
         )}
@@ -188,7 +203,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           name="quantity"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
           rules={[
             {
@@ -209,7 +224,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           name="minimumOrder"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
           rules={[
             {
@@ -230,7 +245,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           name="startDate"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
           rules={[
             {
@@ -240,14 +255,14 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           ]}
         
         >
-          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange} />
+          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange} format="YYYY-MM-DD HH:mm:ss"/>
         </Form.Item>
         <Form.Item
           label="Ngày kết thúc"
           name="endDate"
           labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 8, // Đặt chiều rộng cho nhãn
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
           rules={[
             {
@@ -257,7 +272,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           ]}
           
         >
-          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange}/>
+          <DatePicker showTime={{ format: 'HH:mm:ss' }} onChange={onDateTimeChange}  format="YYYY-MM-DD HH:mm:ss"/>
         </Form.Item>
       </Form>
     </Modal>

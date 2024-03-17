@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Modal, Form, Input, Select, ColorPicker, message, DatePicker } from 'antd';
-import { detailVoucher,updateVoucher } from '../../../config/api2';
+import { detailVoucher,updateVoucher } from '../../../config/VoucherApi';
 import TextArea from 'antd/es/input/TextArea';
 import moment from 'moment';
 const { Option } = Select;
@@ -104,8 +104,8 @@ const ModalVoucherDetail = ({ isOpen, onCancel1, vouchers }) => {
             <Input
           name="endDate"
          
-         value={moment(formatDate(startDate))}
-       
+         value={moment(formatDate(endDate))}
+         
           />
           
       </form>

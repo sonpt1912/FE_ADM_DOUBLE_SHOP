@@ -6,10 +6,9 @@ import { } from 'antd';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { addCustomer, detailCustomer, fetchCustomer, getAddress, updateCustomer } from "../../../store/slice/KhachHangReducer";
 import { Link } from "react-router-dom";
 import TabPane from "antd/es/tabs/TabPane";
-
+import { addCustomer, detailCustomer, fetchCustomer, getAddress, updateCustomer } from "../../../store/slice/CustomerReducer";
 
 const DetailKhachHang = ({ isOpenDetail, onCancel1, cus }) => {
     const [loading, setLoading] = useState(false);
@@ -28,7 +27,7 @@ const DetailKhachHang = ({ isOpenDetail, onCancel1, cus }) => {
     const [ngo, setNgo] = useState('')
     const [password, setPassword] = useState('')
     const [status, setStatus] = useState('')
-    const [is_defaul, setDefaul] = useState("")
+    const [defaul, setDefaul] = useState("")
     const [username, setUsername] = useState('')
     const [rank, setRank] = useState('')
     const [id1, setId1] = useState('')
@@ -42,7 +41,7 @@ const DetailKhachHang = ({ isOpenDetail, onCancel1, cus }) => {
             const dis = cus.address.map(addr => addr.district);
             const ward = cus.address.map(addr => addr.province);
             const description = cus.address.map(addr => addr.description);
-            const desaul = cus.address.map(addr => addr.is_defaul);
+            const desaul = cus.address.map(addr => addr.defaul);
             setName(cus.name);
             setEmail(cus.email);
             setBirthday(cus.birthday);
@@ -110,6 +109,7 @@ const DetailKhachHang = ({ isOpenDetail, onCancel1, cus }) => {
     return (
         <Modal
             title="Thông tin"
+          
             visible={isOpenDetail}
             footer={[
                 <Button key="cancel" onClick={onCancel1}>
@@ -117,6 +117,7 @@ const DetailKhachHang = ({ isOpenDetail, onCancel1, cus }) => {
                 </Button>,
                
             ]}
+            
         >
             <Tabs activeKey={activeTab} onChange={handleTabChange}>
                 <TabPane tab="Thông tin" key="form">
@@ -129,8 +130,8 @@ const DetailKhachHang = ({ isOpenDetail, onCancel1, cus }) => {
                                 <Input placeholder="Số điện thoaị" value={phone} onChange={(e) => handleInputChange({ target: { name: 'phone', value: e.target.value } })} />
                     </form>
                 </TabPane>
-                <TabPane tab="Địa chỉ" >
-                     <div>
+                <TabPane tab="Địa chỉ" style={{width:1000}} >
+                     <div >
                         {cus && cus.address.map((a, index) => (  
                             <div key={index}>
                                  <h2>Địa chỉ {index + 1}</h2>

@@ -13,7 +13,7 @@ import {
   Row,
 } from "antd";
 import axios from "axios";
-import { createEmployee } from "../../../config/NhanVienApi";
+import { createEmployee } from "../../../config/EmployeeApi";
 
 const { Option } = Select;
 const { TextArea } = Input;

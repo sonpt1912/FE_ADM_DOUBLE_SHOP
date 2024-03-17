@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Button, Modal, Form, Input, Select, ColorPicker, message, Radio } from 'antd';
 
 import TextArea from 'antd/es/input/TextArea';
-import { addCustomerAddress, updateCustomerAddress } from '../../../config/KhachHangApi';
+import { addCustomerAddress, updateCustomerAddress } from '../../../config/CustomerApi';
 
 import axios from "axios";
 const { Option } = Select;
@@ -17,7 +17,7 @@ const ModalUpdateAddress = ({ isOpen, onCancel1, dataUpdate, idCus }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const dispatch = useDispatch();
-    const [is_defaul, setDefaul] = useState('')
+    const [defaul, setDefaul] = useState('')
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -123,7 +123,7 @@ const ModalUpdateAddress = ({ isOpen, onCancel1, dataUpdate, idCus }) => {
             setNgo(value);
         } else if (name === "description") {
             setDescription(value);
-        }else if (name === "is_defaul") {
+        }else if (name === "defaul") {
             setDefaul(parseInt(value));
         }
 
@@ -141,7 +141,7 @@ const ModalUpdateAddress = ({ isOpen, onCancel1, dataUpdate, idCus }) => {
                 province: ward,
                 city: city,
                 description: description,
-                is_defaul:is_defaul
+                defaul:defaul
 
             };
             console.log("idddd", formData)
@@ -179,7 +179,7 @@ const ModalUpdateAddress = ({ isOpen, onCancel1, dataUpdate, idCus }) => {
             setWard(dataUpdate.province
             );
             setDescription(dataUpdate.description)
-            setDefaul(dataUpdate.is_defaul)
+            setDefaul(dataUpdate.defaul)
 
         }
 
@@ -257,10 +257,10 @@ const ModalUpdateAddress = ({ isOpen, onCancel1, dataUpdate, idCus }) => {
                     <h4 className="mt-3">Số nhà/ngõ/đường</h4>
                     <Input placeholder="Số nhà/ngõ/đường" value={description} name='description' onChange={(e) => handleInputChange({ target: { name: 'description', value: e.target.value } })}/>
                     <h4 className="mt-3">Mặc định</h4>
-                    <Radio value={1} checked={is_defaul === 1} onChange={(e) => handleInputChange({ target: { name: 'is_defaul', value: e.target.value } })}>
+                    <Radio value={1} checked={defaul === 1} onChange={(e) => handleInputChange({ target: { name: 'defaul', value: e.target.value } })}>
                     Mặc định
                 </Radio>
-                <Radio  value={0} checked={is_defaul === 0} onChange={(e) => handleInputChange({ target: { name: 'is_defaul', value: e.target.value } })}>
+                <Radio  value={0} checked={defaul === 0} onChange={(e) => handleInputChange({ target: { name: 'defaul', value: e.target.value } })}>
                     Không
                 </Radio> 
                 </form>

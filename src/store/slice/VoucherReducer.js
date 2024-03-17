@@ -1,6 +1,6 @@
 // sizeSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchVouchers,updateVoucher,saveVoucher } from "../../config/api2";
+import { fetchVouchers,updateVoucher,saveVoucher } from "../../config/VoucherApi";
 
 const initialState = {
   vouchers: [],

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message } from "antd";
 import { useDispatch } from "react-redux";
-import { updateSize } from "../../../../config/api";
+
+
+import { updateBrand } from "../../../../config/BrandApi";
 
 const { TextArea } = Input;
 
-const ModalUpdateSize = ({ open, closeModal, payload }) => {
+const ModalUpdateBrand = ({ open, closeModal, payload }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
@@ -33,12 +35,12 @@ const ModalUpdateSize = ({ open, closeModal, payload }) => {
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      await dispatch(updateSize({ ...payload, ...updatedValues }));
-      message.success("Size updated successfully");
+      await dispatch(updateBrand({ ...payload, ...updatedValues }));
+      message.success("Brand updated successfully");
       closeModal();
       form.resetFields();
     } catch (error) {
-      message.error("Failed to update size");
+      message.error("Failed to update brand");
     } finally {
       closeModal();
       form.resetFields();
@@ -88,4 +90,4 @@ const ModalUpdateSize = ({ open, closeModal, payload }) => {
   );
 };
 
-export default ModalUpdateSize;
+export default ModalUpdateBrand;

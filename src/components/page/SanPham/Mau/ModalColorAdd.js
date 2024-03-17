@@ -1,7 +1,7 @@
 // Modal.js
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addColor } from '../../../../config/MauApi';
+import { addColor } from '../../../../config/ColorApi';
 import { Button, Modal, Form, Input, Select, ColorPicker, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 const { Option } = Select;

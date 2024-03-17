@@ -24,7 +24,7 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchEmployee } from "../../../config/NhanVienApi";
+import { fetchEmployee } from "../../../config/EmployeeApi";
 import ModalAddNhanVien from "./CreateNhanVien";
 import ModalUpdateNhanVien from "./UpdateNhanVien";
 import moment from "moment";

@@ -20,7 +20,6 @@ export const fetchCustomer = createAsyncThunk(
   "customer/fetchCustomer",
   async (payload) => {
     try {
-      console.log("sss1",payload)
       const response = await axios.post(
         `${API_URL}/customer/get-all`,
         payload
@@ -134,7 +133,6 @@ export const updateCustomer = createAsyncThunk(
       throw error;
     }
   });
-
 
 
 export const detailCustomerAddress = createAsyncThunk(

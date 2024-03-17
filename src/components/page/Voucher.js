@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Space, Input, Radio, Table, Collapse } from "antd";
-import ModalSave from "./Voucher/save-modal";
+import ModalSave from "./Voucher/ModalVoucherAdd";
 const option = [
   { label: "Option 1", value: "option1" },
   { label: "Option 2", value: "option2" },

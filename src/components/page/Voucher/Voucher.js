@@ -25,7 +25,7 @@ import {
   DeleteFilled,EyeOutlined,EditOutlined,DeleteOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchVouchers,updateVoucher,detailVoucher } from "../../../config/api2";
+import { fetchVouchers,updateVoucher,detailVoucher } from "../../../config/VoucherApi";
 import ModalAddVoucher from "./ModalVoucherAdd";
 import ModalUpdateVoucher from "./ModalVoucherEdit";
 import ModalVoucherDetail from "./ModalDetailVoucher";
@@ -99,9 +99,9 @@ const Voucher = () => {
         discountAmount:record.discountAmount,
         discountPercent:record.discountPercent,
         minimumOrder:record.minimumOrder,
-        startDate: record.startDate,
-        endDate:record.endDate 
-        
+        startDate: moment(record.startDate).format("YYYY-MM-DD HH:mm:ss"),
+        endDate:moment(record.endDate).format("YYYY-MM-DD HH:mm:ss")
+      
     };
     const newStatus = record.status === 1 ? 0 : 1;
     setUpdateStatus({ status: newStatus });
@@ -115,7 +115,13 @@ const Voucher = () => {
       })
     );
   };
-  
+  const updateExpiredVouchers = async () => {
+    vouchers.forEach(async (voucher) => {
+      if (moment(voucher.endDate).isBefore(moment()) && voucher.status === 1) {
+        await handleChangeStatus(voucher);
+      }
+    });
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -200,8 +206,25 @@ const Voucher = () => {
     };
 
     fetchData();
-  }, [modalVisible, modalVisibleUpdate, current, pageSize,isSearching]);  
+    updateExpiredVouchers();
 
+
+    
+  }, [modalVisible, modalVisibleUpdate, current, pageSize,isSearching]);  
+  useEffect(() => {
+    const updateExpiredVouchers = async () => {
+      vouchers.forEach(async (voucher) => {
+        if (
+          moment(voucher.endDate).isBefore(moment()) &&
+          voucher.status === 1
+        ) {
+          await handleChangeStatus(voucher);
+        }
+      });
+    };
+
+    updateExpiredVouchers();
+  }, [vouchers]);
   const onClickEdit = (record) => {
     setPayload({
         code: record.code,
@@ -210,8 +233,8 @@ const Voucher = () => {
         discountAmount:record.discountAmount,
         discountPercent:record.discountPercent,
         minimumOrder:record.minimumOrder,
-        startDate: record.startDate,
-        endDate:record.endDate ,
+        startDate: moment(record.startDate).format("YYYY-MM-DD HH:mm:ss"),
+        endDate:moment(record.endDate).format("YYYY-MM-DD HH:mm:ss") ,
         status:record.status 
     });
     openModalUpdate();
@@ -288,16 +311,16 @@ const Voucher = () => {
           <Row gutter={16}>
            
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Code"
+              <Form.Item label="Tên"
                labelCol={{ span: 7 }} // Định dạng width của label
                wrapperCol={{ span: 13 }} // Định dạng width của input
               >
                 <Input
-                  placeholder="Enter code"
+                  placeholder="Enter name"
                   style={{ width: "100%" }}
-                  value={searchParams.code}
+                  value={searchParams.name}
                   onChange={(e) =>
-                    setSearchParams({ ...searchParams, code: e.target.value })
+                    setSearchParams({ ...searchParams, name: e.target.value })
                   }
                   disabled={isSearching}
                 />
@@ -403,7 +426,7 @@ const Voucher = () => {
             
 
             >
-              Search
+              Tìm kiếm
             </Button>
           </Form.Item>
         </Form>
@@ -473,21 +496,21 @@ const Voucher = () => {
       dataIndex: "status",
       key: "status",
       width: 100,
-      render: (text) => (text == "0" ? "Không Hoạt Động" : " Hoạt Động")
+      render: (text) => (text == "1" ? "Hoạt động" : "Không hoạt động")
     },
     {
       title: "Hành động",
       key: "actions",
-      width: 150,
+      width: 100,
       render: (text, record) => (
-        <Space size="middle">
-          <Button style={{ border: "none" }} icon={<EyeFilled />} onClick={() => openModalDetail(record.id)}/>
+        <Space size="middle" >
+          <Button style={{ border: "none" }} icon={<EyeOutlined />} onClick={() => openModalDetail(record.id)}/>
           <Button
             style={{ border: "none" }}
-            icon={<EditFilled />}
+            icon={<EditOutlined />}
             onClick={() => onClickEdit(record)}
           />
-          <Popconfirm
+          {/* <Popconfirm
             title="Are you sure you want to delete this voucher?"
             onConfirm={() => handleChangeStatus(record)}
             okText="Yes"
@@ -499,7 +522,7 @@ const Voucher = () => {
               disabled={record.status === 0}
               icon={<DeleteFilled />}
             />
-          </Popconfirm>
+          </Popconfirm> */}
         </Space>
       ),
     },
@@ -512,12 +535,14 @@ const Voucher = () => {
       </Button>
     </div>
   );
-
+ 
   const handleTableChange = (pagination) => {
     const { current } = pagination;
     if (pagination.pageSize !== pageSize) {
       setPageSize(pagination.pageSize);
     }
+    // Kiểm tra và cập nhật trạng thái của phiếu giảm giá khi ngày kết thúc đã qua
+ 
     setCurrent(current);
  
   };
