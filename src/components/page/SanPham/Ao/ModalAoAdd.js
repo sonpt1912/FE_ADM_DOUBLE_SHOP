@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, message, Select, Button, Table } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  message,
+  Select,
+  Button,
+  Table,
+  Upload,
+  Tag,
+  Row,
+  Col,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCollars } from "../../../../config/api1";
+import { createProduct } from "../../../../config/ProductApi";
+import { fetchCollars } from "../../../../config/CollarApi";
 import { fetchSizes } from "../../../../config/SizeApi";
 import { fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
 import { fetchBrand } from "../../../../config/BrandApi";
@@ -18,8 +31,10 @@ const ModalAddAo = ({ open, closeModal }) => {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedColors, setSelectedColors] = useState([]); // State lưu trữ danh sách màu đã chọn
-  const [selectedItems, setSelectedItems] = useState([]); // State lưu trữ danh sách các mục đã chọn
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [price, setPrice] = useState(0);
+  const [images, setImages] = useState([]);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
 
@@ -35,21 +50,43 @@ const ModalAddAo = ({ open, closeModal }) => {
   const onChange = (value) => {
     console.log(`selected ${value}`);
   };
-  const onSearch = (value) => {
-    console.log("search:", value);
-  };
-  const filterOption = (input, option) =>
-    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
+
+      const listSizeData = selectedItems.map((item) => ({
+        id: item.size,
+        listColor: item.colors.map((color) => ({
+          id: color.id,
+          quantity: color.quantity,
+        })),
+      }));
+
+      const productData = {
+        name: form.getFieldValue("name"),
+        idCollar: form.getFieldValue("collar"),
+        idBrand: form.getFieldValue("brand"),
+        idCategory: form.getFieldValue("category"),
+        idMaterial: form.getFieldValue("material"),
+        listSize: listSizeData,
+        listImage: images,
+        price: selectedItems.map((item) => item.price),
+      };
+
+      await dispatch(createProduct(productData));
+
+      message.success("Product created successfully!");
       closeModal();
       form.resetFields();
+      setSelectedSize(null);
+      setSelectedColors([]);
+      setSelectedItems([]);
+      setPrice(0);
+      setImages([]);
     } catch (error) {
-      message.error("Failed to add size");
+      message.error("Failed to create product");
     } finally {
-      closeModal();
-      form.resetFields();
       setConfirmLoading(false);
     }
   };
@@ -57,6 +94,11 @@ const ModalAddAo = ({ open, closeModal }) => {
   const handleCancel = () => {
     closeModal();
     form.resetFields();
+    setSelectedSize(null);
+    setSelectedColors([]);
+    setSelectedItems([]);
+    setPrice(0);
+    setImages([]);
   };
 
   const handleSizeSelect = (sizeId) => {
@@ -64,47 +106,154 @@ const ModalAddAo = ({ open, closeModal }) => {
   };
 
   const handleColorSelect = (color) => {
-    setSelectedColors([...selectedColors, color]);
+    const colorIndex = selectedColors.findIndex((item) => item.id === color.id);
+  
+    if (colorIndex !== -1) {
+      const updatedColors = [...selectedColors];
+      updatedColors[colorIndex].quantity += 1;
+      setSelectedColors(updatedColors);
+    } else {
+      setSelectedColors([
+        ...selectedColors,
+        { id: color.id, code: color.code, quantity: 1 },
+      ]);
+    }
+  };
+  
+  const handleQuantityChange = (record, color, value) => {
+    const updatedItems = selectedItems.map((item) => {
+      if (item === record) {
+        const updatedColors = item.colors.map((c) => {
+          if (c === color) {
+            return { ...c, quantity: parseInt(value) };
+          }
+          return c;
+        });
+        return { ...item, colors: updatedColors };
+      }
+      return item;
+    });
+
+    setSelectedItems(updatedItems);
+  };
+
+  const handlePriceChange = (record, value) => {
+    const updatedItems = selectedItems.map((item) => {
+      if (item === record) {
+        return { ...item, price: parseFloat(value) };
+      }
+      return item;
+    });
+
+    setSelectedItems(updatedItems);
   };
 
   const handleAddItem = () => {
-    // Tạo một mục mới dựa trên thông tin đã chọn và thêm vào danh sách các mục đã chọn
     const newItem = {
       size: selectedSize,
-      colors: selectedColors,
+      colors: selectedColors
+        .map((color) => ({
+          ...color,
+          quantity: parseInt(color.quantity),
+        }))
+        .filter((color) => color.quantity > 0),
+      price: price,
     };
-    setSelectedItems([...selectedItems, newItem]);
-
-    // Reset thông tin đã chọn sau khi thêm vào danh sách
+  
+    const existingItemIndex = selectedItems.findIndex(
+      (item) => item.size === selectedSize
+    );
+  
+    if (existingItemIndex !== -1) {
+      const existingItem = selectedItems[existingItemIndex];
+      const updatedColors = [...existingItem.colors];
+  
+      newItem.colors.forEach((newColor) => {
+        const existingColorIndex = updatedColors.findIndex(
+          (color) => color.id === newColor.id
+        );
+  
+        if (existingColorIndex !== -1) {
+          updatedColors[existingColorIndex].quantity += newColor.quantity;
+        } else {
+          updatedColors.push(newColor);
+        }
+      });
+  
+      const updatedItem = {
+        ...existingItem,
+        colors: updatedColors,
+      };
+  
+      const updatedItems = [...selectedItems];
+      updatedItems[existingItemIndex] = updatedItem;
+  
+      setSelectedItems(updatedItems);
+    } else {
+      setSelectedItems([...selectedItems, newItem]);
+    }
+  
     setSelectedSize(null);
-    setSelectedColors([]);
+    setSelectedColors(selectedColors.map((color) => ({ ...color, quantity: 0 })));
+    setPrice(0);
   };
+  
 
   const columns = [
     {
       title: "Size",
       dataIndex: "size",
       key: "size",
+      render: (sizeId) => {
+        const size = sizes.find((size) => size.id === sizeId);
+        return size ? size.name : "";
+      },
     },
     {
       title: "Colors",
       dataIndex: "colors",
       key: "colors",
-      render: (colors) => (
+      render: (colors, record) => (
         <div>
-          {colors.map((color) => (
-            <div
-              key={color.id}
-              style={{
-                backgroundColor: color.code,
-                width: 20,
-                height: 20,
-                marginRight: 8,
-                display: "inline-block",
-              }}
-            />
+          {colors.map((color, index) => (
+            <div key={index} style={{ marginBottom: 8 }}>
+              <Tag color={color.code}>{color.code}</Tag>
+            </div>
           ))}
         </div>
+      ),
+    },
+    {
+      title: "Số Lượng",
+      dataIndex: "colors",
+      key: "quantity",
+      render: (colors, record) => (
+        <div>
+          {colors.map((color, index) => (
+            <div key={index}>
+              <Input
+                type="number"
+                value={color.quantity}
+                onChange={(e) =>
+                  handleQuantityChange(record, color, e.target.value)
+                }
+                style={{ width: 80, marginLeft: 8 }}
+              />
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (text, record) => (
+        <Input
+          type="number"
+          value={text}
+          onChange={(e) => handlePriceChange(record, e.target.value)}
+        />
       ),
     },
   ];
@@ -116,11 +265,12 @@ const ModalAddAo = ({ open, closeModal }) => {
       onOk={handleOk}
       confirmLoading={confirmLoading}
       onCancel={handleCancel}
+      width={1000}
     >
       <Form
         form={form}
         name="newProductForm"
-        labelCol={{ span: 4 }}
+        labelCol={{ span: 5 }}
         wrapperCol={{ span: 14 }}
         initialValues={{ remember: true }}
       >
@@ -131,75 +281,68 @@ const ModalAddAo = ({ open, closeModal }) => {
         >
           <Input />
         </Form.Item>
-
-        <Form.Item
-          label=" Cổ áo"
-          rules={[{ required: true, message: "Please input the collar!" }]}
-        >
-          <Select
-            showSearch
-            placeholder="Select a collar"
-            optionFilterProp="children"
-            onChange={onChange}
-            onSearch={onSearch}
-            filterOption={filterOption}
-            options={collars.map((product) => ({
-              value: product.id,
-              label: product.name,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Chất Liệu"
-          rules={[{ required: true, message: "Please input the collar!" }]}
-        >
-          <Select
-            showSearch
-            placeholder="Select a collar"
-            optionFilterProp="children"
-            onChange={onChange}
-            onSearch={onSearch}
-            filterOption={filterOption}
-            options={materials.map((product) => ({
-              value: product.id,
-              label: product.name,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Hãng"
-          rules={[{ required: true, message: "Please input the product ID!" }]}
-        >
-          <Select
-            showSearch
-            placeholder="Select size"
-            optionFilterProp="children"
-            onChange={onChange}
-            onSearch={onSearch}
-            filterOption={filterOption}
-            options={brand.map((product) => ({
-              value: product.id,
-              label: product.name,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Loại"
-          rules={[{ required: true, message: "Please input the product ID!" }]}
-        >
-          <Select
-            showSearch
-            placeholder="Select size"
-            optionFilterProp="children"
-            onChange={onChange}
-            onSearch={onSearch}
-            filterOption={filterOption}
-            options={category.map((product) => ({
-              value: product.id,
-              label: product.name,
-            }))}
-          />
-        </Form.Item>
+        <Row style={{ display: "flex", justifyContent: "center" }}>
+          <Col span={9}>
+            <Form.Item
+              label="Cổ áo"
+              name="collar"
+              rules={[{ required: true, message: "Please select collar!" }]}
+            >
+              <Select
+                placeholder="Select a collar"
+                onChange={onChange}
+                options={collars.map((product) => ({
+                  value: product.id,
+                  label: product.name,
+                }))}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Chất Liệu"
+              name="material"
+              rules={[{ required: true, message: "Please select material!" }]}
+            >
+              <Select
+                placeholder="Select a material"
+                onChange={onChange}
+                options={materials.map((product) => ({
+                  value: product.id,
+                  label: product.name,
+                }))}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={9} s>
+            <Form.Item
+              label="Hãng"
+              name="brand"
+              rules={[{ required: true, message: "Please select brand!" }]}
+            >
+              <Select
+                placeholder="Select a brand"
+                onChange={onChange}
+                options={brand.map((product) => ({
+                  value: product.id,
+                  label: product.name,
+                }))}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Loại"
+              name="category"
+              rules={[{ required: true, message: "Please select category!" }]}
+            >
+              <Select
+                placeholder="Select a category"
+                onChange={onChange}
+                options={category.map((product) => ({
+                  value: product.id,
+                  label: product.name,
+                }))}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
         <Form.Item
           label="Kích Cỡ"
           rules={[{ required: true, message: "Please select size!" }]}
@@ -208,29 +351,41 @@ const ModalAddAo = ({ open, closeModal }) => {
             <Button
               key={size.id}
               onClick={() => handleSizeSelect(size.id)}
-              style={{ marginRight: 8, marginBottom: 8 }}
+              style={{
+                marginRight: 8,
+                marginBottom: 8,
+                background: selectedSize === size.id ? "#1890ff" : "",
+                color: selectedSize === size.id ? "white" : "",
+              }}
             >
               {size.name}
             </Button>
           ))}
         </Form.Item>
         {selectedSize && (
-          <Form.Item
-            label="Màu"
-            rules={[{ required: true, message: "Please select color!" }]}
-          >
-            {colors.map((color) => (
-              <Button
-                key={color.id}
-                onClick={() => handleColorSelect(color)}
-                style={{
-                  backgroundColor: color.code,
-                  marginRight: 8,
-                  marginBottom: 8,
-                }}
-              ></Button>
-            ))}
-          </Form.Item>
+         <Form.Item
+         label="Màu"
+         rules={[{ required: true, message: "Please select color!" }]}
+       >
+         {colors.map((color) => {
+           const colorQuantity = selectedColors.find((c) => c.id === color.id)?.quantity || 0;
+       
+           return (
+             <Button
+               key={color.id}
+               onClick={() => handleColorSelect(color)}
+               style={{
+                 backgroundColor: color.code,
+                 marginRight: 8,
+                 marginBottom: 8,
+               }}
+             >
+               {colorQuantity > 0 && <span style={{ position: 'absolute', top: 0, right: 0, background: 'red', color: 'white', borderRadius: '50%', padding: '2px 5px', fontSize: '12px' }}>{colorQuantity}</span>}
+             </Button>
+           );
+         })}
+       </Form.Item>
+       
         )}
         {selectedColors.length > 0 && (
           <Button onClick={handleAddItem} style={{ marginBottom: 16 }}>

@@ -50,8 +50,8 @@ const CustomContent = () => {
         <Route path="/banHang" element={<BanHang />} />
         <Route path="/chiTietDonHang" element={<ChiTietDonHang />} />
         <Route path="/danhGia" element={<DanhGia />} />
-        <Route path="/khachHang" element={<KhachHang />} />
-        <Route path="/khuyenMai" element={<KhuyenMai />} />
+        <Route path="/khachHang" element={<Customer />} />
+        <Route path="/khuyenMai" element={<Promotion />} />
         <Route path="/lienHe" element={<LienHe />} />
         <Route path="/sanPham/ao" element={<Ao />} />
         <Route path="/sanPham/chatLieu" element={<ChatLieu />} />
