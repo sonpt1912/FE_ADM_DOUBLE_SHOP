@@ -163,12 +163,13 @@ const Navbar = ({ collapsed }) => {
       </Menu>
 
       <Modal
-      title="Xác nhận đăng xuất"
-      visible={logoutModalVisible}
-      onOk={handleLogout}
-      onCancel={handleCancel}
-    >
-      <p>Bạn có chắc muốn đăng xuất?</p></Modal>
+        title="Xác nhận đăng xuất"
+        visible={logoutModalVisible}
+        onOk={handleLogout}
+        onCancel={handleCancel}
+      >
+        <p>Bạn có chắc muốn đăng xuất?</p>
+      </Modal>
     </Sider>
   );
 };
