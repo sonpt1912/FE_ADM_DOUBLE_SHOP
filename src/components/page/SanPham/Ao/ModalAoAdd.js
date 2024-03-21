@@ -7,10 +7,10 @@ import {
   Select,
   Button,
   Table,
-  Upload,
   Tag,
   Row,
   Col,
+  Checkbox,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../../../../config/ProductApi";
@@ -20,6 +20,7 @@ import { fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
 import { fetchBrand } from "../../../../config/BrandApi";
 import { fetchCategory } from "../../../../config/CategoryApi";
 import { fetchColors } from "../../../../config/ColorApi";
+import "./ModalAddAo.css";
 
 const ModalAddAo = ({ open, closeModal }) => {
   const sizes = useSelector((state) => state.size.sizes);
@@ -54,7 +55,6 @@ const ModalAddAo = ({ open, closeModal }) => {
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-
       const listSizeData = selectedItems.map((item) => ({
         id: item.size,
         listColor: item.colors.map((color) => ({
@@ -105,21 +105,43 @@ const ModalAddAo = ({ open, closeModal }) => {
     setSelectedSize(sizeId);
   };
 
-  const handleColorSelect = (color) => {
-    const colorIndex = selectedColors.findIndex((item) => item.id === color.id);
-  
-    if (colorIndex !== -1) {
-      const updatedColors = [...selectedColors];
-      updatedColors[colorIndex].quantity += 1;
-      setSelectedColors(updatedColors);
+  const handleColorSelect = (color, checked) => {
+    console.log("Color", checked);
+    if (checked) {
+      // Nếu checkbox được chọn
+      const existingIndex = selectedItems.findIndex(
+        (item) =>
+          item.size === selectedSize &&
+          item.colors.some((c) => c.id === color.id)
+      );
+
+      if (existingIndex === -1) {
+        // Nếu màu chưa tồn tại, thêm mới vào bảng với số lượng là 1
+        const newItem = {
+          size: selectedSize,
+          colors: [{ id: color.id, code: color.code, quantity: 1 }],
+          price: price,
+        };
+        setSelectedItems([...selectedItems, newItem]);
+      }
     } else {
-      setSelectedColors([
-        ...selectedColors,
-        { id: color.id, code: color.code, quantity: 1 },
-      ]);
+      // Nếu checkbox bị bỏ chọn
+      const updatedItems = selectedItems.map((item) => {
+        if (item.size === selectedSize) {
+          const updatedColors = item.colors.filter((c) => c.id !== color.id);
+          return { ...item, colors: updatedColors };
+        }
+        return item;
+      });
+
+      // Loại bỏ các item không có màu
+      const filteredItems = updatedItems.filter(
+        (item) => item.colors.length > 0
+      );
+      setSelectedItems(filteredItems);
     }
   };
-  
+
   const handleQuantityChange = (record, color, value) => {
     const updatedItems = selectedItems.map((item) => {
       if (item === record) {
@@ -159,45 +181,46 @@ const ModalAddAo = ({ open, closeModal }) => {
         .filter((color) => color.quantity > 0),
       price: price,
     };
-  
+
     const existingItemIndex = selectedItems.findIndex(
       (item) => item.size === selectedSize
     );
-  
+
     if (existingItemIndex !== -1) {
       const existingItem = selectedItems[existingItemIndex];
       const updatedColors = [...existingItem.colors];
-  
+
       newItem.colors.forEach((newColor) => {
         const existingColorIndex = updatedColors.findIndex(
           (color) => color.id === newColor.id
         );
-  
+
         if (existingColorIndex !== -1) {
           updatedColors[existingColorIndex].quantity += newColor.quantity;
         } else {
           updatedColors.push(newColor);
         }
       });
-  
+
       const updatedItem = {
         ...existingItem,
         colors: updatedColors,
       };
-  
+
       const updatedItems = [...selectedItems];
       updatedItems[existingItemIndex] = updatedItem;
-  
+
       setSelectedItems(updatedItems);
     } else {
       setSelectedItems([...selectedItems, newItem]);
     }
-  
+
     setSelectedSize(null);
-    setSelectedColors(selectedColors.map((color) => ({ ...color, quantity: 0 })));
+    setSelectedColors(
+      selectedColors.map((color) => ({ ...color, quantity: 0 }))
+    );
     setPrice(0);
   };
-  
 
   const columns = [
     {
@@ -363,29 +386,27 @@ const ModalAddAo = ({ open, closeModal }) => {
           ))}
         </Form.Item>
         {selectedSize && (
-         <Form.Item
-         label="Màu"
-         rules={[{ required: true, message: "Please select color!" }]}
-       >
-         {colors.map((color) => {
-           const colorQuantity = selectedColors.find((c) => c.id === color.id)?.quantity || 0;
-       
-           return (
-             <Button
-               key={color.id}
-               onClick={() => handleColorSelect(color)}
-               style={{
-                 backgroundColor: color.code,
-                 marginRight: 8,
-                 marginBottom: 8,
-               }}
-             >
-               {colorQuantity > 0 && <span style={{ position: 'absolute', top: 0, right: 0, background: 'red', color: 'white', borderRadius: '50%', padding: '2px 5px', fontSize: '12px' }}>{colorQuantity}</span>}
-             </Button>
-           );
-         })}
-       </Form.Item>
-       
+          <Form.Item
+            label="Màu"
+            rules={[{ required: true, message: "Please select color!" }]}
+          >
+            {colors.map((color) => {
+              return (
+                <Checkbox
+                  key={color.id}
+                  onChange={(e) => handleColorSelect(color, e.target.checked)}
+                  style={{
+                    backgroundColor: color.code,
+                    marginRight: 18,
+                    marginBottom: 8,
+                    padding: "8px 12px",
+                    borderRadius: "2px",
+                  }}
+                  className="color-checkbox"
+                />
+              );
+            })}
+          </Form.Item>
         )}
         {selectedColors.length > 0 && (
           <Button onClick={handleAddItem} style={{ marginBottom: 16 }}>

@@ -1,0 +1,40 @@
+.color-checkbox .ant-checkbox-input {
+  display: none;
+}
+
+.color-checkbox-custom {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  position: relative;
+}
+
+.color-checkbox-custom.checked {
+  opacity: 0.5; /* Điều chỉnh mức độ mờ tùy thích (ở đây là 0.5) */
+}
+
+.color-checkbox-custom .anticon-check {
+  display: none;
+}
+.ant-checkbox-wrapper {
+  background: none;
+}
+
+.ant-checkbox-inner {
+    background-color: transparent !important;
+    border: none !important;
+    width: 24px; 
+    height: 24px; 
+    line-height: 24px; 
+  }
+  
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background: none;
+  border: none;
+  background-color: none;
+}
+.ant-checkbox .ant-checkbox-inner {
+  background-color: transparent !important;
+  border: none !important;
+}
