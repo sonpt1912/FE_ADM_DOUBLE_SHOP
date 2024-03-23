@@ -5,11 +5,12 @@ import { fetchPromotions } from "../../../store/slice/PromotionReducer";
 import { add } from "../../../store/slice/DetailPromotionReducer";
 import axios from "axios";
 import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
-
+import { listProduct } from "./xxx";
 const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
+
   const [payload, setPayload] = useState({
     code: "",
     name: "",
@@ -19,10 +20,14 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     endDate: null,
   });
 
+  // console.log("xxxx, ", listProduct);
   const handleOk = async () => {
     try {
+      // console.log("xxx, ", listProduct);
       setConfirmLoading(true);
       const formValues = await form.validateFields();
+      // console.log("29: ", payload.detailProduct);
+      // console.log("payload: ", payload);
       await dispatch(add({ ...formValues, payload }))
         .then(() => {
           dispatch(
@@ -67,61 +72,61 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
 
   const tree = [
     {
-      title: 'name',
-      dataIndex: "name",
-      key: 'name',
+      title: 'All',
+      dataIndex: "All",
+      key: 9999999999,
       children: [
         {
-          title: '0-0-0',
-          key: '0-0-0',
+          title: 'Áo nỉ',
+          key: 999999999,
           children: [
             {
-              title: '0-0-0-0',
-              key: '0-0-0-0',
+              title: 'Black-M',
+              key: 1,
             },
             {
-              title: '0-0-0-1',
-              key: '0-0-0-1',
+              title: 'White-L',
+              key: 2,
             },
             {
-              title: '0-0-0-2',
-              key: '0-0-0-2',
+              title: 'Vilolet-XL',
+              key: 3,
             },
           ],
         },
         {
-          title: '0-0-1',
-          key: '0-0-1',
+          title: 'Áo gió',
+          key: 888888888,
           children: [
             {
-              title: '0-0-1-0',
-              key: '0-0-1-0',
+              title: 'Black-M',
+              key: 4,
             },
             {
-              title: '0-0-1-1',
-              key: '0-0-1-1',
+              title: 'White-L',
+              key: 5,
             },
             {
-              title: '0-0-1-2',
-              key: '0-0-1-2',
+              title: 'Vilolet-XL',
+              key: 6,
             },
           ],
         },
         {
-          title: '0-0-2',
-          key: '0-0-2',
+          title: 'Áo thun',
+          key: 777777777,
           children: [
             {
-              title: '0-0-2-0',
-              key: '0-0-2-0',
+              title: 'Black-M',
+              key: 7,
             },
             {
-              title: '0-0-2-1',
-              key: '0-0-2-1',
+              title: 'White-L',
+              key: 8,
             },
             {
-              title: '0-0-2-2',
-              key: '0-0-2-2',
+              title: 'Vilolet-XL',
+              key: 9,
             },
           ],
         },
@@ -130,17 +135,38 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   ]
 
   const [treeData, setTreeData] = useState([]);
-
+  const { TreeNode } = Tree;
   useEffect(() => {
-    axios.get('http://localhost:8072/detail-product/show')
+    axios.get('http://localhost:8072/tree/product/show')
       .then(response => {
-        console.log('API response: ', response.data.data)
-        setTreeData(response.data.data);
+        console.log('API response: ', response.data.data);
+        // setTreeData(response.data.data);
+        ////new
+        const dataFromDB = response.data.data;
+        const formattedData = formatDataForTree(dataFromDB);
+        setTreeData(formattedData);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
   }, []);
+  console.log("tree: ", treeData);
+  const formatDataForTree = (data) => {
+    const tree = [];
+    data.forEach(product => {
+      console.log("product: ", product.name);
+      const productNode = {
+        title: product.name,
+        key: product.id,
+        children: product.detailProducts.map(i => ({
+          title: `${i.size.name} - ${i.color.name}`,
+          key: `${i.size.id} - ${i.color.id}`,
+        })),
+      }
+      tree.push(productNode)
+    });
+    return tree;
+  }
 
   const renderTreeNodes = data =>
     data.map(item => {
@@ -151,7 +177,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
           </Tree.TreeNode>
         );
       }
-      return <Tree.TreeNode key={item.id} title={item.name} />;
+      return <Tree.TreeNode key={item.id} title={`${item.name}`} />;
     });
 
   // const [expandedKeys, setExpandedKeys] = useState(['0-0-0', '0-0-1']);
@@ -166,6 +192,9 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     setAutoExpandParent(false);
   };
   const onCheck = (checkedKeysValue) => {
+    // listProduct.push(checkedKeysValue);
+    console.log("checkedKeysValue, ", checkedKeysValue);
+    listProduct.splice(0, listProduct.length, ...checkedKeysValue)
     setCheckedKeys(checkedKeysValue);
   };
   const onSelect = (selectedKeysValue, info) => {
@@ -294,6 +323,11 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                   required
                 />
               </Form.Item>
+              <Form.Item
+
+              >
+
+              </Form.Item>
             </Form>
           </Col>
           <Col style={{ marginLeft: "30px" }} lg={9} md={24} sm={24}>
@@ -311,16 +345,42 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                 treeData={tree}
                 showLine
                 defaultExpandAll
-                // expandedKeys={expandedKeys}
-                // onExpand={onExpand}
+              // expandedKeys={expandedKeys}
+              // onExpand={onExpand}
+              >
+              </Tree> */}
+              {/* <Tree
+              
+                checkable
+                checkedKeys={checkedKeys}
+                onCheck={onCheck}
+                // showLine
+                // defaultExpandedKeys={['0']}
+                // treeData={treeData}
               >
                 {renderTreeNodes(treeData)}
               </Tree> */}
+
               <Tree
                 checkable
+                onExpand={onExpand}
+                expandedKeys={expandedKeys}
+                autoExpandParent={autoExpandParent}
+                onCheck={onCheck}
                 checkedKeys={checkedKeys}
-                onCheck={onCheck}>
-                {renderTreeNodes(treeData)}
+                onSelect={onSelect}
+                selectedKeys={selectedKeys}
+                showLine
+                defaultExpandAll
+              >
+                {treeData.map(node => (
+                  <TreeNode title={node.title} key={node.key}>
+                    {node.children && node.children.map(childNode => {
+                      console.log(childNode);
+                      <TreeNode title={childNode.title} key={childNode.key} />
+                    })}
+                  </TreeNode>
+                ))}
               </Tree>
             </div>
           </Col>
