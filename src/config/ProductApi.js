@@ -46,3 +46,18 @@ export const createProduct = createAsyncThunk(
     }
   }
 );
+
+export const fetchDetailProduct = createAsyncThunk(
+  "product/fetchDetailProduct",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/product/get-detail-product`,
+        { idProduct: productId }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
