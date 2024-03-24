@@ -5,7 +5,7 @@ import { fetchPromotions } from "../../../store/slice/PromotionReducer";
 import { add } from "../../../store/slice/DetailPromotionReducer";
 import axios from "axios";
 import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
-import { listProduct } from "./xxx";
+import { listProduct } from "./ConstListProduct";
 const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
@@ -140,8 +140,6 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     axios.get('http://localhost:8072/tree/product/show')
       .then(response => {
         console.log('API response: ', response.data.data);
-        // setTreeData(response.data.data);
-        ////new
         const dataFromDB = response.data.data;
         const formattedData = formatDataForTree(dataFromDB);
         setTreeData(formattedData);
@@ -150,7 +148,9 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
         console.error('Error fetching data:', error);
       });
   }, []);
+
   console.log("tree: ", treeData);
+
   const formatDataForTree = (data) => {
     const tree = [];
     data.forEach(product => {
@@ -160,25 +160,14 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
         key: product.id,
         children: product.detailProducts.map(i => ({
           title: `${i.size.name} - ${i.color.name}`,
-          key: `${i.size.id} - ${i.color.id}`,
+          key: `${i.id}`,
         })),
       }
+      console.log("xxx", productNode);
       tree.push(productNode)
     });
     return tree;
   }
-
-  const renderTreeNodes = data =>
-    data.map(item => {
-      if (item.children && item.children.length > 0) {
-        return (
-          <Tree.TreeNode key={item.product} title={item.name}>
-            {renderTreeNodes(item.children)}
-          </Tree.TreeNode>
-        );
-      }
-      return <Tree.TreeNode key={item.id} title={`${item.name}`} />;
-    });
 
   // const [expandedKeys, setExpandedKeys] = useState(['0-0-0', '0-0-1']);
   // const [checkedKeys, setCheckedKeys] = useState(['0-0-0']);
@@ -192,11 +181,12 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     setAutoExpandParent(false);
   };
   const onCheck = (checkedKeysValue) => {
-    // listProduct.push(checkedKeysValue);
-    console.log("checkedKeysValue, ", checkedKeysValue);
-    listProduct.splice(0, listProduct.length, ...checkedKeysValue)
-    setCheckedKeys(checkedKeysValue);
+    const filteredKeys = checkedKeysValue.filter(key => !key.startsWith('0-'));
+    console.log("checkedKeysValue", filteredKeys);
+    listProduct.splice(0, listProduct.length, ...filteredKeys);
+    setCheckedKeys(filteredKeys);
   };
+
   const onSelect = (selectedKeysValue, info) => {
     console.log('onSelect', info);
     setSelectedKeys(selectedKeysValue);
@@ -205,7 +195,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   return (
     <div>
       <Modal
-        title="add promotion"
+        title="Thêm khuyến mãi"
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
@@ -222,7 +212,8 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               style={{ maxWidth: 1000, marginTop: "30px" }}
             >
               <Form.Item
-                label="code"
+                
+                label="Mã"
                 name="code"
                 labelAlign="left"
                 labelCol={{ span: 9, }}
@@ -236,15 +227,15 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                   setPayload({ ...payload, code: e.target.value })
                 }
               >
-                <Input />
+                <Input placeholder="Nhập mã khuyến mãi" />
               </Form.Item>
 
               <Form.Item
-                label="name"
+                
+                label="Tên"
                 name="name"
                 labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
                 labelCol={{ span: 9 }}
-
                 rules={[
                   {
                     required: true,
@@ -255,27 +246,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                   setPayload({ ...payload, name: e.target.value })
                 }
               >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
-                onChange={(e) =>
-                  setPayload({ ...payload, discountAmount: e.target.value })
-                }
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập giảm giá theo tiền"
-                  }
-                ]}
-                labelCol={{ span: 9 }}
-                label="Giảm giá theo tiền"
-                name="discountAmount"
-              // Rest of your code
-              >
-                <Input type="number" placeholder="VNĐ" min={0}
-                />
+                <Input placeholder="Nhập tên khuyếm mãi"/>
               </Form.Item>
 
               <Form.Item
@@ -299,7 +270,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               <Form.Item
                 labelAlign="left"
                 name="startDate"
-                label="startDate"
+                label="Ngày bắt đầu"
                 labelCol={{ span: 9 }}
                 rules={[{ required: true }]}
               >
@@ -312,7 +283,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               <Form.Item
                 labelAlign="left"
                 name="endDate"
-                label="endDate"
+                label="Ngày kết thúc"
                 labelCol={{ span: 9 }}
                 rules={[{ required: true }]}
 
@@ -331,36 +302,8 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
             </Form>
           </Col>
           <Col style={{ marginLeft: "30px" }} lg={9} md={24} sm={24}>
-            <div style={{ border: '3px solid black', padding: '10px', height: "350px", overflow: "auto" }}>
+            <div style={{ borderLeft: '3px solid black', padding: '15px', height: "350px", overflow: "auto" }}>
               <h3 >Chọn sản phẩm</h3>
-              {/* <Tree
-                checkable
-                onExpand={onExpand}
-                expandedKeys={expandedKeys}
-                autoExpandParent={autoExpandParent}
-                onCheck={onCheck}
-                checkedKeys={checkedKeys}
-                onSelect={onSelect}
-                selectedKeys={selectedKeys}
-                treeData={tree}
-                showLine
-                defaultExpandAll
-              // expandedKeys={expandedKeys}
-              // onExpand={onExpand}
-              >
-              </Tree> */}
-              {/* <Tree
-              
-                checkable
-                checkedKeys={checkedKeys}
-                onCheck={onCheck}
-                // showLine
-                // defaultExpandedKeys={['0']}
-                // treeData={treeData}
-              >
-                {renderTreeNodes(treeData)}
-              </Tree> */}
-
               <Tree
                 checkable
                 onExpand={onExpand}
@@ -374,10 +317,10 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                 defaultExpandAll
               >
                 {treeData.map(node => (
-                  <TreeNode title={node.title} key={node.key}>
+                  <TreeNode title={node.title}>
                     {node.children && node.children.map(childNode => {
-                      console.log(childNode);
-                      <TreeNode title={childNode.title} key={childNode.key} />
+                      // console.log("childNode: ", childNode);
+                      return <TreeNode title={childNode.title} key={childNode.key} />
                     })}
                   </TreeNode>
                 ))}

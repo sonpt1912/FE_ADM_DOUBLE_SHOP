@@ -33,21 +33,6 @@ const Promotion = () => {
         );
     }, [dispatch]);
 
-    // useEffect(() => {
-    //     const updateExpiredPromotion = async () => {
-    //         promotions.forEach(async (promotion) => {
-    //             if (
-    //                 moment(promotion.endDate).isBefore(moment()) &&
-    //                 promotion.status === 1
-    //             ) {
-    //                 await handleChangeStatus(promotion);
-    //             }
-    //         });
-    //     };
-
-    //     updateExpiredPromotion();
-    // }, [promotions]);
-
     const onClickSearch = () => {
         dispatch(
             fetchPromotions({
@@ -78,43 +63,38 @@ const Promotion = () => {
             sorter: (a, b) => a.index - b.index,
         },
         {
-            title: "code",
+            title: "Mã",
             dataIndex: "code",
             key: "code",
         },
         {
-            title: "name",
+            title: "Tên",
             dataIndex: "name",
             key: "name",
         },
         {
-            title: "discountAmount",
-            dataIndex: "discountAmount",
-            key: "discountAmount",
-        },
-        {
-            title: "discountPercent",
+            title: "Giảm giá (%)",
             dataIndex: "discountPercent",
             key: "discountPercent",
         },
         {
-            title: "startDate",
+            title: "Ngày bắt đầu",
             dataIndex: "startDate",
             key: "startDate",
         },
         {
-            title: "endDate",
+            title: "Ngày kết thúc",
             dataIndex: "endDate",
             key: "endDate",
         },
         {
-            title: "status",
+            title: "Trạng thái",
             dataIndex: "status",
             key: "status",
             render: (text, record) => (record.status == "0" ? "Ngừng hoạt động" : record.status == "1" ? "Đang hoạt động" : "Chưa hoạt động"),
         },
         {
-            title: "ChucNang",
+            title: "Chức năng",
             dataIndex: "ChucNang",
             key: "ChucNang",
             render: (text, record) => (
@@ -134,19 +114,6 @@ const Promotion = () => {
                         style={{ border: "none" }}
                         onClick={() => handleDelete(record.id)} disabled={record.status === 0}
                     />
-                    {/* <Popconfirm
-                        title="Are you sure you want to delete this voucher?"
-                        onConfirm={() => handleChangeStatus(record.id)}
-                        okText="Yes"
-                        cancelText="No"
-                        loading={loading}
-                    >
-                        <Button
-                            style={{ border: "none" }}
-                            disabled={record.status === 0}
-                            icon={<DeleteOutlined />}
-                        />
-                    </Popconfirm> */}
                 </Space>
             ),
         },
@@ -212,28 +179,6 @@ const Promotion = () => {
         setIsModalOpenUpdate(false);
     };
 
-    // const handleChangeStatus = async (record) => {
-    //     const payloadStatus = {
-    //         code: record.code,
-    //         name: record.name,
-    //         discountAmount: record.discountAmount,
-    //         discountPercent: record.discountPercent,
-    //         startDate: record.startDate,
-    //         endDate: record.endDate
-
-    //     };
-    //     const newStatus = record.status === 1 ? 0 : 1;
-    //     setUpdateStatus({ status: newStatus });
-    //     await dispatch(update({ ...payloadStatus, ...updateStatus }));
-    //     message.success("Promotion updated successfully");
-    //     dispatch(
-    //         fetchPromotions({
-    //             page: pagination.current,
-    //             pageSize: pageSize,
-    //         })
-    //     );
-    // };
-
     const { Option } = Select;
 
     const { token } = theme.useToken();
@@ -256,9 +201,9 @@ const Promotion = () => {
                 >
                     <Row gutter={16}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Form.Item label="Code">
+                            <Form.Item label="Tìm mã:">
                                 <Input
-                                    placeholder="Enter code"
+                                    placeholder="Nhập mã sản phẩm"
                                     style={{ width: "100%" }}
                                     value={searchParams.code}
                                     onChange={(e) =>
@@ -268,9 +213,9 @@ const Promotion = () => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Form.Item label="Name">
+                            <Form.Item label="Tìm tên:">
                                 <Input
-                                    placeholder="Enter name"
+                                    placeholder="Nhập tên sản phẩm"
                                     style={{ width: "100%" }}
                                     value={searchParams.name}
                                     onChange={(e) =>
@@ -280,8 +225,9 @@ const Promotion = () => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Form.Item label="Trạng Thái">
+                            <Form.Item label="Trạng Thái:">
                                 <Select
+                                    placeholder="Chọn trạng thái"
                                     style={{ width: "100%" }}
                                     value={searchParams.status}
                                     onChange={(value) =>
@@ -289,8 +235,9 @@ const Promotion = () => {
                                     }
                                     allowClear
                                 >
-                                    <Option value="0">0</Option>
-                                    <Option value="1">1</Option>
+                                    <Option value="0">Ngừng hoạt động</Option>
+                                    <Option value="1">Đang hoạt động</Option>
+                                    <Option value="2">Chưa hoạt động</Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -302,7 +249,7 @@ const Promotion = () => {
                             icon={<SearchOutlined />}
                             onClick={onClickSearch}
                         >
-                            Search
+                            Tìm Kiếm
                         </Button>
                     </Form.Item>
                 </Form>
@@ -317,7 +264,7 @@ const Promotion = () => {
 
     return (
         <div>
-            <Divider orientation="left">Promotion</Divider>
+            <Divider orientation="left">Giảm giá sản phẩm</Divider>
             <Collapse items={items} defaultActiveKey={['1']} onChange={onChange} />
 
 
@@ -327,7 +274,7 @@ const Promotion = () => {
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <h3 style={{ marginRight: 8 }}>Danh Sách Khuyến mãi</h3>
                 <Button type="primary" shape="round" onClick={showModalAdd}>
-                    Add Promotion
+                    +Thêm mới khuyến mãi
                 </Button>
             </div>
 

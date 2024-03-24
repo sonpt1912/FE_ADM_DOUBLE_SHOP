@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "axios";
 import { message } from "antd";
-import { listProduct } from '../../components/page/Promotion/xxx';
+import { listProduct } from '../../components/page/Promotion/ConstListProduct';
 
 const initialState = {
   detailPromotions: [],

@@ -21,7 +21,8 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
 
   useEffect(() => {
     if (KhuyenMais) {
-      // const color = KhuyenMais.detailPromotions.map(i => i.detailProduct.color.name);
+      const color = KhuyenMais.detailPromotions.map(i => i);
+      console.log("xxx", color);
       setId(KhuyenMais.id);
       setCode(KhuyenMais.code);
       setName(KhuyenMais.name);
@@ -67,7 +68,7 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
 
   return (
     <Modal
-      title="Update Promotion"
+      title="Chi tiết khuyến mãi"
       open={visible}
       onCancel={handleCancel}
       confirmLoading={confirmLoading}
@@ -86,31 +87,25 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
               value={idState}
               disabled
             />
-            <h4>Code Promotion:</h4>
+            <h4>Mã khuyến mãi:</h4>
             <Input
               name="code"
               value={codeState}
               disabled
             />
-            <h4>Name Promotion:</h4>
+            <h4>Tên khuyến mãi:</h4>
             <Input
               name="name"
               value={nameState}
               disabled
             />
-            <h4>discountAmount Promotion:</h4>
-            <Input
-              name="discountAmount"
-              value={discountAmountState}
-              disabled
-            />
-            <h4>discountPercent Promotion:</h4>
+            <h4>Giảm giá(%):</h4>
             <Input
               name="discountPercent"
               value={discountPercentState}
               disabled
             />
-            <h4 className="mt-3">StartDate Promotion:</h4>
+            <h4 className="mt-3">Ngày bắt đầu:</h4>
             <Input
               name="startDate"
               label="StartDate:"
@@ -118,7 +113,7 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
               value={startDateState}
               disabled
             />
-            <h4 className="mt-3">EndDate promotion:</h4>
+            <h4 className="mt-3">Ngày kết thúc:</h4>
             <Input
               name="endDate"
               label="EndDate:"
@@ -127,7 +122,7 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
               disabled
             />
             <div className="mt-3 d-flex">
-              <h4>Status:</h4>
+              <h4>Trạng thái:</h4>
               <Select className="ms-4"
                 value={statusState == "0" ? "chưa hoạt động" : statusState == "1" ? "đang hoạt động" : "hết hạn"}
                 disabled
@@ -140,7 +135,7 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
           <div>
             {KhuyenMais && KhuyenMais.detailPromotions.map((t, index) => (
               <div key={index}>
-                {/* <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2> */}
+                <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Màu sắc: [{t.detailProduct.color.name}]</p>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Kích cỡ: [{t.detailProduct.size.name}]</p>
                 <hr></hr>
