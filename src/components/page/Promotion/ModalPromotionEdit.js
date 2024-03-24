@@ -217,7 +217,7 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
           <div>
             {KhuyenMais && KhuyenMais.detailPromotions.map((t, index) => (
               <div key={index}>
-                <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
+                {/* <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2> */}
                 <p style={{marginLeft: 30, fontSize: 15}}>Màu sắc: [{t.detailProduct.color.name}]</p>
                 <p style={{marginLeft: 30, fontSize: 15}}>Kích cỡ: [{t.detailProduct.size.name}]</p>
                 <hr></hr>
