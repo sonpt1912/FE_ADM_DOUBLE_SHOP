@@ -16,6 +16,7 @@ import PromotionReducer from "./slice/PromotionReducer";
 import ProductReducer from "./slice/ProductReducer";
 import BrandReducer from "./slice/BrandReducer";
 import CategoryReducer from "./slice/CategoryReducer";
+import BillReducer from "./slice/BillReducer";
 
 const store = configureStore({
   reducer: {
@@ -32,7 +33,8 @@ const store = configureStore({
     employee: EmployeeReducer,
     products : ProductReducer,
     brand: BrandReducer,
-    category : CategoryReducer
+    category : CategoryReducer,
+    bill: BillReducer,
   },
   middleware: [...getDefaultMiddleware(), thunkMiddleware, thunk],
 });

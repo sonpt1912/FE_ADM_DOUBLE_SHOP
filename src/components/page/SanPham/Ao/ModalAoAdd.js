@@ -11,6 +11,7 @@ import {
   Row,
   Col,
   Checkbox,
+  Upload,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../../../../config/ProductApi";
@@ -21,6 +22,13 @@ import { fetchBrand } from "../../../../config/BrandApi";
 import { fetchCategory } from "../../../../config/CategoryApi";
 import { fetchColors } from "../../../../config/ColorApi";
 import "./ModalAddAo.css";
+import ModalAddCollar from "../CoAo/ModalCollarAdd";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import ModalChatLieu from "../ChatLieu/ModalChatLieuAdd";
+import ModalAddBrand from "../brand/AddBrand";
+import ModalAddCategory from "../category/AddCategory";
+import ModalAddSize from "../KichCo/modalAddSize";
+import ModalColor from "../Mau/ModalColorAdd";
 
 const ModalAddAo = ({ open, closeModal }) => {
   const sizes = useSelector((state) => state.size.sizes);
@@ -36,8 +44,82 @@ const ModalAddAo = ({ open, closeModal }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [price, setPrice] = useState(0);
   const [images, setImages] = useState([]);
+  const [selectedCollar, setSelectedCollar] = useState(null);
+  const [selectedBrand, setSelectedBrand] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
+  const [modalCollarVisible, setModalCollarVisible] = useState(false);
+  const [modalVisibleMaterial, setModalVisibleMaterial] = useState(false);
+  const [modalVisibleBrand, setModalVisibleBrand] = useState(false);
+  const [modalVisibleCategory, setModalVisibleCategory] = useState(false);
+  const [modalVisibleSize, setModalVisibleSize] = useState(false);
+  const [modalVisibleColor, setModalVisibleColor] = useState(false);
+
+  // Modal Collar Visible
+  const openModalCollar = () => {
+    setModalCollarVisible(true);
+  };
+  const closeModalCollar = () => {
+    setModalCollarVisible(false);
+  };
+
+  // Modal Material
+  const openModalMaterial = () => {
+    setModalVisibleMaterial(true);
+  };
+  const closeModalMaterial = () => {
+    setModalVisibleMaterial(false);
+  };
+
+  // Modal Brand
+  const openModalBrand = () => {
+    setModalVisibleBrand(true);
+  };
+  const closeModalBrand = () => {
+    setModalVisibleBrand(false);
+  };
+
+  // Modal Category
+  const openModalCategory = () => {
+    setModalVisibleCategory(true);
+  };
+  const closeModalCategory = () => {
+    setModalVisibleCategory(false);
+  };
+
+  // Modal Size
+  const openModalSize = () => {
+    setModalVisibleSize(true);
+  };
+  const closeModalSize = () => {
+    setModalVisibleSize(false);
+  };
+
+  // Modal Color
+  const openModalColor = () => {
+    setModalVisibleColor(true);
+  };
+  const closeModalColor = () => {
+    setModalVisibleColor(false);
+  };
+
+  const onChangeCollar = (value) => {
+    setSelectedCollar(value);
+  };
+
+  const onChangeBrand = (value) => {
+    setSelectedBrand(value);
+  };
+
+  const onChangeCategory = (value) => {
+    setSelectedCategory(value);
+  };
+
+  const onChangeMaterial = (value) => {
+    setSelectedMaterial(value);
+  };
 
   useEffect(() => {
     dispatch(fetchCollars({}));
@@ -51,6 +133,10 @@ const ModalAddAo = ({ open, closeModal }) => {
   const onChange = (value) => {
     console.log(`selected ${value}`);
   };
+  const handleImageChange = (fileList) => {
+    console.log("image changed 12345",fileList);
+    // setImages(fileList)
+  };
 
   const handleOk = async () => {
     try {
@@ -62,22 +148,24 @@ const ModalAddAo = ({ open, closeModal }) => {
           quantity: color.quantity,
         })),
       }));
-
+console.log("Image changed", images);
       const productData = {
         name: form.getFieldValue("name"),
-        idCollar: form.getFieldValue("collar"),
-        idBrand: form.getFieldValue("brand"),
-        idCategory: form.getFieldValue("category"),
-        idMaterial: form.getFieldValue("material"),
+        idCollar: selectedCollar,
+        idBrand: selectedBrand,
+        idCategory: selectedCategory,
+        code: 1,
+        idMaterial: selectedMaterial,
         listSize: listSizeData,
-        listImage: images,
+        listImages: images,
         price: selectedItems.map((item) => item.price),
       };
+      console.log("Product data: " , productData);
 
-      await dispatch(createProduct(productData));
+      // await dispatch(createProduct(productData));
 
       message.success("Product created successfully!");
-      closeModal();
+      // closeModal();
       form.resetFields();
       setSelectedSize(null);
       setSelectedColors([]);
@@ -282,144 +370,199 @@ const ModalAddAo = ({ open, closeModal }) => {
   ];
 
   return (
-    <Modal
-      title="Thêm Sản Phẩm"
-      visible={open}
-      onOk={handleOk}
-      confirmLoading={confirmLoading}
-      onCancel={handleCancel}
-      width={1000}
-    >
-      <Form
-        form={form}
-        name="newProductForm"
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 14 }}
-        initialValues={{ remember: true }}
+    <>
+      <Modal
+        title="Thêm Sản Phẩm"
+        visible={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+        width={1000}
       >
-        <Form.Item
-          label="Name"
-          name="name"
-          rules={[{ required: true, message: "Please input the name!" }]}
+        <Form
+          form={form}
+          name="newProductForm"
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 14 }}
+          initialValues={{ remember: true }}
         >
-          <Input />
-        </Form.Item>
-        <Row style={{ display: "flex", justifyContent: "center" }}>
-          <Col span={9}>
-            <Form.Item
-              label="Cổ áo"
-              name="collar"
-              rules={[{ required: true, message: "Please select collar!" }]}
-            >
-              <Select
-                placeholder="Select a collar"
-                onChange={onChange}
-                options={collars.map((product) => ({
-                  value: product.id,
-                  label: product.name,
-                }))}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Chất Liệu"
-              name="material"
-              rules={[{ required: true, message: "Please select material!" }]}
-            >
-              <Select
-                placeholder="Select a material"
-                onChange={onChange}
-                options={materials.map((product) => ({
-                  value: product.id,
-                  label: product.name,
-                }))}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={9} s>
-            <Form.Item
-              label="Hãng"
-              name="brand"
-              rules={[{ required: true, message: "Please select brand!" }]}
-            >
-              <Select
-                placeholder="Select a brand"
-                onChange={onChange}
-                options={brand.map((product) => ({
-                  value: product.id,
-                  label: product.name,
-                }))}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Loại"
-              name="category"
-              rules={[{ required: true, message: "Please select category!" }]}
-            >
-              <Select
-                placeholder="Select a category"
-                onChange={onChange}
-                options={category.map((product) => ({
-                  value: product.id,
-                  label: product.name,
-                }))}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item
-          label="Kích Cỡ"
-          rules={[{ required: true, message: "Please select size!" }]}
-        >
-          {sizes.map((size) => (
-            <Button
-              key={size.id}
-              onClick={() => handleSizeSelect(size.id)}
-              style={{
-                marginRight: 8,
-                marginBottom: 8,
-                background: selectedSize === size.id ? "#1890ff" : "",
-                color: selectedSize === size.id ? "white" : "",
-              }}
-            >
-              {size.name}
-            </Button>
-          ))}
-        </Form.Item>
-        {selectedSize && (
           <Form.Item
-            label="Màu"
-            rules={[{ required: true, message: "Please select color!" }]}
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input the name!" }]}
           >
-            {colors.map((color) => {
-              return (
-                <Checkbox
-                  key={color.id}
-                  onChange={(e) => handleColorSelect(color, e.target.checked)}
-                  style={{
-                    backgroundColor: color.code,
-                    marginRight: 18,
-                    marginBottom: 8,
-                    padding: "8px 12px",
-                    borderRadius: "2px",
-                  }}
-                  className="color-checkbox"
-                />
-              );
-            })}
+            <Input />
           </Form.Item>
-        )}
-        {selectedColors.length > 0 && (
-          <Button onClick={handleAddItem} style={{ marginBottom: 16 }}>
-            Add Item
-          </Button>
-        )}
-        <Table
-          dataSource={selectedItems}
-          columns={columns}
-          pagination={false}
-        />
-      </Form>
-    </Modal>
+          <Row style={{ display: "flex", justifyContent: "center" }}>
+            <Col span={9}>
+              <Form.Item
+                label="Cổ áo"
+                name="collar"
+                rules={[{ required: true, message: "Please select collar!" }]}
+              >
+                <Select
+                  placeholder="Select a collar"
+                  onChange={onChangeCollar}
+                  options={collars.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
+                <Button onClick={openModalCollar}>
+                  <PlusOutlined />
+                </Button>
+              </Form.Item>
+              <Form.Item
+                label="Chất Liệu"
+                name="material"
+                rules={[{ required: true, message: "Please select material!" }]}
+              >
+                <Select
+                  placeholder="Select a material"
+                  onChange={onChangeMaterial}
+                  options={materials.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
+                <Button onClick={openModalMaterial}>
+                  <PlusOutlined />
+                </Button>
+              </Form.Item>
+            </Col>
+            <Col span={9} s>
+              <Form.Item
+                label="Hãng"
+                name="brand"
+                rules={[{ required: true, message: "Please select brand!" }]}
+              >
+                <Select
+                  placeholder="Select a brand"
+                  onChange={onChangeBrand}
+                  options={brand.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
+                <Button onClick={openModalBrand}>
+                  <PlusOutlined />
+                </Button>
+              </Form.Item>
+              <Form.Item
+                label="Loại"
+                name="category"
+                rules={[{ required: true, message: "Please select category!" }]}
+              >
+                <Select
+                  placeholder="Select a category"
+                  onChange={onChangeCategory}
+                  options={category.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
+                <Button onClick={openModalCategory}>
+                  <PlusOutlined />
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item
+            label="Kích Cỡ"
+            rules={[{ required: true, message: "Please select size!" }]}
+          >
+            {sizes.map((size) => (
+              <Button
+                key={size.id}
+                onClick={() => handleSizeSelect(size.id)}
+                style={{
+                  marginRight: 8,
+                  marginBottom: 8,
+                  background: selectedSize === size.id ? "#1890ff" : "",
+                  color: selectedSize === size.id ? "white" : "",
+                }}
+              >
+                {size.name}
+              </Button>
+            ))}
+            <Button onClick={openModalSize}>
+              <PlusOutlined />
+            </Button>
+          </Form.Item>
+          {selectedSize && (
+            <Form.Item
+              label="Màu"
+              rules={[{ required: true, message: "Please select color!" }]}
+            >
+              {colors.map((color) => {
+                return (
+                  <Checkbox
+                    key={color.id}
+                    onChange={(e) => handleColorSelect(color, e.target.checked)}
+                    style={{
+                      backgroundColor: color.code,
+                      marginRight: 18,
+                      marginBottom: 8,
+                      padding: "8px 12px",
+                      borderRadius: "2px",
+                    }}
+                    className="color-checkbox"
+                  />
+                );
+              })}
+              <Button onClick={openModalColor}>
+                <PlusOutlined />
+              </Button>
+            </Form.Item>
+          )}
+          <Form.Item label="Ảnh">
+            <Form.Item
+              name="images"
+              valuePropName="fileList"
+              getValueFromEvent={(e) =>
+                Array.isArray(e) ? e : e && e.fileList
+              }
+              noStyle
+              rules={[{ required: true, message: "Please select images!" }]}
+            >
+              <Upload
+                name="logo"
+                listType="picture"
+                fileList={images}
+                multiple
+                beforeUpload={() => false}
+                onChange={handleImageChange} 
+              >
+                <Button  icon={<UploadOutlined />}>Chọn ảnh</Button>
+              </Upload>
+            </Form.Item>
+          </Form.Item>
+
+          {selectedColors.length > 0 && (
+            <Button onClick={handleAddItem} style={{ marginBottom: 16 }}>
+              Add Item
+            </Button>
+          )}
+          <Table
+            dataSource={selectedItems}
+            columns={columns}
+            pagination={false}
+          />
+        </Form>
+      </Modal>
+      <ModalAddCollar open={modalCollarVisible} closeModal={closeModalCollar} />
+      <ModalChatLieu
+        open={modalVisibleMaterial}
+        closeModal={closeModalMaterial}
+      />
+      <ModalAddBrand open={modalVisibleBrand} closeModal={closeModalBrand} />
+      <ModalAddCategory
+        open={modalVisibleCategory}
+        closeModal={closeModalCategory}
+      />
+      <ModalAddSize open={modalVisibleSize} closeModal={closeModalSize} />
+      <ModalColor isOpen={modalVisibleColor} onCancel1={closeModalColor} />
+    </>
   );
 };
 

@@ -1,0 +1,32 @@
+.cart {
+  padding: 10px !important;
+}
+.product-card {
+  text-align: center;
+}
+
+.product-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.product-image {
+  max-width: 100%;
+  max-height: 200px;
+}
+
+.product-price {
+  font-size: 14px;
+}
+.cart-container {
+  max-height: 100dvh; 
+  height: 35rem;
+  overflow-y: auto; 
+  }
+  
+  .product-list-container {
+    max-height: 100dvh; 
+    height: 35rem;
+    overflow-y: auto; 
+  }
+  
