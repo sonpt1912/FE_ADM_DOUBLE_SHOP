@@ -3,7 +3,7 @@ import { Modal, Button, Form, Input, Select, message, Date, Tree, Col, DatePicke
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPromotions } from "../../../store/slice/PromotionReducer";
 import { add } from "../../../store/slice/DetailPromotionReducer";
-import axios from "axios";
+import axios, { all } from "axios";
 import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
 import { listProduct } from "./ConstListProduct";
 const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
@@ -26,7 +26,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
       const formValues = await form.validateFields();
       if (formValues.discountPercent > 100)
         return message.error("Giảm giá theo phần trăm không được lớn hơn 100%!");
-      else if (formValues.discountPercent < 0) 
+      else if (formValues.discountPercent < 0)
         return message.error("Giảm giá theo phần trăm không được nhỏ hơn 0!");
       else if (formValues.endDate && formValues.startDate && formValues.endDate <= formValues.startDate)
         return message.error("Ngày kết thúc không thể ở trước hoặc là ngày bắt đầu!")
@@ -151,12 +151,13 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
       });
   }, []);
 
-  console.log("tree: ", treeData);
+  console.log("treeDât: ", treeData);
 
   const formatDataForTree = (data) => {
     const tree = [];
+  
+
     data.forEach(product => {
-      console.log("product: ", product.name);
       const productNode = {
         title: product.name,
         key: product.id,
@@ -165,8 +166,9 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
           key: `${i.id}`,
         })),
       }
-      console.log("xxx", productNode);
+      console.log("tree product:, ", tree);
       tree.push(productNode)
+     
     });
     return tree;
   }
@@ -213,24 +215,6 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               wrapperCol={{ span: 17, }}
               style={{ maxWidth: 1000, marginTop: "30px" }}
             >
-              <Form.Item
-
-                label="Mã"
-                name="code"
-                labelAlign="left"
-                labelCol={{ span: 9, }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập code"
-                  }
-                ]}
-                onChange={(e) =>
-                  setPayload({ ...payload, code: e.target.value })
-                }
-              >
-                <Input placeholder="Nhập mã khuyến mãi" />
-              </Form.Item>
 
               <Form.Item
 
@@ -318,15 +302,18 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                 showLine
                 defaultExpandAll
               >
-                {treeData.map(node => (
-                  <TreeNode title={node.title}>
-                    {node.children && node.children.map(childNode => {
-                      // console.log("childNode: ", childNode);
-                      return <TreeNode title={childNode.title} key={childNode.key} />
-                    })}
-                  </TreeNode>
-                ))}
+                <TreeNode title="ALL">
+                  {treeData.map(node => (
+                    <TreeNode title={node.title}>
+                      {node.children && node.children.map(childNode => {
+                        // console.log("childNode: ", childNode);
+                        return <TreeNode title={childNode.title} key={childNode.key} />
+                      })}
+                    </TreeNode>
+                  ))}
+                </TreeNode>
               </Tree>
+
             </div>
           </Col>
         </div>

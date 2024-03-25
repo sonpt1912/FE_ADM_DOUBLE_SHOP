@@ -81,12 +81,6 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
       <Tabs activeKey={activeTab} onChange={handleTabChange}>
         <TabPane tab="Thông tin" key="form">
           <Form>
-            <h4>ID:</h4>
-            <Input
-              name="id"
-              value={idState}
-              disabled
-            />
             <h4>Mã khuyến mãi:</h4>
             <Input
               name="code"

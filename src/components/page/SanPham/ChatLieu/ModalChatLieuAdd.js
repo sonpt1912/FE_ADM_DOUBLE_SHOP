@@ -66,14 +66,6 @@ const ModalChatLieu = ({ open, closeModal }) => {
         confirmLoading={confirmLoading}
       >
         <form>
-          <h4>Mã:</h4>
-          <Input
-            name="code"
-            label="code:"
-            placeholder="Input code Material"
-            onChange={(e) => setPayload({ ...payload, code: e.target.value })}
-            required
-          />
           <h4 className="mt-3">Tên:</h4>
           <Input
             name="name"

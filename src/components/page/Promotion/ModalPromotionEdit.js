@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Input, Select, Form, message, Tabs, Col } from "antd";
+import { Modal, Button, Input, Select, Form, message, Tabs, Col, Tree } from "antd";
 import { useDispatch } from "react-redux";
 import { update, fetchPromotions } from "../../../store/slice/PromotionReducer";
 import TabPane from "antd/es/tabs/TabPane";
 import { Delete } from "../../../store/slice/DetailPromotionReducer";
 import { DeleteOutlined } from "@ant-design/icons";
-
+import axios from "axios";
+import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
+import { listProduct } from "./ConstListProduct";
 const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
   const dispatch = useDispatch();
 
@@ -114,7 +116,7 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
           })
         )
       });
-      window.location.reload();
+    window.location.reload();
   };
 
   const handleCancel = () => {
@@ -137,6 +139,64 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
     setActiveTab(key);
   };
 
+  const [treeData, setTreeData] = useState([]);
+  const { TreeNode } = Tree;
+  useEffect(() => {
+    axios.get('http://localhost:8072/tree/product/show')
+      .then(response => {
+        console.log('API response: ', response.data.data);
+        const dataFromDB = response.data.data;
+        const formattedData = formatDataForTree(dataFromDB);
+        setTreeData(formattedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  console.log("tree: ", treeData);
+
+  const formatDataForTree = (data) => {
+    const tree = [];
+    data.forEach(product => {
+      console.log("product: ", product.name);
+      const productNode = {
+        title: product.name,
+        key: product.id,
+        children: product.detailProducts.map(i => ({
+          title: `${i.size.name} - ${i.color.name}`,
+          key: `${i.id}`,
+        })),
+      }
+      console.log("xxx", productNode);
+      tree.push(productNode)
+    });
+    return tree;
+  }
+
+  // const [expandedKeys, setExpandedKeys] = useState(['0-0-0', '0-0-1']);
+  // const [checkedKeys, setCheckedKeys] = useState(['0-0-0']);
+
+  const [expandedKeys, setExpandedKeys] = useState();
+  const [checkedKeys, setCheckedKeys] = useState();
+  const [selectedKeys, setSelectedKeys] = useState();
+  const [autoExpandParent, setAutoExpandParent] = useState(true);
+  const onExpand = (expandedKeysValue) => {
+    setExpandedKeys(expandedKeysValue);
+    setAutoExpandParent(false);
+  };
+  const onCheck = (checkedKeysValue) => {
+    const filteredKeys = checkedKeysValue.filter(key => !key.startsWith('0-'));
+    console.log("checkedKeysValue", filteredKeys);
+    listProduct.splice(0, listProduct.length, ...filteredKeys);
+    setCheckedKeys(filteredKeys);
+  };
+
+  const onSelect = (selectedKeysValue, info) => {
+    console.log('onSelect', info);
+    setSelectedKeys(selectedKeysValue);
+  };
+
   return (
     <Modal
       title="Cập nhập sản phẩm"
@@ -148,17 +208,12 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
       <Tabs activeKey={activeTab} onChange={handleTabChange}>
         <TabPane tab="Thông tin" key="form">
           <Form>
-            <h4>ID:</h4>
-            <Input
-              name="id"
-              value={idState}
-              disabled
-            />
             <h4>Mã khuyến mãi:</h4>
             <Input
               name="code"
               placeholder="Input code promotion"
               value={codeState}
+              disabled
               onChange={(e) => handleInputChange({
                 target: {
                   name: 'code', value: e.target.value
@@ -237,6 +292,31 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
               </div>
             ))}
           </div>
+
+          {/* <div style={{ borderLeft: '3px solid black', padding: '15px', height: "350px", overflow: "auto" }}>
+            <h3 >Chọn sản phẩm</h3>
+            <Tree
+              checkable
+              onExpand={onExpand}
+              expandedKeys={expandedKeys}
+              autoExpandParent={autoExpandParent}
+              onCheck={onCheck}
+              checkedKeys={checkedKeys}
+              onSelect={onSelect}
+              selectedKeys={selectedKeys}
+              showLine
+              defaultExpandAll
+            >
+              {treeData.map(node => (
+                <TreeNode title={node.title}>
+                  {node.children && node.children.map(childNode => {
+                    // console.log("childNode: ", childNode);
+                    return <TreeNode title={childNode.title} key={childNode.key} />
+                  })}
+                </TreeNode>
+              ))}
+            </Tree>
+          </div> */}
         </TabPane>
       </Tabs>
 

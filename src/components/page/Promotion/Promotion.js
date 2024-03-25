@@ -207,6 +207,7 @@ const Promotion = () => {
                     labelCol={{ span: 5 }}
                     wrapperCol={{ span: 14 }}
                     layout="horizontal"
+                    
                     style={{ maxWidth: 1500, margin: "auto", marginTop: "20px" }}
                 >
                     <Row gutter={16}>
@@ -332,22 +333,22 @@ const Promotion = () => {
                 className="text-center"
                 columns={columns}
                 dataSource={promotions}
-                bordered
+                total={pagination.totalItems}
                 pagination={{
                     pageSize: pagination.pageSize,
                     total: pagination.totalItems,
                     showSizeChanger: true,
                     showQuickJumper: true,
-                    // showTotal: (totalPages) => `Total ${totalPages} items`,
+                    showTotal: (totalPages) => `Total ${totalPages} items`,
                 }}
                 scroll={{
                     x: 1000,
                     y: 300,
                 }}
                 loading={loading}
-                // title={getTitle}
                 onChange={handleTableChange}
             />
+            
             <ModalKhuyenMai open={modalAdd} closeModal={closeModalAdd} />
 
             <ModalKhuyenMaiEdit

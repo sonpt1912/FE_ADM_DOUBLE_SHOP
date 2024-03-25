@@ -278,7 +278,6 @@ const Material = () => {
         className="text-center"
         columns={columns}
         dataSource={materials}
-        bordered
         pagination={{
           pageSize: pagination.pageSize,
           total: pagination.totalItems,
@@ -294,6 +293,7 @@ const Material = () => {
         // title={getTitle}
         onChange={handleTableChange}
       />
+
       <ModalChatLieu open={modalAdd} closeModal={closeModalAdd} />
 
       <ModalChatLieuEdit
