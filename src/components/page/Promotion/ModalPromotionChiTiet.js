@@ -75,6 +75,7 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
       footer={[
         <Button onClick={handleCancel}>Cancel</Button>
       ]}
+      width={888}
       style={{ border: '3px solid transparent', padding: '0px', height: "1000px", overflow: "auto" }}
     >
 
