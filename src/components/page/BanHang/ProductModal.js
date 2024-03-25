@@ -87,16 +87,6 @@ const ProductModal = ({ product, visible, onCancel, onAddToCart }) => {
       dataIndex: "quantity",
       key: "quantity",
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={status === 1 ? "green" : "red"}>
-          {status === 1 ? "Active" : "Inactive"}
-        </Tag>
-      ),
-    },
   ];
 
   const data = product?.map((product) => ({

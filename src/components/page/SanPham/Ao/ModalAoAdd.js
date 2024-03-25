@@ -14,7 +14,7 @@ import {
   Upload,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { createProduct } from "../../../../config/ProductApi";
+import { createProduct, uploadImage } from "../../../../config/ProductApi";
 import { fetchCollars } from "../../../../config/CollarApi";
 import { fetchSizes } from "../../../../config/SizeApi";
 import { fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
@@ -130,12 +130,9 @@ const ModalAddAo = ({ open, closeModal }) => {
     dispatch(fetchColors({}));
   }, [dispatch]);
 
-  const onChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-  const handleImageChange = (fileList) => {
-    console.log("image changed 12345",fileList);
-    // setImages(fileList)
+  const handleImageChange = async (fileList) => {
+    console.log("image changed 12345", fileList);
+    setImages(fileList.file);
   };
 
   const handleOk = async () => {
@@ -148,24 +145,27 @@ const ModalAddAo = ({ open, closeModal }) => {
           quantity: color.quantity,
         })),
       }));
-console.log("Image changed", images);
       const productData = {
         name: form.getFieldValue("name"),
         idCollar: selectedCollar,
         idBrand: selectedBrand,
         idCategory: selectedCategory,
-        code: 1,
         idMaterial: selectedMaterial,
         listSize: listSizeData,
-        listImages: images,
+        listImages: [],
         price: selectedItems.map((item) => item.price),
       };
-      console.log("Product data: " , productData);
 
-      // await dispatch(createProduct(productData));
+      const response = await dispatch(createProduct(productData));
+      console.log("áo product", response);
 
+      const formData = new FormData();
+      formData.append("folder", response.payload.code);
+      formData.append("image", images);
+
+      await dispatch(uploadImage(formData));
       message.success("Product created successfully!");
-      // closeModal();
+      closeModal();
       form.resetFields();
       setSelectedSize(null);
       setSelectedColors([]);
@@ -531,9 +531,9 @@ console.log("Image changed", images);
                 fileList={images}
                 multiple
                 beforeUpload={() => false}
-                onChange={handleImageChange} 
+                onChange={handleImageChange}
               >
-                <Button  icon={<UploadOutlined />}>Chọn ảnh</Button>
+                <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
               </Upload>
             </Form.Item>
           </Form.Item>

@@ -1,64 +1,121 @@
-import React from "react";
-import { Modal, Table, Tag } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Form, InputNumber, Modal, Table, Tag } from "antd";
+import { updateDetailProduct } from "../../../../config/ProductApi";
+import { useDispatch } from "react-redux";
 
 const ModalDetailProduct = ({ open, onClose, product }) => {
+  const dispatch = useDispatch();
+  const [form] = Form.useForm();
 
+  const [payload, setPayload] = useState({
+    id: "",
+    price: "",
+    quantity: "",
+    status: "",
+  });
+
+  const handleEditQuantity = (id, updatedQuantity) => {
+    const updatedData = product.map((p) =>
+      p.id === id ? { ...p, quantity: updatedQuantity.quantity } : p
+    );
+    
+    const selectedProduct = updatedData.filter((p) => p.id === id);
+    
+    console.log("Selected product", selectedProduct);
+    setPayload(selectedProduct.quantity);
+  };
+  
+  const handleEditPrice = (id, updatedPrice) => {
+    const updatedData = product.map((p) =>
+      p.id === id ? { price: updatedPrice.price } : p
+    );
+    const selectedProduct = updatedData.filter((p) => p.id === id);
+    setPayload(selectedProduct.price);
+  };
+
+
+  const handleUpdate = async () => {
+    console.log(payload);
+    await dispatch(updateDetailProduct(payload));
+    onClose();
+  };
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: "STT",
+      dataIndex: "index",
+      key: "index",
+      render: (text, record, index) => index + 1,
+      sorter: (a, b) => a.index - b.index,
     },
     {
-      title: "Color",
+      title: "Màu",
       dataIndex: "color",
       key: "color",
-      render: (color) => (
-        <Tag color={color.code}>{color.name}</Tag>
-      ),
+      render: (color) => <Tag color={color.code}>{color.name}</Tag>,
     },
     {
-      title: "Size",
+      title: "Kích Cỡ",
       dataIndex: "size",
       key: "size",
       render: (size) => size.name,
     },
     {
-      title: "Brand",
+      title: "Hãng",
       dataIndex: "brand",
       key: "brand",
       render: (brand) => brand.name,
     },
     {
-      title: "Collar",
+      title: "Cổ áo",
       dataIndex: "collar",
       key: "collar",
       render: (collar) => collar.name,
     },
     {
-      title: "Category",
+      title: "Loại",
       dataIndex: "category",
       key: "category",
       render: (category) => category.name,
     },
     {
-      title: "Material",
+      title: "Chất Liệu",
       dataIndex: "material",
       key: "material",
       render: (material) => material.name,
     },
     {
-      title: "Quantity",
+      title: "Số Lượng",
       dataIndex: "quantity",
       key: "quantity",
+      render: (text, record) => (
+        <InputNumber
+          value={record.quantity}
+          onChange={(value) =>
+            handleEditQuantity(record.id, value)
+          }
+        />
+      ),
     },
     {
-      title: "Status",
+      title: "Giá",
+      dataIndex: "price",
+      key: "price",
+      render: (text, record) => (
+        <InputNumber
+          value={record.price}
+          onChange={(value) =>
+            handleEditPrice(record.id, value)
+          }
+        />
+      ),
+    },
+    {
+      title: "Trạng Thái",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
-        <Tag color={status === 1 ? "green" : "red"}>
-          {status === 1 ? "Active" : "Inactive"}
+      render: (text, record) => (
+        <Tag color={record.status === 1 ? "green" : "red"}>
+          {record.status === 1 ? "Active" : "Inactive"}
         </Tag>
       ),
     },
@@ -74,15 +131,28 @@ const ModalDetailProduct = ({ open, onClose, product }) => {
     category: product.category,
     material: product.material,
     quantity: product.quantity,
+    price: product.price,
     status: product.status,
   }));
 
   return (
     <Modal
-      title="Product Detail"
+      title="Chi Tiết Sản Phẩm"
       open={open} 
       onCancel={onClose}
-      footer={null}
+      footer={[
+        <Button
+          key="back"
+          onClick={() => {
+            onClose();
+          }}
+        >
+          Hủy
+        </Button>,
+        <Button key="submit" type="primary" onClick={handleUpdate}>
+          Update
+        </Button>,
+      ]}
       width={1000}
     >
       <Table
