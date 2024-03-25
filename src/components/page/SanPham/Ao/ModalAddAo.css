@@ -1,4 +1,4 @@
-.color-checkbox .ant-checkbox-input {
+/* .color-checkbox .ant-checkbox-input {
   display: none;
 }
 
@@ -10,7 +10,7 @@
 }
 
 .color-checkbox-custom.checked {
-  opacity: 0.5; /* Điều chỉnh mức độ mờ tùy thích (ở đây là 0.5) */
+  opacity: 0.5; 
 }
 
 .color-checkbox-custom .anticon-check {
@@ -37,4 +37,9 @@
 .ant-checkbox .ant-checkbox-inner {
   background-color: transparent !important;
   border: none !important;
+} */
+
+:where(.css-dev-only-do-not-override-1qhpsh8).ant-form-item .ant-form-item-control-input-content{
+  display: flex;
+  gap: 5px;
 }

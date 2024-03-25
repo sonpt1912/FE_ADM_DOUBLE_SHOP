@@ -26,8 +26,12 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchProduct } from "../../../../config/ProductApi";
+import {
+  fetchDetailProduct,
+  fetchProduct,
+} from "../../../../config/ProductApi";
 import ModalAo from "./ModalAoAdd";
+import ModalDetailProduct from "./DetailProduct";
 
 const { Option } = Select;
 
@@ -35,78 +39,63 @@ const Ao = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const products = useSelector((state) => state.products.products);
-  const pagination = useSelector((state) => state.size.pagination);
-  const [pageSize, setPageSize] = useState(5);
+  const pagination = useSelector((state) => state.products.pagination);
+  console.log("Product",pagination);
+  const [pageSize, setPageSize] = useState(1);
   const [current, setCurrent] = useState(1);
-  const loading = useSelector((state) => state.size.status === "loading");
+  const loading = useSelector((state) => state.products.status === "loading");
   const [modalVisible, setModalVisible] = useState(false);
-  // const [modalVisibleUpdate, setModalVisibleUpdate] = useState(false);
-
-  // const [payload, setPayload] = useState({
-  //   code: "",
-  //   name: "",
-  //   description: "",
-  // });
-
-  // const [updateStatus, setUpdateStatus] = useState({ status: 0 });
+  const [modalVisibleDetail, setModalVisibleDetail] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const openModal = () => {
     setModalVisible(true);
   };
-  // const openModalUpdate = () => {
-  //   setModalVisibleUpdate(true);
-  // };
 
   const closeModal = () => {
     setModalVisible(false);
     setCurrent(1);
   };
-  // const closeModalUpdate = () => {
-  //   setModalVisibleUpdate(false);
-  // };
 
-  // const [searchParams, setSearchParams] = useState({
-  //   name: "",
-  //   status: "",
-  // });
-  // const handleChangeStatus = async (record) => {
-  //   const payloadStatus = {
-  //     code: record.code,
-  //     name: record.name,
-  //     description: record.description,
-  //   };
-  //   const newStatus = record.status === 1 ? 0 : 1;
-  //   setUpdateStatus({ status: newStatus });
-  //   await dispatch(updateSize({ ...payloadStatus, ...updateStatus }));
-  //   message.success("Size updated successfully");
+  const openModalDetail = async (productId) => {
+    try {
+      const response = await dispatch(fetchDetailProduct(productId));
 
-  //   dispatch(
-  //     fetchSizes({
-  //       page: pagination.current,
-  //       pageSize: pageSize,
-  //     })
-  //   );
-  // };
+      if (response.payload) {
+        setSelectedProduct(response.payload);
+        setModalVisibleDetail(true);
+      } else {
+        message.error("Failed to fetch product detail.");
+      }
+    } catch (error) {
+      message.error("An error occurred while fetching product detail.");
+    }
+  };
+
+  const closeModalDetail = () => {
+    setSelectedProduct(null);
+    setModalVisibleDetail(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // if (!modalVisible && !modalVisibleUpdate) {
-        const response = await dispatch(
-          fetchProduct({
-            page: current - 1,
-            pageSize: pageSize,
-          })
-        );
-        // if (response && response.error) {
-        //   if (
-        //     response.error.message === "Request failed with status code 403"
-        //   ) {
-        //     navigate("/login");
-        //     message.error(response.error.message);
-        //   }
-        // }
-        // }
+        if (!modalVisible ) {
+          const response = await dispatch(
+            fetchProduct({
+              page: current - 1,
+              pageSize: pageSize,
+            })
+          );
+          if (response && response.error) {
+            if (
+              response.error.message === "Request failed with status code 403"
+            ) {
+              navigate("/login");
+              message.error(response.error.message);
+            }
+          }
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
         message.error("Error fetching data. Please try again later.");
@@ -114,28 +103,7 @@ const Ao = () => {
     };
 
     fetchData();
-  }, [current, pageSize, dispatch, navigate]);
-
-  // const onClickEdit = (record) => {
-  //   setPayload({
-  //     code: record.code,
-  //     name: record.name,
-  //     description: record.description,
-  //     status: record.status,
-  //   });
-  //   openModalUpdate();
-  // };
-
-  // const onClickSearch = () => {
-  //   dispatch(
-  //     fetchSizes({
-  //       page: pagination.current,
-  //       pageSize: pageSize,
-  //       name: searchParams.name,
-  //       status: searchParams.status,
-  //     })
-  //   );
-  // };
+  }, [current, pageSize, dispatch, navigate, modalVisible]);
 
   const { token } = theme.useToken();
   const panelStyle = {
@@ -291,11 +259,11 @@ const Ao = () => {
       width: 150,
       render: (text, record) => (
         <Space size="middle">
-          <Button style={{ border: "none" }} icon={<EyeOutlined />} />
+          {/* <Button style={{ border: "none" }} icon={<EyeOutlined />} /> */}
           <Button
             style={{ border: "none" }}
-            icon={<EditOutlined />}
-            // onClick={() => onClickEdit(record)}
+            icon={<EyeOutlined />}
+            onClick={() => openModalDetail(record.id)}
           />
           <Popconfirm
             title="Are you sure you want to delete this size?"
@@ -317,11 +285,7 @@ const Ao = () => {
   const getTitle = () => (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <span style={{ marginRight: 8 }}>Danh Sách Sản Phẩm</span>
-      <Button
-        type="primary"
-        shape="round"
-         onClick={openModal}
-      >
+      <Button type="primary" shape="round" onClick={openModal}>
         Thêm Sản Phẩm
       </Button>
     </div>
@@ -366,7 +330,12 @@ const Ao = () => {
           title={getTitle}
           onChange={handleTableChange}
         />
-        <ModalAo open={modalVisible} closeModal={closeModal}/>
+        <ModalAo open={modalVisible} closeModal={closeModal} />
+        <ModalDetailProduct
+          open={modalVisibleDetail}
+          onClose={closeModalDetail}
+          product={selectedProduct}
+        />
       </>
     </div>
   );
