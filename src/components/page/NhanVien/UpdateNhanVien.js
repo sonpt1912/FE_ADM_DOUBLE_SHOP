@@ -209,20 +209,6 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
         <Row>
           <Col span={12}>
             <Form.Item
-              label="Username"
-              name="username"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập username",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
               label="Họ và tên"
               name="name"
               rules={[
@@ -362,10 +348,11 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
             </Form.Item>
           </Col>
         </Row>
-
-        <Form.Item label="Mô tả" name="description">
-          <TextArea rows={4} />
-        </Form.Item>
+        <Col span={12}>
+          <Form.Item label="Mô tả" name="description">
+            <TextArea rows={2} />
+          </Form.Item>
+        </Col>
       </Form>
     </Modal>
   );
