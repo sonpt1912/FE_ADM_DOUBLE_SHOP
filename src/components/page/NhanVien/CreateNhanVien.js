@@ -121,7 +121,7 @@ const ModalAddNhanVien = ({ open, closeModal }) => {
         phone: values.phone,
         email: values.email,
         city: city,
-        province: ward,
+        provice: ward,
         district: district,
         gender: values.gender,
         password: values.password,
