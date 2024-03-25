@@ -20,14 +20,16 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     endDate: null,
   });
 
-  // console.log("xxxx, ", listProduct);
   const handleOk = async () => {
     try {
-      // console.log("xxx, ", listProduct);
       setConfirmLoading(true);
       const formValues = await form.validateFields();
-      // console.log("29: ", payload.detailProduct);
-      // console.log("payload: ", payload);
+      if (formValues.discountPercent > 100)
+        return message.error("Giảm giá theo phần trăm không được lớn hơn 100%!");
+      else if (formValues.discountPercent < 0) 
+        return message.error("Giảm giá theo phần trăm không được nhỏ hơn 0!");
+      else if (formValues.endDate && formValues.startDate && formValues.endDate <= formValues.startDate)
+        return message.error("Ngày kết thúc không thể ở trước hoặc là ngày bắt đầu!")
       await dispatch(add({ ...formValues, payload }))
         .then(() => {
           dispatch(
@@ -212,7 +214,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               style={{ maxWidth: 1000, marginTop: "30px" }}
             >
               <Form.Item
-                
+
                 label="Mã"
                 name="code"
                 labelAlign="left"
@@ -231,7 +233,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               </Form.Item>
 
               <Form.Item
-                
+
                 label="Tên"
                 name="name"
                 labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
@@ -246,7 +248,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                   setPayload({ ...payload, name: e.target.value })
                 }
               >
-                <Input placeholder="Nhập tên khuyếm mãi"/>
+                <Input placeholder="Nhập tên khuyếm mãi" />
               </Form.Item>
 
               <Form.Item
@@ -290,7 +292,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               >
                 <Input
                   type="Date"
-                  onChange={(e) => setPayload({ ...payload, startDate: e.target.value })}
+                  onChange={(e) => setPayload({ ...payload, endDate: e.target.value })}
                   required
                 />
               </Form.Item>

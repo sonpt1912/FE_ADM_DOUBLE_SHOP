@@ -79,7 +79,7 @@ export const detailPromotion = createAsyncThunk(
     try {
 
       const response = await axios
-        .get(`http://localhost:8072//promotion/show/${idPromotion}/${idDetailPromotion}`);
+        .get(`http://localhost:8072/promotion/show/${idPromotion}/${idDetailPromotion}`);
       console.log("Object:" + response.data.data)
       return response.data.data;
 
