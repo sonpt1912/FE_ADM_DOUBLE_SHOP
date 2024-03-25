@@ -43,6 +43,7 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
     gender: "",
     birthDay: null,
     description: "",
+    password: "",
   });
 
   const dataCity = async () => {
@@ -125,6 +126,7 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
   useEffect(() => {
     console.log("Starting", payload);
     form.setFieldsValue({
+      id: payload.id,
       username: payload.username,
       name: payload.name,
       phone: payload.phone,
@@ -136,6 +138,7 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
       gender: payload.gender,
       birthDay: payload.birthDay,
       description: payload.description,
+      password: payload.password,
     });
   }, [form, payload]);
 
@@ -152,6 +155,7 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
       gender: allValues.gender,
       birthDay: allValues.birthDay,
       description: allValues.description,
+      password: allValues.password,
     });
   };
 
@@ -347,12 +351,17 @@ const ModalUpdateNhanVien = ({ open, closeModal, payload }) => {
               </Select>
             </Form.Item>
           </Col>
+          <Col span={12}>
+            <Form.Item label="Mô tả" name="description">
+              <TextArea rows={2} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Password" name="password" >
+              <Input.Password  />
+            </Form.Item>
+          </Col>
         </Row>
-        <Col span={12}>
-          <Form.Item label="Mô tả" name="description">
-            <TextArea rows={2} />
-          </Form.Item>
-        </Col>
       </Form>
     </Modal>
   );
