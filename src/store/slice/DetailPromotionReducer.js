@@ -101,7 +101,7 @@ export const Delete = createAsyncThunk(
   "detailPromotions/Delete", async (payload) => {
     try {
       const response = await axios
-        .post(`http://localhost:8072/promotion/delete/${payload}`);
+        .post(`http://localhost:8072/detail-promotion/delete/${payload}`);
 
       return response.data;
     } catch (error) {

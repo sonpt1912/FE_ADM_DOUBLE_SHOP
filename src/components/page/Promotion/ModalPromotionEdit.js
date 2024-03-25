@@ -3,6 +3,8 @@ import { Modal, Button, Input, Select, Form, message, Tabs, Col } from "antd";
 import { useDispatch } from "react-redux";
 import { update, fetchPromotions } from "../../../store/slice/PromotionReducer";
 import TabPane from "antd/es/tabs/TabPane";
+import { Delete } from "../../../store/slice/DetailPromotionReducer";
+import { DeleteOutlined } from "@ant-design/icons";
 
 const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
   const dispatch = useDispatch();
@@ -77,6 +79,8 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
         updated_by: 1,
         status: 1
       };
+      if (formData.discountPercent > 100)
+        return message.error("Giảm giá theo phần trăm không được lớn hơn 100%");
       setConfirmLoading(true);
       await dispatch(update(formData))
         .then(() => {
@@ -98,6 +102,19 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
       form.resetFields();
       setConfirmLoading(false);
     }
+  };
+
+  const handleDelete = (id) => {
+    dispatch(Delete(id))
+      .then(() => {
+        dispatch(
+          fetchPromotions({
+            page: 0,
+            pageSize: 5,
+          })
+        )
+      });
+      window.location.reload();
   };
 
   const handleCancel = () => {
@@ -163,6 +180,7 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
             />
             <h4>Giảm giá(%):</h4>
             <Input
+              type="number"
               name="discountPercent"
               placeholder="Input value promotion"
               value={discountPercentState}
@@ -202,12 +220,21 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
         <TabPane tab="Chi tiết sản phẩm" >
           <div >
             {KhuyenMais && KhuyenMais.detailPromotions.map((t, index) => (
-                <div key={index}>
-                  <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
-                  <p style={{ marginLeft: 30, fontSize: 15 }}>Màu sắc: [{t.detailProduct.color.name}]</p>
-                  <p style={{ marginLeft: 30, fontSize: 15 }}>Kích cỡ: [{t.detailProduct.size.name}]</p>
-                  <hr></hr>
-                </div>
+              <div key={index}>
+                <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Màu sắc: [{t.detailProduct.color.name}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Kích cỡ: [{t.detailProduct.size.name}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá trước khi giảm: [{t.detailProduct.price}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm: [{t.detailProduct.price * (1 - (KhuyenMais.discountPercent) / 100)}]</p>
+                <Button
+                  
+                  icon={<DeleteOutlined />}
+                  style={{ border: "none" }}
+                  onClick={() => handleDelete(t.id)}
+                >Xóa</Button>
+                
+                <hr></hr>
+              </div>
             ))}
           </div>
         </TabPane>
