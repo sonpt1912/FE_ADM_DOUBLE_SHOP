@@ -204,6 +204,8 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
       onOk={handleOk}
       onCancel={handleCancel}
       confirmLoading={confirmLoading}
+      width={888}
+      style={{ border: '3px solid transparent', padding: '0px', height: "1000px", overflow: "auto" }}
     >
       <Tabs activeKey={activeTab} onChange={handleTabChange}>
         <TabPane tab="Thông tin" key="form">
