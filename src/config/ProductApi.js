@@ -61,3 +61,31 @@ export const fetchDetailProduct = createAsyncThunk(
     }
   }
 );
+export const uploadImage = createAsyncThunk(
+  "product/uploadImage",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/product/upload-image`,
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const updateDetailProduct = createAsyncThunk(
+  "product/updateDetailProduct",
+  async (detailProduct, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/product/update-detail-product`,
+        detailProduct
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
