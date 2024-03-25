@@ -96,35 +96,23 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
   return (
     <Modal
       title="Update Material"
-      // visible={visible}
       open={visible}
       onOk={handleOk}
       onCancel={handleCancel}
       confirmLoading={confirmLoading}
-      // footer={[
-      //   <Button key="cancel" onClick={handleCancel}>
-      //     Cancel
-      //   </Button>,
-      //   <Button key="ok" type="primary" onClick={handleOk}>
-      //     OK
-      //   </Button>,
-      // ]}
     >
       <Form>
         <h4>ID:</h4>
         <Input
           name="id"
-          // onChange={(e) => setCode(e.target.value)}
           value={idState}
           disabled
         />
-        <h4>Code Material:</h4>
+        <h4>Mã:</h4>
         <Input
           name="code"
           placeholder="Nhập mã màu"
-          // onChange={(e) => setCode(e.target.value)}
           value={codeState}
-          // onChange={(e) => setPayload({ ...payload, code: e.target.value })}
           onChange={(e) => handleInputChange({
             target: {
               name: 'code', value: e.target.value
@@ -132,7 +120,7 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
           }
           )}
         />
-        <h4 className="mt-3">Name Material:</h4>
+        <h4 className="mt-3">Tên:</h4>
         <Input
           name="name"
           label="Name:"
@@ -142,7 +130,7 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
           onChange={(e) => setName(e.target.value)}
         // onChange={(e) => setPayload({ ...payload, name: e.target.value })}
         />
-        <h4 className="mt-3">Description Material:</h4>
+        <h4 className="mt-3">Mô tả:</h4>
         <Input
           name="description"
           label="Desciption:"
@@ -152,7 +140,7 @@ const ModalChatLieuEdit = ({ visible, closeModal, ChatLieus }) => {
           value={descriptionState}
         />
         <div className="mt-3 d-flex">
-          <h4>Status:</h4>
+          <h4>Trangj thái:</h4>
           <Select className="ms-4"
             // onChange={(e) => setTrangThai(parseInt(e.target.value))}
             value={statusState == 0 ? "Hết Hàng" : "Còn Hàng"}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Input, Select, Form, message, Tabs } from "antd";
+import { Modal, Button, Input, Select, Form, message, Tabs, Col } from "antd";
 import { useDispatch } from "react-redux";
 import { update, fetchPromotions } from "../../../store/slice/PromotionReducer";
 import TabPane from "antd/es/tabs/TabPane";
@@ -122,7 +122,7 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
 
   return (
     <Modal
-      title="Update Promotion"
+      title="Cập nhập sản phẩm"
       open={visible}
       onOk={handleOk}
       onCancel={handleCancel}
@@ -130,104 +130,89 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
     >
       <Tabs activeKey={activeTab} onChange={handleTabChange}>
         <TabPane tab="Thông tin" key="form">
-        <Form>
-        <h4>ID:</h4>
-        <Input
-          name="id"
-          value={idState}
-          disabled
-        />
-        <h4>Code Promotion:</h4>
-        <Input
-          name="code"
-          placeholder="Input code promotion"
-          value={codeState}
-          onChange={(e) => handleInputChange({
-            target: {
-              name: 'code', value: e.target.value
-            }
-          }
-          )}
-        />
-        <h4>Name Promotion:</h4>
-        <Input
-          name="name"
-          placeholder="Input name promotion"
-          value={nameState}
-          onChange={(e) => handleInputChange({
-            target: {
-              name: 'name', value: e.target.value
-            }
-          }
-          )}
-        />
-        <h4>discountAmount Promotion:</h4>
-        <Input
-          name="discountAmount"
-          placeholder="Input value promotion"
-          value={discountAmountState}
-          onChange={(e) => handleInputChange({
-            target: {
-              name: 'discountAmount', value: e.target.value
-            }
-          }
-          )}
-        />
-        <h4>discountPercent Promotion:</h4>
-        <Input
-          name="discountPercent"
-          placeholder="Input value promotion"
-          value={discountPercentState}
-          onChange={(e) => handleInputChange({
-            target: {
-              name: 'discountPercent', value: e.target.value
-            }
-          }
-          )}
-        />
-        <h4 className="mt-3">StartDate Promotion:</h4>
-        <Input
-          name="startDate"
-          label="StartDate:"
-          placeholder="Input StartDate promotion"
-          type="Date"
-          onChange={(e) => setStartDate(e.target.value)}
-          value={startDateState}
-          />
-        <h4 className="mt-3">EndDate promotion:</h4>
-        <Input
-          name="endDate"
-          label="EndDate:"
-          placeholder="Input EndDate promotion"
-          type="Date"
-          onChange={(e) => setEndDate(e.target.value)}
-          value={endDateState}
-        />
-        <div className="mt-3 d-flex">
-          <h4>Status:</h4>
-          <Select className="ms-4"
-            value={statusState == "0" ? "chưa hoạt động" : statusState == "1" ? "đang hoạt động" : "hết hạn"}
-            disabled
-          >
-          </Select>
-        </div>
-      </Form>
+          <Form>
+            <h4>ID:</h4>
+            <Input
+              name="id"
+              value={idState}
+              disabled
+            />
+            <h4>Mã khuyến mãi:</h4>
+            <Input
+              name="code"
+              placeholder="Input code promotion"
+              value={codeState}
+              onChange={(e) => handleInputChange({
+                target: {
+                  name: 'code', value: e.target.value
+                }
+              }
+              )}
+            />
+            <h4>Tên khuyến mãi:</h4>
+            <Input
+              name="name"
+              placeholder="Input name promotion"
+              value={nameState}
+              onChange={(e) => handleInputChange({
+                target: {
+                  name: 'name', value: e.target.value
+                }
+              }
+              )}
+            />
+            <h4>Giảm giá(%):</h4>
+            <Input
+              name="discountPercent"
+              placeholder="Input value promotion"
+              value={discountPercentState}
+              onChange={(e) => handleInputChange({
+                target: {
+                  name: 'discountPercent', value: e.target.value
+                }
+              }
+              )}
+            />
+            <h4 className="mt-3">Ngày bắt đầu:</h4>
+            <Input
+              name="startDate"
+              placeholder="Input StartDate promotion"
+              type="Date"
+              onChange={(e) => setStartDate(e.target.value)}
+              value={startDateState}
+            />
+            <h4 className="mt-3">Ngày kết thúc:</h4>
+            <Input
+              name="endDate"
+              placeholder="Input EndDate promotion"
+              type="Date"
+              onChange={(e) => setEndDate(e.target.value)}
+              value={endDateState}
+            />
+            <div className="mt-3 d-flex">
+              <h4>Trạng thái:</h4>
+              <Select className="ms-4"
+                value={statusState == "0" ? "chưa hoạt động" : statusState == "1" ? "đang hoạt động" : "hết hạn"}
+                disabled
+              >
+              </Select>
+            </div>
+          </Form>
         </TabPane>
         <TabPane tab="Chi tiết sản phẩm" >
-          <div>
+          <div >
             {KhuyenMais && KhuyenMais.detailPromotions.map((t, index) => (
-              <div key={index}>
-                <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
-                <p style={{marginLeft: 30, fontSize: 15}}>Màu sắc: [{t.detailProduct.color.name}]</p>
-                <p style={{marginLeft: 30, fontSize: 15}}>Kích cỡ: [{t.detailProduct.size.name}]</p>
-                <hr></hr>
-              </div>
+                <div key={index}>
+                  <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
+                  <p style={{ marginLeft: 30, fontSize: 15 }}>Màu sắc: [{t.detailProduct.color.name}]</p>
+                  <p style={{ marginLeft: 30, fontSize: 15 }}>Kích cỡ: [{t.detailProduct.size.name}]</p>
+                  <hr></hr>
+                </div>
             ))}
           </div>
-
         </TabPane>
       </Tabs>
-      
+
     </Modal>
   );
 };

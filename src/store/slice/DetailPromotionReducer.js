@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "axios";
 import { message } from "antd";
+import { listProduct } from '../../components/page/Promotion/ConstListProduct';
 
 const initialState = {
   detailPromotions: [],
@@ -43,11 +44,16 @@ export const fetchDetailPromotions = createAsyncThunk(
   }
 );
 
+
+
 export const add = createAsyncThunk(
   "detailPromotions/add", async (payload) => {
+    payload.detailProduct = listProduct
+    console.log("add, ", payload);
     try {
       const response = await axios.post(
         `http://localhost:8072/detail-promotion/add`, payload);
+        listProduct = [];
       return response.data;
     } catch (error) {
       if (error.response && error.response.status === 401) {

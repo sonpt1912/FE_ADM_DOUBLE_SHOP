@@ -5,11 +5,12 @@ import { fetchPromotions } from "../../../store/slice/PromotionReducer";
 import { add } from "../../../store/slice/DetailPromotionReducer";
 import axios from "axios";
 import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
-
+import { listProduct } from "./ConstListProduct";
 const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
+
   const [payload, setPayload] = useState({
     code: "",
     name: "",
@@ -19,10 +20,14 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     endDate: null,
   });
 
+  // console.log("xxxx, ", listProduct);
   const handleOk = async () => {
     try {
+      // console.log("xxx, ", listProduct);
       setConfirmLoading(true);
       const formValues = await form.validateFields();
+      // console.log("29: ", payload.detailProduct);
+      // console.log("payload: ", payload);
       await dispatch(add({ ...formValues, payload }))
         .then(() => {
           dispatch(
@@ -67,61 +72,61 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
 
   const tree = [
     {
-      title: 'name',
-      dataIndex: "name",
-      key: 'name',
+      title: 'All',
+      dataIndex: "All",
+      key: 9999999999,
       children: [
         {
-          title: '0-0-0',
-          key: '0-0-0',
+          title: 'Áo nỉ',
+          key: 999999999,
           children: [
             {
-              title: '0-0-0-0',
-              key: '0-0-0-0',
+              title: 'Black-M',
+              key: 1,
             },
             {
-              title: '0-0-0-1',
-              key: '0-0-0-1',
+              title: 'White-L',
+              key: 2,
             },
             {
-              title: '0-0-0-2',
-              key: '0-0-0-2',
+              title: 'Vilolet-XL',
+              key: 3,
             },
           ],
         },
         {
-          title: '0-0-1',
-          key: '0-0-1',
+          title: 'Áo gió',
+          key: 888888888,
           children: [
             {
-              title: '0-0-1-0',
-              key: '0-0-1-0',
+              title: 'Black-M',
+              key: 4,
             },
             {
-              title: '0-0-1-1',
-              key: '0-0-1-1',
+              title: 'White-L',
+              key: 5,
             },
             {
-              title: '0-0-1-2',
-              key: '0-0-1-2',
+              title: 'Vilolet-XL',
+              key: 6,
             },
           ],
         },
         {
-          title: '0-0-2',
-          key: '0-0-2',
+          title: 'Áo thun',
+          key: 777777777,
           children: [
             {
-              title: '0-0-2-0',
-              key: '0-0-2-0',
+              title: 'Black-M',
+              key: 7,
             },
             {
-              title: '0-0-2-1',
-              key: '0-0-2-1',
+              title: 'White-L',
+              key: 8,
             },
             {
-              title: '0-0-2-2',
-              key: '0-0-2-2',
+              title: 'Vilolet-XL',
+              key: 9,
             },
           ],
         },
@@ -130,29 +135,39 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   ]
 
   const [treeData, setTreeData] = useState([]);
-
+  const { TreeNode } = Tree;
   useEffect(() => {
-    axios.get('http://localhost:8072/detail-product/show')
+    axios.get('http://localhost:8072/tree/product/show')
       .then(response => {
-        console.log('API response: ', response.data.data)
-        setTreeData(response.data.data);
+        console.log('API response: ', response.data.data);
+        const dataFromDB = response.data.data;
+        const formattedData = formatDataForTree(dataFromDB);
+        setTreeData(formattedData);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
   }, []);
 
-  const renderTreeNodes = data =>
-    data.map(item => {
-      if (item.children && item.children.length > 0) {
-        return (
-          <Tree.TreeNode key={item.product} title={item.name}>
-            {renderTreeNodes(item.children)}
-          </Tree.TreeNode>
-        );
+  console.log("tree: ", treeData);
+
+  const formatDataForTree = (data) => {
+    const tree = [];
+    data.forEach(product => {
+      console.log("product: ", product.name);
+      const productNode = {
+        title: product.name,
+        key: product.id,
+        children: product.detailProducts.map(i => ({
+          title: `${i.size.name} - ${i.color.name}`,
+          key: `${i.id}`,
+        })),
       }
-      return <Tree.TreeNode key={item.id} title={item.name} />;
+      console.log("xxx", productNode);
+      tree.push(productNode)
     });
+    return tree;
+  }
 
   // const [expandedKeys, setExpandedKeys] = useState(['0-0-0', '0-0-1']);
   // const [checkedKeys, setCheckedKeys] = useState(['0-0-0']);
@@ -166,8 +181,12 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     setAutoExpandParent(false);
   };
   const onCheck = (checkedKeysValue) => {
-    setCheckedKeys(checkedKeysValue);
+    const filteredKeys = checkedKeysValue.filter(key => !key.startsWith('0-'));
+    console.log("checkedKeysValue", filteredKeys);
+    listProduct.splice(0, listProduct.length, ...filteredKeys);
+    setCheckedKeys(filteredKeys);
   };
+
   const onSelect = (selectedKeysValue, info) => {
     console.log('onSelect', info);
     setSelectedKeys(selectedKeysValue);
@@ -176,7 +195,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
   return (
     <div>
       <Modal
-        title="add promotion"
+        title="Thêm khuyến mãi"
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
@@ -193,7 +212,8 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               style={{ maxWidth: 1000, marginTop: "30px" }}
             >
               <Form.Item
-                label="code"
+                
+                label="Mã"
                 name="code"
                 labelAlign="left"
                 labelCol={{ span: 9, }}
@@ -207,15 +227,15 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                   setPayload({ ...payload, code: e.target.value })
                 }
               >
-                <Input />
+                <Input placeholder="Nhập mã khuyến mãi" />
               </Form.Item>
 
               <Form.Item
-                label="name"
+                
+                label="Tên"
                 name="name"
                 labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
                 labelCol={{ span: 9 }}
-
                 rules={[
                   {
                     required: true,
@@ -226,27 +246,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                   setPayload({ ...payload, name: e.target.value })
                 }
               >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
-                onChange={(e) =>
-                  setPayload({ ...payload, discountAmount: e.target.value })
-                }
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập giảm giá theo tiền"
-                  }
-                ]}
-                labelCol={{ span: 9 }}
-                label="Giảm giá theo tiền"
-                name="discountAmount"
-              // Rest of your code
-              >
-                <Input type="number" placeholder="VNĐ" min={0}
-                />
+                <Input placeholder="Nhập tên khuyếm mãi"/>
               </Form.Item>
 
               <Form.Item
@@ -270,7 +270,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               <Form.Item
                 labelAlign="left"
                 name="startDate"
-                label="startDate"
+                label="Ngày bắt đầu"
                 labelCol={{ span: 9 }}
                 rules={[{ required: true }]}
               >
@@ -283,7 +283,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               <Form.Item
                 labelAlign="left"
                 name="endDate"
-                label="endDate"
+                label="Ngày kết thúc"
                 labelCol={{ span: 9 }}
                 rules={[{ required: true }]}
 
@@ -294,12 +294,17 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                   required
                 />
               </Form.Item>
+              <Form.Item
+
+              >
+
+              </Form.Item>
             </Form>
           </Col>
           <Col style={{ marginLeft: "30px" }} lg={9} md={24} sm={24}>
-            <div style={{ border: '3px solid black', padding: '10px', height: "350px", overflow: "auto" }}>
+            <div style={{ borderLeft: '3px solid black', padding: '15px', height: "350px", overflow: "auto" }}>
               <h3 >Chọn sản phẩm</h3>
-              {/* <Tree
+              <Tree
                 checkable
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}
@@ -308,19 +313,17 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                 checkedKeys={checkedKeys}
                 onSelect={onSelect}
                 selectedKeys={selectedKeys}
-                treeData={tree}
                 showLine
                 defaultExpandAll
-                // expandedKeys={expandedKeys}
-                // onExpand={onExpand}
               >
-                {renderTreeNodes(treeData)}
-              </Tree> */}
-              <Tree
-                checkable
-                checkedKeys={checkedKeys}
-                onCheck={onCheck}>
-                {renderTreeNodes(treeData)}
+                {treeData.map(node => (
+                  <TreeNode title={node.title}>
+                    {node.children && node.children.map(childNode => {
+                      // console.log("childNode: ", childNode);
+                      return <TreeNode title={childNode.title} key={childNode.key} />
+                    })}
+                  </TreeNode>
+                ))}
               </Tree>
             </div>
           </Col>

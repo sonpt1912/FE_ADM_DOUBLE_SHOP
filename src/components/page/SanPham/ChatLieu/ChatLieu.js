@@ -63,28 +63,28 @@ const Material = () => {
       sorter: (a, b) => a.index - b.index,
     },
     {
-      title: "code",
+      title: "Mã",
       dataIndex: "code",
       key: "code",
     },
     {
-      title: "name",
+      title: "Tên",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "description",
+      title: "Mô tả",
       dataIndex: "description",
       key: "description",
     },
     {
-      title: "status",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
       render: (text, record) => (record.status === 0 ? "Inactive" : "Active"),
     },
     {
-      title: "ChucNang",
+      title: "Chức năng",
       dataIndex: "ChucNang",
       key: "ChucNang",
       render: (text, record) => (
@@ -192,9 +192,9 @@ const Material = () => {
         >
           <Row gutter={16}>
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Code">
+              <Form.Item label="Mã">
                 <Input
-                  placeholder="Enter code"
+                  placeholder="Nhập mã"
                   style={{ width: "100%" }}
                   value={searchParams.code}
                   onChange={(e) =>
@@ -204,9 +204,9 @@ const Material = () => {
               </Form.Item>
             </Col>
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Name">
+              <Form.Item label="Tên">
                 <Input
-                  placeholder="Enter name"
+                  placeholder="Nhập tên"
                   style={{ width: "100%" }}
                   value={searchParams.name}
                   onChange={(e) =>
@@ -238,7 +238,7 @@ const Material = () => {
               icon={<SearchOutlined />}
               onClick={onClickSearch}
             >
-              Search
+              Tìm kiếm
             </Button>
           </Form.Item>
         </Form>
@@ -253,7 +253,7 @@ const Material = () => {
 
   return (
     <div>
-      <Divider orientation="left">Material</Divider>
+      <Divider orientation="left">Chất liệu</Divider>
       <div>
         <Collapse items={items} defaultActiveKey={['1']} onChange={onChange} />
       </div>
@@ -265,7 +265,7 @@ const Material = () => {
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h3 style={{ marginRight: 8 }}>Danh Sách chất liệu</h3>
         <Button type="primary" shape="round" onClick={showModalAdd}>
-          Add Material
+          +Thêm mới chất liệu
         </Button>
       </div>
 

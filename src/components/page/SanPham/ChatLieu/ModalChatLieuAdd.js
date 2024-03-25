@@ -66,7 +66,7 @@ const ModalChatLieu = ({ open, closeModal }) => {
         confirmLoading={confirmLoading}
       >
         <form>
-          <h4>Code material:</h4>
+          <h4>Mã:</h4>
           <Input
             name="code"
             label="code:"
@@ -74,7 +74,7 @@ const ModalChatLieu = ({ open, closeModal }) => {
             onChange={(e) => setPayload({ ...payload, code: e.target.value })}
             required
           />
-          <h4 className="mt-3">Name material:</h4>
+          <h4 className="mt-3">Tên:</h4>
           <Input
             name="name"
             label="name:"
@@ -82,7 +82,7 @@ const ModalChatLieu = ({ open, closeModal }) => {
             onChange={(e) => setPayload({ ...payload, name: e.target.value })}
             required
           />
-          <h4 className="mt-3">Desciption material:</h4>
+          <h4 className="mt-3">Mô tả:</h4>
           <Input
             name="desciption"
             label="desciption :"
@@ -93,8 +93,6 @@ const ModalChatLieu = ({ open, closeModal }) => {
             required
           />
 
-          {/* <Button htmlType="submit" onClick={handleOk}>Update</Button>
-            <Button onClick={handleCancel}>Cancel</Button> */}
         </form>
       </Modal>
     </div>
