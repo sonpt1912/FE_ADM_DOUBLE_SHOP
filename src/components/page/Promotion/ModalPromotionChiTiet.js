@@ -141,7 +141,7 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Màu sắc: [{t.detailProduct.color.name}]</p>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Kích cỡ: [{t.detailProduct.size.name}]</p>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Giá trước khi giảm: [{t.detailProduct.price}]</p>
-                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(VND): [{t.detailProduct.price - KhuyenMais.discountAmount}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(VND): [{Math.max(t.detailProduct.price - KhuyenMais.discountAmount, 0)}]</p>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(%): [{t.detailProduct.price * (1 - (KhuyenMais.discountPercent) / 100)}]</p>
                 <hr></hr>
               </div>

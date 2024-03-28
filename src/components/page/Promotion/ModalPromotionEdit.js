@@ -6,6 +6,7 @@ import TabPane from "antd/es/tabs/TabPane";
 import { Delete } from "../../../store/slice/DetailPromotionReducer";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
+import moment from 'moment';
 import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
 import { listProduct } from "./ConstListProduct";
 const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
@@ -19,6 +20,10 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
   const [startDateState, setStartDate] = useState('');
   const [endDateState, setEndDate] = useState('');
   const [statusState, setStatus] = useState('');
+  const [editableDiscountAmount, setEditableDiscountAmount] = useState(true);
+  const [editableDiscountPercent, setEditableDiscountPercent] = useState(true);
+  const [form] = Form.useForm();
+
 
   useEffect(() => {
     if (KhuyenMais) {
@@ -58,7 +63,7 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
   };
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [form] = Form.useForm();
+
   const [payload, setPayload] = useState({
     code: "",
     name: "",
@@ -69,6 +74,13 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
 
   const handleOk = async () => {
     try {
+      const formValues = await form.validateFields();
+      if (formValues.discountPercent > 100)
+        return message.error("Giảm giá theo phần trăm không được lớn hơn 100%!");
+      else if (formValues.discountPercent < 0 || formValues.discountAmount < 0)
+        return message.error("Giảm giá không được nhỏ hơn 0!");
+      else if (formValues.endDate && formValues.startDate && formValues.endDate <= formValues.startDate)
+        return message.error("Ngày kết thúc không thể ở trước hoặc là ngày bắt đầu!")
       const formData = {
         id: idState,
         code: codeState,
@@ -240,6 +252,7 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
               name="discountAmount"
               placeholder="Nhập khuyến mãi mới (VND)"
               value={discountAmountState}
+              disabled={discountAmountState === 0}
               onChange={(e) => handleInputChange({
                 target: {
                   name: 'discountAmount', value: e.target.value
@@ -253,6 +266,7 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
               name="discountPercent"
               placeholder="Input value promotion"
               value={discountPercentState}
+              disabled={discountPercentState === 0}
               onChange={(e) => handleInputChange({
                 target: {
                   name: 'discountPercent', value: e.target.value
@@ -260,6 +274,7 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
               }
               )}
             />
+
             <h4 className="mt-3">Ngày bắt đầu:</h4>
             <Input
               name="startDate"
@@ -297,12 +312,12 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(VND): [{t.detailProduct.price - KhuyenMais.discountAmount}]</p>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(%): [{t.detailProduct.price * (1 - (KhuyenMais.discountPercent) / 100)}]</p>
                 <Button
-                  
+
                   icon={<DeleteOutlined />}
                   style={{ border: "none" }}
                   onClick={() => handleDelete(t.id)}
                 >Xóa</Button>
-                
+
                 <hr></hr>
               </div>
             ))}
