@@ -213,7 +213,6 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
             <h4>Mã khuyến mãi:</h4>
             <Input
               name="code"
-              placeholder="Input code promotion"
               value={codeState}
               disabled
               onChange={(e) => handleInputChange({
@@ -226,11 +225,24 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
             <h4>Tên khuyến mãi:</h4>
             <Input
               name="name"
-              placeholder="Input name promotion"
+              placeholder="Nhập tên mới"
               value={nameState}
               onChange={(e) => handleInputChange({
                 target: {
                   name: 'name', value: e.target.value
+                }
+              }
+              )}
+            />
+            <h4>Giảm giá (VND):</h4>
+            <Input
+              type="number"
+              name="discountAmount"
+              placeholder="Nhập khuyến mãi mới (VND)"
+              value={discountAmountState}
+              onChange={(e) => handleInputChange({
+                target: {
+                  name: 'discountAmount', value: e.target.value
                 }
               }
               )}
@@ -282,7 +294,8 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Màu sắc: [{t.detailProduct.color.name}]</p>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Kích cỡ: [{t.detailProduct.size.name}]</p>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Giá trước khi giảm: [{t.detailProduct.price}]</p>
-                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm: [{t.detailProduct.price * (1 - (KhuyenMais.discountPercent) / 100)}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(VND): [{t.detailProduct.price - KhuyenMais.discountAmount}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(%): [{t.detailProduct.price * (1 - (KhuyenMais.discountPercent) / 100)}]</p>
                 <Button
                   
                   icon={<DeleteOutlined />}
