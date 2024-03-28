@@ -25,11 +25,13 @@ import {
   DeleteFilled,EyeOutlined,EditOutlined,DeleteOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { fetchVouchers,updateVoucher,detailVoucher } from "../../../config/VoucherApi";
+import { fetchVouchers,updateVoucher,detailVoucher,saveAllVoucher } from "../../../config/VoucherApi";
 import ModalAddVoucher from "./ModalVoucherAdd";
 import ModalUpdateVoucher from "./ModalVoucherEdit";
 import ModalVoucherDetail from "./ModalDetailVoucher";
 import moment from 'moment';
+import ModalImportVoucher from './ModalImportVoucher'; // Import modal để import phiếu giảm giá
+
 const { Option } = Select;
 
 const { RangePicker } = DatePicker;
@@ -108,12 +110,12 @@ const Voucher = () => {
     await dispatch(updateVoucher({ ...payloadStatus, ...updateStatus }));
     message.success("Voucher updated successfully");
     
-    dispatch(
-      fetchVouchers({
-        page: pagination.current ,
-        pageSize: pageSize,
-      })
-    );
+    // dispatch(
+    //   fetchVouchers({
+    //     page: pagination.current ,
+    //     pageSize: pageSize,
+    //   })
+    // );
   };
   const updateExpiredVouchers = async () => {
     vouchers.forEach(async (voucher) => {
@@ -149,7 +151,6 @@ const Voucher = () => {
               "Access Denied !! Full authentication is required to access this resource"
             ) {
               let count = 5;
-
               const countdownMessage = () => {
                 if (count === 0) {
                   navigate("/login");
@@ -204,27 +205,33 @@ const Voucher = () => {
         message.error("Error fetching data. Please try again later.");
       }
     };
-
-    fetchData();
     updateExpiredVouchers();
-
-
+    fetchData();
     
   }, [modalVisible, modalVisibleUpdate, current, pageSize,isSearching]);  
-  useEffect(() => {
-    const updateExpiredVouchers = async () => {
+  const [isExpiredVouchersUpdated, setIsExpiredVouchersUpdated] = useState(false);
+
+useEffect(() => {
+  const updateExpiredVouchers = async () => {
+    if (!isExpiredVouchersUpdated) { 
       vouchers.forEach(async (voucher) => {
-        if (
-          moment(voucher.endDate).isBefore(moment()) &&
-          voucher.status === 1
-        ) {
+        if (moment(voucher.endDate).isBefore(moment()) && voucher.status === 1) {
           await handleChangeStatus(voucher);
         }
       });
-    };
+      setIsExpiredVouchersUpdated(true); 
+    }
+  };
 
-    updateExpiredVouchers();
-  }, [vouchers]);
+  updateExpiredVouchers();
+  dispatch(
+    fetchVouchers({
+      page: pagination.current ,
+      pageSize: pageSize
+    })
+  );
+  
+}, [vouchers, isExpiredVouchersUpdated]);
   const onClickEdit = (record) => {
     setPayload({
         code: record.code,
@@ -316,7 +323,7 @@ const Voucher = () => {
                wrapperCol={{ span: 13 }} // Định dạng width của input
               >
                 <Input
-                  placeholder="Enter name"
+                  placeholder="Nhập tên phiếu giảm giá"
                   style={{ width: "100%" }}
                   value={searchParams.name}
                   onChange={(e) =>
@@ -354,7 +361,7 @@ const Voucher = () => {
     >
                 <Input
 
-                  placeholder="Enter discountPercent"
+                  placeholder="Giảm giá theo phần trăm"
                   style={{ width: "100%" }}
                   value={searchParams.discountPercent}
                   
@@ -371,7 +378,7 @@ const Voucher = () => {
                wrapperCol={{ span: 13 }} // Định dạng width của input
               >
                 <Input
-                  placeholder="Enter discountAmount"
+                  placeholder="Giảm giá theo tiền"
                   style={{ width: "100%" }}
                   value={searchParams.discountAmount}
                   onChange={(e) =>
@@ -388,7 +395,7 @@ const Voucher = () => {
                  wrapperCol={{ span: 13 }} // Định dạng width của input
               > 
                 <DatePicker
-                  placeholder="Enter start date"
+                  placeholder="Ngày bắt đầu"
                   style={{ width: "100%" }}
                   value={searchParams.startDate}
                   
@@ -406,7 +413,7 @@ const Voucher = () => {
              style={{ marginRight: "10px" }} // Thêm margin bên phải cho label
               >
                 <DatePicker
-                  placeholder="Enter end date"
+                  placeholder="Ngày kết thúc"
                   style={{ width: "100%" }}
                   value={searchParams.endDate}
                   onChange={handleChangeEndDate}
@@ -510,32 +517,33 @@ const Voucher = () => {
             icon={<EditOutlined />}
             onClick={() => onClickEdit(record)}
           />
-          {/* <Popconfirm
-            title="Are you sure you want to delete this voucher?"
-            onConfirm={() => handleChangeStatus(record)}
-            okText="Yes"
-            cancelText="No"
-            loading={loading}
-          >
-            <Button
-              style={{ border: "none" }}
-              disabled={record.status === 0}
-              icon={<DeleteFilled />}
-            />
-          </Popconfirm> */}
+         
         </Space>
       ),
     },
   ];
   const getTitle = () => (
+
+    
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <span style={{ marginRight: 8 }}>Danh Sách phiếu giảm giá</span>
-      <Button type="primary" shape="round" onClick={openModal}>
+    <div style={{ marginLeft: 700 }}>
+    <Button type="primary" shape="round" onClick={openModalImport}>
+        Import Phiếu giảm giá
+      </Button>
+    
+    </div>
+    <div>
+    <Button type="primary" shape="round" onClick={openModal}>
         Thêm Phiếu giảm giá
       </Button>
     </div>
+    
+  </div>
+      
+    
   );
- 
+  
   const handleTableChange = (pagination) => {
     const { current } = pagination;
     if (pagination.pageSize !== pageSize) {
@@ -545,6 +553,15 @@ const Voucher = () => {
  
     setCurrent(current);
  
+  };
+  const [isModalOpenImport, setIsModalOpenImport] = useState(false);
+
+  const openModalImport = () => {
+    setIsModalOpenImport(true);
+  };
+
+  const closeModalImport = () => {
+    setIsModalOpenImport(false);
   };
 
 
@@ -562,7 +579,9 @@ const Voucher = () => {
           }}
           items={getItems()}
         />
-       
+        <div>
+     
+    </div>
         <Table
          columns={columns}
          rowKey={(record) => record.id}
@@ -584,6 +603,8 @@ const Voucher = () => {
          title={getTitle}
          onChange={handleTableChange}
         />
+              <ModalImportVoucher open={isModalOpenImport} closeModal={closeModalImport} />
+
      <ModalAddVoucher open={modalVisible} closeModal={closeModal} />
         <ModalUpdateVoucher
           open={modalVisibleUpdate}

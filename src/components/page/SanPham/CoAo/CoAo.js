@@ -188,8 +188,6 @@ const CoAo = () => {
   const onClickSearch = async () => {
     setIsSearching(true);
      
-    console.log(isSearching);
-
    await dispatch(
       fetchCollars({
         page: pagination.current ,
@@ -200,7 +198,6 @@ const CoAo = () => {
       })
     );
     setIsSearching(false);
-    console.log(isSearching);
   };
 
   const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
@@ -238,26 +235,26 @@ const CoAo = () => {
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
               <Form.Item label="Tên">
                 <Input
-                  placeholder="Enter name"
+                  placeholder="Nhập tên cổ áo"
                   style={{ width: "100%" }}
                   value={searchParams.name}
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, name: e.target.value })
                   }
-                  disabled={console.log(isSearching) || isSearching}
+                  disabled={ isSearching}
                 />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
               <Form.Item label="Mã">
                 <Input
-                  placeholder="Enter code"
+                  placeholder="Nhập mã cổ áo"
                   style={{ width: "100%" }}
                   value={searchParams.code}
                   onChange={(e) =>
                     setSearchParams({ ...searchParams, code: e.target.value })
                   }
-                  disabled={console.log(isSearching) || isSearching}
+                  disabled={ isSearching}
                 />
               </Form.Item>
             </Col>
@@ -269,7 +266,7 @@ const CoAo = () => {
                   onChange={(value) =>
                     setSearchParams({ ...searchParams, status: value })
                   }
-                  disabled={console.log(isSearching) || isSearching}
+                  disabled={ isSearching}
                   allowClear
                 >
                   <Option value="0">Không hoạt động</Option>

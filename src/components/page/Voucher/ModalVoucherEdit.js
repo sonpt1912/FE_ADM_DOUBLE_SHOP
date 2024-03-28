@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message, Select, DatePicker } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch ,useSelector} from "react-redux";
 import { updateVoucher } from "../../../config/VoucherApi";
 import moment from 'moment';
 
@@ -67,13 +67,24 @@ const ModalUpdateVoucher = ({ open, closeModal, payload }) => {
     
     });
   };
-   
+  const vouchers = useSelector((state) => state.voucher.vouchers); // Danh sách cổ áo hiện tại trong trạng thái Redux
+
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-       
+  
       const formValues = await form.validateFields();
+      const isDuplicate = vouchers.some((voucher) => voucher.name === updatedValues.name && voucher.code !== payload.code);
 
+      // if (isDuplicate) {
+      //   message.error("Tên cổ áo đã tồn tại trong danh sách.");
+      //   return;
+      // }
+    //   if ((formValues.startDate).isAfter(formValues.endDate)) {
+    //     message.error("Ngày bắt đầu phải trước ngày kết thúc.");
+    //     return;
+    // }
+   
   // Kiểm tra giảm giá theo tiền không được nhỏ hơn giá trị đơn tối thiểu
   if (formValues.discountAmount > formValues.minimumOrder) {
     message.error("Giảm giá theo tiền không được lớn hơn giá trị đơn tối thiểu");
@@ -105,7 +116,6 @@ message.error("Giảm giá theo phần trăm không được lớn hơn 70%");
 return; // Ngăn việc tiếp tục thực hiện lưu dữ liệu
 }
   
- 
       await dispatch(updateVoucher({ ...formValues, ...updatedValues }));
       message.success("Voucher updated successfully");
       closeModal();
@@ -208,9 +218,9 @@ rules={[
           }
         ]}
         >
-          <Input type="number"/>
+          <Input type="number" disabled/>
         </Form.Item>
-        <Form.Item label="Ngày bắt đầu" name="startDate" labelCol={{span:9}} wrapperCol={{span:16}} labelAlign="left"
+        <Form.Item label="Ngày bắt đầu" name="startDate" labelCol={{span:9}} wrapperCol={{span:14}} labelAlign="left"
         rules={[
           {
             required: true,

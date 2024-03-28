@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, message, DatePicker,TimePicker ,Radio} from "antd";
 import { useDispatch,useSelector } from "react-redux";
-import { saveVoucher } from "../../../config/VoucherApi";
+import { saveAllVoucher } from "../../../config/VoucherApi";
 import moment from "moment";
 const { TextArea } = Input;
 
-const ModalAddVoucher = ({ open, closeModal }) => {
+const ModalImportVoucher = ({ open, closeModal }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
@@ -16,7 +16,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
   };
 
   const vouchers = useSelector((state) => state.voucher.vouchers); // Danh sách cổ áo hiện tại trong trạng thái Redux
-
+  
   const onDateTimeChange = (date, dateString) => {
     setPayload({
       ...payload,
@@ -40,14 +40,18 @@ const ModalAddVoucher = ({ open, closeModal }) => {
       setConfirmLoading(true);
       const formValues = await form.validateFields();
       const isDuplicate = vouchers.some((voucher) => voucher.name === payload.name);
-      // if (isDuplicate) {
-      //   message.error("Tên cổ áo đã tồn tại trong danh sách.");
-      //   return;
-      // }
-    //   if ((formValues.startDate).isAfter(formValues.endDate)) {
-    //     message.error("Ngày bắt đầu phải trước ngày kết thúc.");
+    //   if (isDuplicate) {
+    //     message.error("Tên cổ áo đã tồn tại trong danh sách.");
     //     return;
-    // }
+    //   }
+      if ((formValues.startDate).isAfter(formValues.endDate)) {
+        message.error("Ngày bắt đầu phải trước ngày kết thúc.");
+        return;
+    }
+    if(formValues.quantity>20){
+        message.error("Import 1 lần không được quá 20");
+        return;
+    }
          // Kiểm tra giảm giá theo tiền không được nhỏ hơn giá trị đơn tối thiểu
          if (formValues.discountAmount > formValues.minimumOrder) {
           message.error("Giảm giá theo tiền không được lớn hơn giá trị đơn tối thiểu");
@@ -79,7 +83,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
       return; // Ngăn việc tiếp tục thực hiện lưu dữ liệu
     }
    
-      await dispatch(saveVoucher({ ...formValues, discountType }));
+      await dispatch(saveAllVoucher({ ...formValues, discountType }));
       message.success("Voucher added successfully");
       closeModal();
       
@@ -108,7 +112,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
 
   return (
     <Modal
-      title="Thêm Mới phiếu giảm giá"
+      title="Import Phiếu giảm giá"
       open={open}
       onOk={handleOk}
       confirmLoading={confirmLoading}
@@ -207,12 +211,12 @@ const ModalAddVoucher = ({ open, closeModal }) => {
           </Form.Item>
         )}
        
-        {/* <Form.Item
+        <Form.Item
           label="Số lượng "
           name="quantity"
-          labelAlign="left" 
+          labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
           labelCol={{
-            span: 9, 
+            span: 9, // Đặt chiều rộng cho nhãn
           }}
           rules={[
             {
@@ -227,7 +231,7 @@ const ModalAddVoucher = ({ open, closeModal }) => {
         >
           <Input type="number" min={0}/>
           
-        </Form.Item> */}
+        </Form.Item>
         <Form.Item
           label="Giá trị đơn tối thiểu"
           name="minimumOrder"
@@ -288,4 +292,4 @@ const ModalAddVoucher = ({ open, closeModal }) => {
   );
 };
 
-export default ModalAddVoucher;
+export default ModalImportVoucher;
