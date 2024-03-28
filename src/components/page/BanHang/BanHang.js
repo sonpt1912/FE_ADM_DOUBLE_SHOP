@@ -47,7 +47,7 @@ const OperationsSlot = {
 const App = () => {
   const dispatch = useDispatch();
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [images, setImages] = useState("");
   const [position, setPosition] = useState(["left"]);
   const [activeKey, setActiveKey] = useState("1");
@@ -93,18 +93,21 @@ const App = () => {
     },
   };
 
-  const allProductImages = products.flatMap((product) =>
-    product.listImages.resources.map((image, index) => (
-      <div key={index} style={{ marginBottom: 10 }}>
+  const allProductImages = products.map((product) => {
+    const firstImage = product.listImages.resources[0];
+    if (!firstImage) return null;
+
+    return (
+      <div key={product.id} style={{ marginBottom: 10 }}>
         <Image
           preview={false}
           width={100}
-          src={image.url}
-          alt={`Image ${index + 1}`}
+          src={firstImage.url}
+          alt={`Image ${firstImage.index + 1}`}
         />
       </div>
-    ))
-  );
+    );
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -221,7 +224,6 @@ const App = () => {
     }));
     setPanes(newPanes);
   };
-  
 
   const handleQuantityChange = (index, value) => {
     const newPanes = [...panes];
@@ -309,7 +311,7 @@ const App = () => {
       if (response.payload) {
         const { customerPaid, changeAmount } = response.payload;
         message.success(
-          `Thanh toán thành công. Tiền thừa: ${changeAmount} VND`
+          `Thanh toán thành công. `
         );
         setPanes([]);
         setActiveKey("1");
@@ -384,12 +386,22 @@ const App = () => {
                         >
                           <div className="product-card">
                             <div className="product-image">
-                              {allProductImages}
+                              {product.listImages.resources.length > 0 && (
+                                <div
+                                  key={product.id}
+                                  style={{ marginBottom: 10 }}
+                                >
+                                  <Image
+                                    preview={false}
+                                    width={100}
+                                    src={product.listImages.resources[0].url}
+                                    alt={`Image 1`}
+                                  />
+                                </div>
+                              )}
                             </div>
                             <div className="product-title">{product.name}</div>
-                            <div className="product-price">
-                              Giá: {product.price}
-                            </div>
+  
                           </div>
                         </Card>
                       </Col>

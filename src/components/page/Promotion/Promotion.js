@@ -19,6 +19,10 @@ const Promotion = () => {
     const [searchParams, setSearchParams] = useState({
         code: "",
         name: "",
+        startDate: "",
+        endDate: "",
+        discountPercent: "",
+        status: ""
     });
 
     useEffect(() => {
@@ -28,7 +32,10 @@ const Promotion = () => {
                 pageSize: 5,
                 code: searchParams.code,
                 name: searchParams.name,
-                status: searchParams.status
+                status: searchParams.status,
+                startDate: searchParams.startDate,
+                endDate: searchParams.endDate,
+                discountPercent: searchParams.discountPercent
             })
         );
     }, [dispatch]);
@@ -40,22 +47,25 @@ const Promotion = () => {
                 pageSize: 5,
                 code: searchParams.code,
                 name: searchParams.name,
-                status: searchParams.status
+                status: searchParams.status,
+                startDate: searchParams.startDate,
+                endDate: searchParams.endDate,
+                discountPercent: searchParams.discountPercent
             })
         );
 
         setSearchParams({
             code: "",
             name: "",
+            startDate: "",
+            endDate: "",
+            discountPercent: "",
+            status: ""
         });
     };
 
     const columns = [
         {
-            // title: "id",
-            // dataIndex: "id",
-            // key: "id",
-            // // render: (text, record, index) => index + 1,
             title: 'STT',
             dataIndex: 'index',
             key: 'index',
@@ -71,6 +81,11 @@ const Promotion = () => {
             title: "Tên",
             dataIndex: "name",
             key: "name",
+        },
+        {
+            title: "Giảm giá (VND)",
+            dataIndex: "discountAmount",
+            key: "discountAmount",
         },
         {
             title: "Giảm giá (%)",
@@ -197,6 +212,7 @@ const Promotion = () => {
                     labelCol={{ span: 5 }}
                     wrapperCol={{ span: 14 }}
                     layout="horizontal"
+                    
                     style={{ maxWidth: 1500, margin: "auto", marginTop: "20px" }}
                 >
                     <Row gutter={16}>
@@ -242,6 +258,46 @@ const Promotion = () => {
                             </Form.Item>
                         </Col>
                     </Row>
+                    <Row gutter={16}>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Form.Item label="Giảm giá(%):">
+                                <Input
+                                    placeholder="Nhập % (<100)"
+                                    style={{ width: "100%" }}
+                                    value={searchParams.discountPercent}
+                                    onChange={(e) =>
+                                        setSearchParams({ ...searchParams, discountPercent: e.target.value })
+                                    }
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Form.Item label="Ngày bắt đầu:">
+                                <Input
+                                    type="Date"
+                                    placeholder="Ngày bắt đầu"
+                                    style={{ width: "100%" }}
+                                    value={searchParams.startDate}
+                                    onChange={(e) =>
+                                        setSearchParams({ ...searchParams, startDate: e.target.value })
+                                    }
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Form.Item label="Ngày kết thúc:">
+                                <Input
+                                    type="Date"
+                                    placeholder="Ngày bắt đầu"
+                                    style={{ width: "100%" }}
+                                    value={searchParams.endDate}
+                                    onChange={(e) =>
+                                        setSearchParams({ ...searchParams, endDate: e.target.value })
+                                    }
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     <Form.Item wrapperCol={{ offset: 10 }}>
                         <Button
                             type="primary"
@@ -282,22 +338,22 @@ const Promotion = () => {
                 className="text-center"
                 columns={columns}
                 dataSource={promotions}
-                bordered
+                total={pagination.totalItems}
                 pagination={{
                     pageSize: pagination.pageSize,
                     total: pagination.totalItems,
                     showSizeChanger: true,
                     showQuickJumper: true,
-                    // showTotal: (totalPages) => `Total ${totalPages} items`,
+                    showTotal: (totalPages) => `Total ${totalPages} items`,
                 }}
                 scroll={{
                     x: 1000,
                     y: 300,
                 }}
                 loading={loading}
-                // title={getTitle}
                 onChange={handleTableChange}
             />
+            
             <ModalKhuyenMai open={modalAdd} closeModal={closeModalAdd} />
 
             <ModalKhuyenMaiEdit

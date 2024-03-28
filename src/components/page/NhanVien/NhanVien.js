@@ -60,6 +60,7 @@ const NhanVien = () => {
   };
 
   const [payload, setPayload] = useState({
+    id:"",
     username: "",
     name: "",
     phone: "",
@@ -69,6 +70,7 @@ const NhanVien = () => {
     district: "",
     provice: "",
     gender: "",
+    password: "",
     birthDay: null,
   });
 
@@ -108,6 +110,7 @@ const NhanVien = () => {
   });
   const onClickEdit = (record) => {
     setPayload({
+      id: record.id,
       username: record.username,
       name: record.name,
       phone: record.phone,
@@ -115,6 +118,7 @@ const NhanVien = () => {
       city: record.city,
       district: record.district,
       provice: record.provice,
+      password: record.password,
       gender: record.gender,
       birthDay: record.birthDay ? moment(record.birthDay) : null,
     });

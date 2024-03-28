@@ -3,7 +3,7 @@ import { Modal, Button, Form, Input, Select, message, Date, Tree, Col, DatePicke
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPromotions } from "../../../store/slice/PromotionReducer";
 import { add } from "../../../store/slice/DetailPromotionReducer";
-import axios from "axios";
+import axios, { all } from "axios";
 import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
 import { listProduct } from "./ConstListProduct";
 const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
@@ -20,14 +20,59 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     endDate: null,
   });
 
-  // console.log("xxxx, ", listProduct);
+  // const handleOk = async () => {
+  //   try {
+  //     setConfirmLoading(true);
+  //     const formValues = await form.validateFields();
+  //     if (!formValues.discountAmount.trim() && !formValues.discountPercent.trim())
+  //       return message.error("vui lòng nhập giá trị khuyến mãi!")
+  //     else if (formValues.discountPercent > 100)
+  //       return message.error("Giảm giá theo phần trăm không được lớn hơn 100%!");
+  //     else if (formValues.discountPercent < 0 || formValues.discountAmount < 0)
+  //       return message.error("Giảm giá không được nhỏ hơn 0!");
+  //     else if (formValues.endDate && formValues.startDate && formValues.endDate <= formValues.startDate)
+  //       return message.error("Ngày kết thúc không thể ở trước hoặc là ngày bắt đầu!")
+  //     await dispatch(add({ ...formValues, payload }))
+  //       .then(() => {
+  //         dispatch(
+  //           fetchPromotions({
+  //             page: 0,
+  //             pageSize: 5
+  //           })
+  //         )
+  //       });
+  //     message.success("Thêm thành công!");
+  //     closeModal();
+  //     setPayload({
+  //       code: "",
+  //       name: "",
+  //       discountAmount: "",
+  //       discountPercent: "",
+  //       startDate: null,
+  //       endDate: null,
+  //     });
+  //     form.resetFields();
+  //   } catch (error) {
+  //     message.error("Vui lòng nhập đầy đủ thông tin");
+  //   } finally {
+  //     closeModal();
+  //     form.resetFields();
+  //     setConfirmLoading(false);
+  //   }
+  // };
+
   const handleOk = async () => {
     try {
-      // console.log("xxx, ", listProduct);
       setConfirmLoading(true);
       const formValues = await form.validateFields();
-      // console.log("29: ", payload.detailProduct);
-      // console.log("payload: ", payload);
+      if (!formValues.discountPercent.trim()&&!formValues.discountAmount.trim())
+        return message.error("Vui lòng nhập giá trị khuyến mãi!")
+      else if (formValues.discountPercent > 100)
+        return message.error("Giảm giá theo phần trăm không được lớn hơn 100%!");
+      else if (formValues.discountPercent < 0 || formValues.discountAmount < 0)
+        return message.error("Giảm giá không được nhỏ hơn 0!");
+      else if (formValues.endDate && formValues.startDate && formValues.endDate <= formValues.startDate)
+        return message.error("Ngày kết thúc không thể ở trước hoặc là ngày bắt đầu!")
       await dispatch(add({ ...formValues, payload }))
         .then(() => {
           dispatch(
@@ -149,12 +194,13 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
       });
   }, []);
 
-  console.log("tree: ", treeData);
+  console.log("treeDât: ", treeData);
 
   const formatDataForTree = (data) => {
     const tree = [];
+
+
     data.forEach(product => {
-      console.log("product: ", product.name);
       const productNode = {
         title: product.name,
         key: product.id,
@@ -163,8 +209,9 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
           key: `${i.id}`,
         })),
       }
-      console.log("xxx", productNode);
+      console.log("tree product:, ", tree);
       tree.push(productNode)
+
     });
     return tree;
   }
@@ -211,27 +258,9 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               wrapperCol={{ span: 17, }}
               style={{ maxWidth: 1000, marginTop: "30px" }}
             >
-              <Form.Item
-                
-                label="Mã"
-                name="code"
-                labelAlign="left"
-                labelCol={{ span: 9, }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập code"
-                  }
-                ]}
-                onChange={(e) =>
-                  setPayload({ ...payload, code: e.target.value })
-                }
-              >
-                <Input placeholder="Nhập mã khuyến mãi" />
-              </Form.Item>
 
               <Form.Item
-                
+
                 label="Tên"
                 name="name"
                 labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
@@ -246,27 +275,32 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                   setPayload({ ...payload, name: e.target.value })
                 }
               >
-                <Input placeholder="Nhập tên khuyếm mãi"/>
+                <Input placeholder="Nhập tên khuyếm mãi" />
               </Form.Item>
 
               <Form.Item
-                labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
+                labelAlign="left"
+                onChange={(e) =>
+                  setPayload({ ...payload, discountAmount: e.target.value })
+                }
+                labelCol={{ span: 9 }}
+                label="Giảm giá theo giá tiền"
+                name="discountAmount"
+              >
+                <Input type="number" placeholder="VND" min={0} />
+              </Form.Item>
+              <Form.Item
+                labelAlign="left"
                 onChange={(e) =>
                   setPayload({ ...payload, discountPercent: e.target.value })
                 }
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập giảm giá theo phần trăm"
-                  }
-                ]}
                 labelCol={{ span: 9 }}
                 label="Giảm giá theo phần trăm"
                 name="discountPercent"
-              // Rest of your code
               >
-                <Input type="number" placeholder="%" min={0} />
+                <Input type="number" placeholder="VND" min={0} />
               </Form.Item>
+
               <Form.Item
                 labelAlign="left"
                 name="startDate"
@@ -290,7 +324,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               >
                 <Input
                   type="Date"
-                  onChange={(e) => setPayload({ ...payload, startDate: e.target.value })}
+                  onChange={(e) => setPayload({ ...payload, endDate: e.target.value })}
                   required
                 />
               </Form.Item>
@@ -315,16 +349,20 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                 selectedKeys={selectedKeys}
                 showLine
                 defaultExpandAll
+                style={{ fontSize: "18px" }}
               >
-                {treeData.map(node => (
-                  <TreeNode title={node.title}>
-                    {node.children && node.children.map(childNode => {
-                      // console.log("childNode: ", childNode);
-                      return <TreeNode title={childNode.title} key={childNode.key} />
-                    })}
-                  </TreeNode>
-                ))}
+                <TreeNode title="ALL">
+                  {treeData.map(node => (
+                    <TreeNode title={node.title}>
+                      {node.children && node.children.map(childNode => {
+                        // console.log("childNode: ", childNode);
+                        return <TreeNode title={childNode.title} key={childNode.key} />
+                      })}
+                    </TreeNode>
+                  ))}
+                </TreeNode>
               </Tree>
+
             </div>
           </Col>
         </div>

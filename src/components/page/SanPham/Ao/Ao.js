@@ -30,6 +30,12 @@ import {
   fetchDetailProduct,
   fetchProduct,
 } from "../../../../config/ProductApi";
+import { fetchCollars } from "../../../../config/CollarApi";
+import { fetchSizes } from "../../../../config/SizeApi";
+import { fetchMaterials } from "../../../../store/slice/ChatLieuReducer";
+import { fetchBrand } from "../../../../config/BrandApi";
+import { fetchCategory } from "../../../../config/CategoryApi";
+import { fetchColors } from "../../../../config/ColorApi";
 import ModalAo from "./ModalAoAdd";
 import ModalDetailProduct from "./DetailProduct";
 
@@ -40,13 +46,36 @@ const Ao = () => {
   const navigate = useNavigate();
   const products = useSelector((state) => state.products.products);
   const pagination = useSelector((state) => state.products.pagination);
-  console.log("Product",pagination);
-  const [pageSize, setPageSize] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [form] = Form.useForm();
   const [current, setCurrent] = useState(1);
   const loading = useSelector((state) => state.products.status === "loading");
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleDetail, setModalVisibleDetail] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const sizes = useSelector((state) => state.size.sizes);
+  const collars = useSelector((state) => state.collar.collars);
+  const materials = useSelector((state) => state.material.materials);
+  const brand = useSelector((state) => state.brand.brand);
+  const category = useSelector((state) => state.category.category);
+  const colors = useSelector((state) => state.color.colors);
+
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColors, setSelectedColors] = useState("");
+  const [selectedCollar, setSelectedCollar] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedMaterial, setSelectedMaterial] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchCollars({}));
+    dispatch(fetchMaterials({}));
+    dispatch(fetchBrand({}));
+    dispatch(fetchCategory({}));
+    dispatch(fetchSizes({}));
+    dispatch(fetchColors({}));
+  }, [dispatch]);
 
   const openModal = () => {
     setModalVisible(true);
@@ -55,6 +84,30 @@ const Ao = () => {
   const closeModal = () => {
     setModalVisible(false);
     setCurrent(1);
+  };
+
+  const onChangeCollar = (value) => {
+    setSelectedCollar(value);
+  };
+
+  const onChangeBrand = (value) => {
+    setSelectedBrand(value);
+  };
+
+  const onChangeCategory = (value) => {
+    setSelectedCategory(value);
+  };
+
+  const onChangeMaterial = (value) => {
+    setSelectedMaterial(value);
+  };
+
+  const onChangeColors = (value) => {
+    setSelectedColors(value);
+  };
+
+  const onChangeSize = (value) => {
+    setSelectedSize(value);
   };
 
   const openModalDetail = async (productId) => {
@@ -80,7 +133,7 @@ const Ao = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!modalVisible ) {
+        if (!modalVisible) {
           const response = await dispatch(
             fetchProduct({
               page: current - 1,
@@ -103,13 +156,31 @@ const Ao = () => {
     };
 
     fetchData();
-  }, [current, pageSize, dispatch, navigate, modalVisible]);
+  }, [current, pageSize, modalVisible, dispatch, navigate]);
 
   const { token } = theme.useToken();
   const panelStyle = {
     marginBottom: 24,
     background: token.colorFillAlter,
     borderRadius: token.borderRadiusLG,
+  };
+  const [searchParams, setSearchParams] = useState({
+    name: "",
+  });
+  const onClickSearch = () => {
+    dispatch(
+      fetchProduct({
+        page: pagination.current,
+        pageSize: pageSize,
+        name: searchParams.name,
+        idCollar: selectedCollar,
+        idBrand: selectedBrand,
+        idCategory: selectedCategory,
+        idMaterial: selectedMaterial,
+        idColor: selectedColors,
+        idSizes: selectedSize,
+      })
+    );
   };
 
   const getItems = () => [
@@ -123,56 +194,89 @@ const Ao = () => {
           layout="horizontal"
           style={{ maxWidth: 1500, margin: "auto", marginTop: "20px" }}
         >
-          <Row gutter={16}>
-            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Name">
-                {/* <Input
-                  placeholder="Enter name"
-                  style={{ width: "100%" }}
-                  value={searchParams.name}
-                  onChange={(e) =>
-                    setSearchParams({ ...searchParams, name: e.target.value })
-                  }
-                /> */}
+          <Form.Item label="Tên Sản Phẩm" name="name">
+            <Input
+              value={searchParams.name}
+              onChange={(e) =>
+                setSearchParams({ ...searchParams, name: e.target.value })
+              }
+            />
+          </Form.Item>
+          <Row style={{ display: "flex", justifyContent: "center" }}>
+            <Col span={9}>
+              <Form.Item label="Cổ áo" name="collar">
+                <Select
+                  placeholder="Select a collar"
+                  onChange={onChangeCollar}
+                  options={collars.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
+              </Form.Item>
+              <Form.Item label="Chất Liệu" name="material">
+                <Select
+                  placeholder="Select a material"
+                  onChange={onChangeMaterial}
+                  options={materials.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
+              </Form.Item>
+              <Form.Item label="Màu" name="color">
+                <Select
+                  placeholder="Select a color"
+                  onChange={onChangeColors}
+                  options={colors.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Code">
-                {/* <Input
-                  placeholder="Enter code"
-                  style={{ width: "100%" }}
-                  value={searchParams.code}
-                  onChange={(e) =>
-                    setSearchParams({ ...searchParams, code: e.target.value })
-                  }
-                /> */}
+            <Col span={9} s>
+              <Form.Item label="Hãng" name="brand">
+                <Select
+                  placeholder="Select a brand"
+                  onChange={onChangeBrand}
+                  options={brand.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
               </Form.Item>
-            </Col>
-            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Form.Item label="Trạng Thái">
-                {/* <Select
-                  style={{ width: "100%" }}
-                  value={searchParams.status}
-                  onChange={(value) =>
-                    setSearchParams({ ...searchParams, status: value })
-                  }
-                  allowClear
-                >
-                  <Option value="0">0</Option>
-                  <Option value="1">1</Option>
-                </Select> */}
+              <Form.Item label="Loại" name="category">
+                <Select
+                  placeholder="Select a category"
+                  onChange={onChangeCategory}
+                  options={category.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
+              </Form.Item>
+              <Form.Item label="Kích cỡ" name="size">
+                <Select
+                  placeholder="Select a size"
+                  onChange={onChangeSize}
+                  options={sizes.map((product) => ({
+                    value: product.id,
+                    label: product.name,
+                  }))}
+                />
               </Form.Item>
             </Col>
           </Row>
           <Form.Item wrapperCol={{ offset: 10 }}>
-            {/* <Button
+            <Button
               type="primary"
               htmlType="submit"
               icon={<SearchOutlined />}
               onClick={onClickSearch}
             >
               Search
-            </Button> */}
+            </Button>
           </Form.Item>
         </Form>
       ),
@@ -205,39 +309,31 @@ const Ao = () => {
       dataIndex: "listImages",
       key: "listImages",
       width: 150,
-      render: (listImages) => (
-        <Popover
-          placement="right"
-          title={null}
-          content={
-            <div>
-              {listImages.resources.map((image, index) => (
-                <div key={index} style={{ marginBottom: 10 }}>
-                  <Image
-                    width={100}
-                    src={image.url}
-                    alt={`Image ${index + 1}`}
-                  />
-                </div>
-              ))}
-            </div>
-          }
-          trigger="hover"
-        >
-          <Image
-            width={"100%"}
-            src={listImages.resources[0].url}
-            alt={`Image 1`}
-          />
-        </Popover>
-      ),
-    },
-    {
-      title: "Mã",
-      dataIndex: "code",
-      key: "code",
-      width: 150,
-      sorter: (a, b) => a.code.localeCompare(b.code),
+      render: (listImages) => {
+        const image = listImages.resources[0]?.url;
+        return (
+          <Popover
+            placement="right"
+            title={null}
+            content={
+              <div>
+                {listImages.resources.map((image, index) => (
+                  <div key={index} style={{ marginBottom: 10 }}>
+                    <Image
+                      width={100}
+                      src={image.url}
+                      alt={`Image ${index + 1}`}
+                    />
+                  </div>
+                ))}
+              </div>
+            }
+            trigger="hover"
+          >
+            <Image width={"100%"} src={image} alt={`Image 1`} />
+          </Popover>
+        );
+      },
     },
     {
       title: "Tên",

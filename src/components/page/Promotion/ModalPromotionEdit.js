@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Input, Select, Form, message, Tabs, Col } from "antd";
+import { Modal, Button, Input, Select, Form, message, Tabs, Col, Tree } from "antd";
 import { useDispatch } from "react-redux";
 import { update, fetchPromotions } from "../../../store/slice/PromotionReducer";
 import TabPane from "antd/es/tabs/TabPane";
-
+import { Delete } from "../../../store/slice/DetailPromotionReducer";
+import { DeleteOutlined } from "@ant-design/icons";
+import axios from "axios";
+import ModalKhuyenMaiDetail from "./ModalPromotionChiTiet";
+import { listProduct } from "./ConstListProduct";
 const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
   const dispatch = useDispatch();
 
@@ -77,6 +81,8 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
         updated_by: 1,
         status: 1
       };
+      if (formData.discountPercent > 100)
+        return message.error("Giảm giá theo phần trăm không được lớn hơn 100%");
       setConfirmLoading(true);
       await dispatch(update(formData))
         .then(() => {
@@ -100,6 +106,19 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
     }
   };
 
+  const handleDelete = (id) => {
+    dispatch(Delete(id))
+      .then(() => {
+        dispatch(
+          fetchPromotions({
+            page: 0,
+            pageSize: 5,
+          })
+        )
+      });
+    window.location.reload();
+  };
+
   const handleCancel = () => {
     setPayload({
       code: "",
@@ -120,6 +139,64 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
     setActiveTab(key);
   };
 
+  const [treeData, setTreeData] = useState([]);
+  const { TreeNode } = Tree;
+  useEffect(() => {
+    axios.get('http://localhost:8072/tree/product/show')
+      .then(response => {
+        console.log('API response: ', response.data.data);
+        const dataFromDB = response.data.data;
+        const formattedData = formatDataForTree(dataFromDB);
+        setTreeData(formattedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  console.log("tree: ", treeData);
+
+  const formatDataForTree = (data) => {
+    const tree = [];
+    data.forEach(product => {
+      console.log("product: ", product.name);
+      const productNode = {
+        title: product.name,
+        key: product.id,
+        children: product.detailProducts.map(i => ({
+          title: `${i.size.name} - ${i.color.name}`,
+          key: `${i.id}`,
+        })),
+      }
+      console.log("xxx", productNode);
+      tree.push(productNode)
+    });
+    return tree;
+  }
+
+  // const [expandedKeys, setExpandedKeys] = useState(['0-0-0', '0-0-1']);
+  // const [checkedKeys, setCheckedKeys] = useState(['0-0-0']);
+
+  const [expandedKeys, setExpandedKeys] = useState();
+  const [checkedKeys, setCheckedKeys] = useState();
+  const [selectedKeys, setSelectedKeys] = useState();
+  const [autoExpandParent, setAutoExpandParent] = useState(true);
+  const onExpand = (expandedKeysValue) => {
+    setExpandedKeys(expandedKeysValue);
+    setAutoExpandParent(false);
+  };
+  const onCheck = (checkedKeysValue) => {
+    const filteredKeys = checkedKeysValue.filter(key => !key.startsWith('0-'));
+    console.log("checkedKeysValue", filteredKeys);
+    listProduct.splice(0, listProduct.length, ...filteredKeys);
+    setCheckedKeys(filteredKeys);
+  };
+
+  const onSelect = (selectedKeysValue, info) => {
+    console.log('onSelect', info);
+    setSelectedKeys(selectedKeysValue);
+  };
+
   return (
     <Modal
       title="Cập nhập sản phẩm"
@@ -127,21 +204,17 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
       onOk={handleOk}
       onCancel={handleCancel}
       confirmLoading={confirmLoading}
+      width={888}
+      style={{ border: '3px solid transparent', padding: '0px', height: "1000px", overflow: "auto" }}
     >
       <Tabs activeKey={activeTab} onChange={handleTabChange}>
         <TabPane tab="Thông tin" key="form">
           <Form>
-            <h4>ID:</h4>
-            <Input
-              name="id"
-              value={idState}
-              disabled
-            />
             <h4>Mã khuyến mãi:</h4>
             <Input
               name="code"
-              placeholder="Input code promotion"
               value={codeState}
+              disabled
               onChange={(e) => handleInputChange({
                 target: {
                   name: 'code', value: e.target.value
@@ -152,7 +225,7 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
             <h4>Tên khuyến mãi:</h4>
             <Input
               name="name"
-              placeholder="Input name promotion"
+              placeholder="Nhập tên mới"
               value={nameState}
               onChange={(e) => handleInputChange({
                 target: {
@@ -161,8 +234,22 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
               }
               )}
             />
+            <h4>Giảm giá (VND):</h4>
+            <Input
+              type="number"
+              name="discountAmount"
+              placeholder="Nhập khuyến mãi mới (VND)"
+              value={discountAmountState}
+              onChange={(e) => handleInputChange({
+                target: {
+                  name: 'discountAmount', value: e.target.value
+                }
+              }
+              )}
+            />
             <h4>Giảm giá(%):</h4>
             <Input
+              type="number"
               name="discountPercent"
               placeholder="Input value promotion"
               value={discountPercentState}
@@ -202,14 +289,49 @@ const ModalKhuyenMaiEdit = ({ visible, closeModal, KhuyenMais }) => {
         <TabPane tab="Chi tiết sản phẩm" >
           <div >
             {KhuyenMais && KhuyenMais.detailPromotions.map((t, index) => (
-                <div key={index}>
-                  <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
-                  <p style={{ marginLeft: 30, fontSize: 15 }}>Màu sắc: [{t.detailProduct.color.name}]</p>
-                  <p style={{ marginLeft: 30, fontSize: 15 }}>Kích cỡ: [{t.detailProduct.size.name}]</p>
-                  <hr></hr>
-                </div>
+              <div key={index}>
+                <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Màu sắc: [{t.detailProduct.color.name}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Kích cỡ: [{t.detailProduct.size.name}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá trước khi giảm: [{t.detailProduct.price}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(VND): [{t.detailProduct.price - KhuyenMais.discountAmount}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(%): [{t.detailProduct.price * (1 - (KhuyenMais.discountPercent) / 100)}]</p>
+                <Button
+                  
+                  icon={<DeleteOutlined />}
+                  style={{ border: "none" }}
+                  onClick={() => handleDelete(t.id)}
+                >Xóa</Button>
+                
+                <hr></hr>
+              </div>
             ))}
           </div>
+
+          {/* <div style={{ borderLeft: '3px solid black', padding: '15px', height: "350px", overflow: "auto" }}>
+            <h3 >Chọn sản phẩm</h3>
+            <Tree
+              checkable
+              onExpand={onExpand}
+              expandedKeys={expandedKeys}
+              autoExpandParent={autoExpandParent}
+              onCheck={onCheck}
+              checkedKeys={checkedKeys}
+              onSelect={onSelect}
+              selectedKeys={selectedKeys}
+              showLine
+              defaultExpandAll
+            >
+              {treeData.map(node => (
+                <TreeNode title={node.title}>
+                  {node.children && node.children.map(childNode => {
+                    // console.log("childNode: ", childNode);
+                    return <TreeNode title={childNode.title} key={childNode.key} />
+                  })}
+                </TreeNode>
+              ))}
+            </Tree>
+          </div> */}
         </TabPane>
       </Tabs>
 

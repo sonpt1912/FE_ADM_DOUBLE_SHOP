@@ -23,15 +23,10 @@ const colorSlice = createSlice({
       })
       .addCase(fetchColors.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log(state.colors);
-        console.log(action.payload);
         state.colors = action.payload.data.listData;
-        console.log(state.colors);
-        // initialState.colors = action.payload.listData
-        // console.log(initialState);
         state.pagination = {
           page: 0,
-          pageSize: 50,
+          pageSize: 5,
           totalItems: action.payload.totalRecord,
         };
 

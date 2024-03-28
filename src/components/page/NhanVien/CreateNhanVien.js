@@ -121,7 +121,7 @@ const ModalAddNhanVien = ({ open, closeModal }) => {
         phone: values.phone,
         email: values.email,
         city: city,
-        province: ward,
+        provice: ward,
         district: district,
         gender: values.gender,
         password: values.password,
@@ -173,21 +173,6 @@ const ModalAddNhanVien = ({ open, closeModal }) => {
         }}
       >
         <Row>
-          <Col span={12}>
-            {" "}
-            <Form.Item
-              label="Username"
-              name="username"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập username",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
           <Col span={12}>
             <Form.Item
               label="Họ và tên"
@@ -347,8 +332,7 @@ const ModalAddNhanVien = ({ open, closeModal }) => {
               </Select>
             </Form.Item>
           </Col>
-
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item
               label="Mô tả"
               name="description"
@@ -359,7 +343,7 @@ const ModalAddNhanVien = ({ open, closeModal }) => {
                 },
               ]}
             >
-              <TextArea rows={4} />
+              <TextArea rows={2} />
             </Form.Item>
           </Col>
         </Row>
