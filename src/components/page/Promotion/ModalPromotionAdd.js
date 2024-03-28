@@ -20,14 +20,57 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     endDate: null,
   });
 
+  // const handleOk = async () => {
+  //   try {
+  //     setConfirmLoading(true);
+  //     const formValues = await form.validateFields();
+  //     if (!formValues.discountAmount.trim() && !formValues.discountPercent.trim())
+  //       return message.error("vui lòng nhập giá trị khuyến mãi!")
+  //     else if (formValues.discountPercent > 100)
+  //       return message.error("Giảm giá theo phần trăm không được lớn hơn 100%!");
+  //     else if (formValues.discountPercent < 0 || formValues.discountAmount < 0)
+  //       return message.error("Giảm giá không được nhỏ hơn 0!");
+  //     else if (formValues.endDate && formValues.startDate && formValues.endDate <= formValues.startDate)
+  //       return message.error("Ngày kết thúc không thể ở trước hoặc là ngày bắt đầu!")
+  //     await dispatch(add({ ...formValues, payload }))
+  //       .then(() => {
+  //         dispatch(
+  //           fetchPromotions({
+  //             page: 0,
+  //             pageSize: 5
+  //           })
+  //         )
+  //       });
+  //     message.success("Thêm thành công!");
+  //     closeModal();
+  //     setPayload({
+  //       code: "",
+  //       name: "",
+  //       discountAmount: "",
+  //       discountPercent: "",
+  //       startDate: null,
+  //       endDate: null,
+  //     });
+  //     form.resetFields();
+  //   } catch (error) {
+  //     message.error("Vui lòng nhập đầy đủ thông tin");
+  //   } finally {
+  //     closeModal();
+  //     form.resetFields();
+  //     setConfirmLoading(false);
+  //   }
+  // };
+
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
       const formValues = await form.validateFields();
-      if (formValues.discountPercent > 100)
+      if (!formValues.discountPercent.trim()&&!formValues.discountAmount.trim())
+        return message.error("Vui lòng nhập giá trị khuyến mãi!")
+      else if (formValues.discountPercent > 100)
         return message.error("Giảm giá theo phần trăm không được lớn hơn 100%!");
-      else if (formValues.discountPercent < 0)
-        return message.error("Giảm giá theo phần trăm không được nhỏ hơn 0!");
+      else if (formValues.discountPercent < 0 || formValues.discountAmount < 0)
+        return message.error("Giảm giá không được nhỏ hơn 0!");
       else if (formValues.endDate && formValues.startDate && formValues.endDate <= formValues.startDate)
         return message.error("Ngày kết thúc không thể ở trước hoặc là ngày bắt đầu!")
       await dispatch(add({ ...formValues, payload }))
@@ -155,7 +198,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
 
   const formatDataForTree = (data) => {
     const tree = [];
-  
+
 
     data.forEach(product => {
       const productNode = {
@@ -168,7 +211,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
       }
       console.log("tree product:, ", tree);
       tree.push(productNode)
-     
+
     });
     return tree;
   }
@@ -236,23 +279,28 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
               </Form.Item>
 
               <Form.Item
-                labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
+                labelAlign="left"
+                onChange={(e) =>
+                  setPayload({ ...payload, discountAmount: e.target.value })
+                }
+                labelCol={{ span: 9 }}
+                label="Giảm giá theo giá tiền"
+                name="discountAmount"
+              >
+                <Input type="number" placeholder="VND" min={0} />
+              </Form.Item>
+              <Form.Item
+                labelAlign="left"
                 onChange={(e) =>
                   setPayload({ ...payload, discountPercent: e.target.value })
                 }
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập giảm giá theo phần trăm"
-                  }
-                ]}
                 labelCol={{ span: 9 }}
                 label="Giảm giá theo phần trăm"
                 name="discountPercent"
-              // Rest of your code
               >
-                <Input type="number" placeholder="%" min={0} />
+                <Input type="number" placeholder="VND" min={0} />
               </Form.Item>
+
               <Form.Item
                 labelAlign="left"
                 name="startDate"
@@ -301,6 +349,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                 selectedKeys={selectedKeys}
                 showLine
                 defaultExpandAll
+                style={{ fontSize: "18px" }}
               >
                 <TreeNode title="ALL">
                   {treeData.map(node => (

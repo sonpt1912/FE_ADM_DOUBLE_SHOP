@@ -94,7 +94,13 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
               value={nameState}
               disabled
             />
-            <h4>Giảm giá(%):</h4>
+            <h4>Giảm giá (VND):</h4>
+            <Input
+              name="discountAmount"
+              value={discountAmountState}
+              disabled
+            />
+            <h4>Giảm giá (%):</h4>
             <Input
               name="discountPercent"
               value={discountPercentState}
@@ -128,14 +134,15 @@ const ModalKhuyenMaiDetail = ({ visible, closeModal, KhuyenMais }) => {
         </TabPane>
         <TabPane tab="Chi tiết sản phẩm" >
           <div>
-            
+
             {KhuyenMais && KhuyenMais.detailPromotions.map((t, index) => (
               <div key={index}>
                 <h2>Sản phẩm được giảm giá: [{t.detailProduct.product.name}]</h2>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Màu sắc: [{t.detailProduct.color.name}]</p>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Kích cỡ: [{t.detailProduct.size.name}]</p>
                 <p style={{ marginLeft: 30, fontSize: 15 }}>Giá trước khi giảm: [{t.detailProduct.price}]</p>
-                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm: [{t.detailProduct.price * (1 - (KhuyenMais.discountPercent) / 100)}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(VND): [{t.detailProduct.price - KhuyenMais.discountAmount}]</p>
+                <p style={{ marginLeft: 30, fontSize: 15 }}>Giá sau khi giảm(%): [{t.detailProduct.price * (1 - (KhuyenMais.discountPercent) / 100)}]</p>
                 <hr></hr>
               </div>
             ))}

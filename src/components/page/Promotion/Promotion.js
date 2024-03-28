@@ -83,6 +83,11 @@ const Promotion = () => {
             key: "name",
         },
         {
+            title: "Giảm giá (VND)",
+            dataIndex: "discountAmount",
+            key: "discountAmount",
+        },
+        {
             title: "Giảm giá (%)",
             dataIndex: "discountPercent",
             key: "discountPercent",
