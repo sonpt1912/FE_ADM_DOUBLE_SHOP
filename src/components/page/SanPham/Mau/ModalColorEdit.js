@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Modal, Form, Input, Select, ColorPicker, message } from 'antd';
-import { updateColor } from '../../../../config/ColorApi';
+import { updateColor, fetchColors } from '../../../../config/ColorApi';
 import TextArea from 'antd/es/input/TextArea';
 const { Option } = Select;
 
@@ -18,7 +18,7 @@ const ModalColorUpdate = ({ isOpen, onCancel1, colors }) => {
   const [createtime, setCreateTime] = useState('');
   const [id, setId] = useState("")
   const [confirmLoading, setConfirmLoading] = useState(false);
-
+  
   useEffect(() => {
     if (colors) {
       setCode(colors.code);
@@ -57,17 +57,26 @@ const ModalColorUpdate = ({ isOpen, onCancel1, colors }) => {
         status: 1,
         description: description
       };
-      setConfirmLoading(true);
-      await dispatch(updateColor(formData));
+       dispatch(updateColor(formData)).then(() =>{
+        dispatch( fetchColors({
+          page: 0,
+          pageSize: 5,
+          totalItems: 100,
+         
+        }),
+          )
+      })
+
       message.success("Sửa màu thành công");
       onCancel1();
       form.resetFields();
+   
     } catch (error) {
       message.error("Sửa màu không thành công");
     } finally {
       onCancel1();
       form.resetFields();
-      setConfirmLoading(false);
+      setConfirmLoading(true);
     }
   }
   return (

@@ -109,7 +109,7 @@ const DetailKhachHang = ({ isOpenDetail, onCancel1, cus }) => {
     return (
         <Modal
             title="Thông tin"
-          
+          onCancel={onCancel1}
             visible={isOpenDetail}
             footer={[
                 <Button key="cancel" onClick={onCancel1}>
@@ -122,24 +122,24 @@ const DetailKhachHang = ({ isOpenDetail, onCancel1, cus }) => {
             <Tabs activeKey={activeTab} onChange={handleTabChange}>
                 <TabPane tab="Thông tin" key="form">
                     <form>
-                                <h4 className="mt-3">Tên khách hàng</h4>
-                                <Input value={name} onChange={(e) => handleInputChange({ target: { name: 'name', value: e.target.value } })} />
-                                <h4 className="mt-3">Email</h4>
-                                <Input value={email} onChange={(e) => handleInputChange({ target: { name: 'email', value: e.target.value } })} />
-                                <h4 className="mt-3">Số điện thoại</h4>
-                                <Input placeholder="Số điện thoaị" value={phone} onChange={(e) => handleInputChange({ target: { name: 'phone', value: e.target.value } })} />
+                                <h4 className="mt-3">Tên khách hàng:{name} </h4>
+                               
+                                <h4 className="mt-3">Email: {email}</h4>
+                                
+                                <h4 className="mt-3">Số điện thoại: {phone}</h4>
                     </form>
                 </TabPane>
                 <TabPane tab="Địa chỉ" style={{width:1000}} >
                      <div >
                         {cus && cus.address.map((a, index) => (  
+                            a.description == "" ? "":(
                             <div key={index}>
                                  <h2>Địa chỉ {index + 1}</h2>
                                 <p>Thành phố: {a.city}</p>
                                 <p>Quận/Huyện: {a.district}</p>
                                 <p>Phường/Xã: {a.province}</p>
                                 <p>Số nhà: {a.description}</p>
-                            </div> 
+                            </div> )
                         ))}
                     </div> 
 

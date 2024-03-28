@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { addColor } from '../../../../config/ColorApi';
 import { Button, Modal, Form, Input, Select, ColorPicker, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import {  useSelector } from "react-redux";
+import { fetchColors } from '../../../../config/ColorApi';
 const { Option } = Select;
 
 const ModalColor = ({ isOpen, onCancel1 }) => {
@@ -16,6 +18,11 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [description, setDescription] = useState('')
   const [form] = Form.useForm();
+  const colors = useSelector((state) => 
+  state.color.colors
+  
+    
+    );
   const onCancel12 = () => {
     setIsModalOpen(false);
   };
@@ -37,6 +44,12 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
     onCancel1();
     form.resetFields();
   };
+
+
+  const checkDuplicateColor = (newCode) => {
+    const isDuplicate = colors.some((color) => color.code === newCode);
+    return isDuplicate;
+  };
   const handleOk = async () => {
     try {
       form.validateFields().then(async (values) => {
@@ -48,13 +61,28 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
           status: 1,
           description: description
         };
+        const isDuplicateColor = checkDuplicateColor(code);
+        if (isDuplicateColor) {
+          message.error('Mã màu đã tồn tại. Vui lòng chọn mã màu khác.');
+          return;
+        }
         setConfirmLoading(true);
-        dispatch(addColor(formData));
+        dispatch(addColor(formData)).then(() =>{
+          dispatch( fetchColors({
+            page: 0,
+            pageSize: 5,
+            totalItems: 100,
+            
+            
+           
+          }),
+            )
+        })
 
         message.success("Thêm màu thành công");
         onCancel1();
-
         form.resetFields();
+        // window.location.reload();
       }).catch((error) => {
 
         message.error('Vui lòng điền đầy đủ thông tin bắt buộc.');
@@ -118,7 +146,7 @@ const ModalColor = ({ isOpen, onCancel1 }) => {
 
             ]}
           >
-            <ColorPicker showText onChange={(color) => setCode(color.toHexString())} />
+            <ColorPicker showText  defaultValue={"#000000"} onChange={(color) => setCode(color.toHexString())} />
 
           </Form.Item>
 
