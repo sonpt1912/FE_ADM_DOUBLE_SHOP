@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Form, Input, Select, message, Date, Tree, Col, DatePicker } from "antd";
+import { Modal, Button, Form, Input, Select, message, Date, Tree, Col, Radio } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPromotions } from "../../../store/slice/PromotionReducer";
 import { add } from "../../../store/slice/DetailPromotionReducer";
@@ -19,6 +19,12 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     startDate: null,
     endDate: null,
   });
+
+  const [discountType, setDiscountType] = useState("amount"); // Lưu loại giảm giá đang được chọn
+
+  const handleDiscountTypeChange = (e) => {
+    setDiscountType(e.target.value); // Cập nhật loại giảm giá đang được chọn khi người dùng thay đổi
+  };
 
   // const handleOk = async () => {
   //   try {
@@ -65,9 +71,7 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
     try {
       setConfirmLoading(true);
       const formValues = await form.validateFields();
-      if (!formValues.discountPercent.trim()&&!formValues.discountAmount.trim())
-        return message.error("Vui lòng nhập giá trị khuyến mãi!")
-      else if (formValues.discountPercent > 100)
+      if (formValues.discountPercent > 100)
         return message.error("Giảm giá theo phần trăm không được lớn hơn 100%!");
       else if (formValues.discountPercent < 0 || formValues.discountAmount < 0)
         return message.error("Giảm giá không được nhỏ hơn 0!");
@@ -278,28 +282,52 @@ const ModalKhuyenMai = ({ open, closeModal, KhuyenMais }) => {
                 <Input placeholder="Nhập tên khuyếm mãi" />
               </Form.Item>
 
-              <Form.Item
-                labelAlign="left"
-                onChange={(e) =>
-                  setPayload({ ...payload, discountAmount: e.target.value })
-                }
-                labelCol={{ span: 9 }}
-                label="Giảm giá theo giá tiền"
-                name="discountAmount"
-              >
-                <Input type="number" placeholder="VND" min={0} />
+              <Form.Item label="Loại giảm giá" required="true" labelCol={{ span: 9 }} labelAlign="left">
+                <Radio.Group onChange={handleDiscountTypeChange} value={discountType} style={{ display: 'flex', flexDirection: 'column' }}>
+                  <Radio value="amount" >Giảm giá (VND)</Radio>
+                  <Radio value="percent">Giảm giá (%)</Radio>
+                </Radio.Group>
               </Form.Item>
-              <Form.Item
-                labelAlign="left"
-                onChange={(e) =>
-                  setPayload({ ...payload, discountPercent: e.target.value })
-                }
-                labelCol={{ span: 9 }}
-                label="Giảm giá theo phần trăm"
-                name="discountPercent"
-              >
-                <Input type="number" placeholder="VND" min={0} />
-              </Form.Item>
+
+              {discountType === "amount" && (
+                <Form.Item
+                  labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
+                  onChange={(e) =>
+                    setPayload({ ...payload, discountAmount: e.target.value })
+                  }
+                  labelCol={{
+                    span: 9, // Đặt chiều rộng cho nhãn
+                  }}
+                  rules={[{ required: true, message: "vui lòng nhập giảm giá!" }]}
+                  label="Giảm giá theo tiền"
+                  name="discountAmount"
+                // Rest of your code
+                >
+                  <Input type="number" placeholder="VNĐ"
+
+
+                  />
+                </Form.Item>
+              )}
+
+              {discountType === "percent" && (
+                <Form.Item
+                  labelAlign="left" // Đảm bảo nhãn được căn chỉnh ở đầu dòng
+                  onChange={(e) =>
+                    setPayload({ ...payload, discountPercent: e.target.value })
+                  }
+
+                  labelCol={{
+                    span: 9, // Đặt chiều rộng cho nhãn
+                  }}
+                  rules={[{ required: true, message: "vui lòng nhập giảm giá!" }]}
+                  label="Giảm giá theo phần trăm"
+                  name="discountPercent"
+                // Rest of your code
+                >
+                  <Input type="number" placeholder="%" />
+                </Form.Item>
+              )}
 
               <Form.Item
                 labelAlign="left"
