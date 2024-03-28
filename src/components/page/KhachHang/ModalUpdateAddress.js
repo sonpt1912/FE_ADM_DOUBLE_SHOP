@@ -144,7 +144,6 @@ const ModalUpdateAddress = ({ isOpen, onCancel1, dataUpdate, idCus }) => {
                 defaul:defaul
 
             };
-            console.log("idddd", formData)
             await dispatch(updateCustomerAddress({id1, id,payload: formData}));
             
             message.success("Sửa địa chỉ khách hàng thành công");

@@ -61,9 +61,9 @@ const UpdateCustomer = ({ isOpen, onCancel1, cusUpdate, cusAddress }) => {
   const [username, setUsername] = useState("");
   const [id1, setId1] = useState("");
   const [id, setId] = useState("");
-  const [nameError, setNameError] = useState('');
-    const [emailError, setEmailError] = useState('');
-    const [phoneError, setPhoneError] = useState('');
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   // var currentUrl = window.location.href;
   useEffect(() => {
     if (cusUpdate) {
@@ -120,12 +120,12 @@ const UpdateCustomer = ({ isOpen, onCancel1, cusUpdate, cusAddress }) => {
     }
 
     if (name === "name") {
-      setNameError('');
-  } else if (name === "email") {
-      setEmailError('');
-  } else if (name === "phone") {
-      setPhoneError('');
-  }
+      setNameError("");
+    } else if (name === "email") {
+      setEmailError("");
+    } else if (name === "phone") {
+      setPhoneError("");
+    }
   };
   //
   const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
@@ -144,9 +144,8 @@ const UpdateCustomer = ({ isOpen, onCancel1, cusUpdate, cusAddress }) => {
     setPhoneError("");
     onCancel1();
     form.resetFields();
-};
+  };
   const handleOk = async () => {
-    
     try {
       const formData = {
         id: id1,
@@ -170,20 +169,20 @@ const UpdateCustomer = ({ isOpen, onCancel1, cusUpdate, cusAddress }) => {
       form.resetFields();
     } catch (error) {
       if (error.errorFields) {
-        error.errorFields.forEach(field => {
-            if (field.name[0] === 'name') {
-                setNameError(field.errors[0]);
-            } else if (field.name[0] === 'email') {
-                setEmailError(field.errors[0]);
-            } else if (field.name[0] === 'phone') {
-                setPhoneError(field.errors[0]);
-            }
+        error.errorFields.forEach((field) => {
+          if (field.name[0] === "name") {
+            setNameError(field.errors[0]);
+          } else if (field.name[0] === "email") {
+            setEmailError(field.errors[0]);
+          } else if (field.name[0] === "phone") {
+            setPhoneError(field.errors[0]);
+          }
         });
-    }else{
-      setNameError("");
-      setEmailError("");
-      setPhoneError("");
-    }
+      } else {
+        setNameError("");
+        setEmailError("");
+        setPhoneError("");
+      }
 
       onCancel1();
     } finally {
@@ -198,32 +197,7 @@ const UpdateCustomer = ({ isOpen, onCancel1, cusUpdate, cusAddress }) => {
   const [disData, setDisData] = useState([]);
   const [warData, setWarData] = useState([]);
 
-  // const handleCityChange = (value, index) => {
-  //     const selectedCityName = cusUpdate.address[index]?.city;
-  //     const selectedCityCode = cityData.find(city => city.value === value)?.selectedCityName;
-  //     // const selectedCityName = cityData.find(city => city.value === value)?.label;
-  //     const selectedDisCode = disData.find(dis => dis.value === value)?.value;
-  //     const selectedDisName = disData.find(dis => dis.value === value)?.label;
-  //     const selectedWarName = warData.find(war => war.value === value)?.label;
-
-  //     setCity(selectedCityName);
-
-  //     setSelectedDis(selectedCityCode);
-  //     dataDis(value);
-  //     setDistrict(selectedDisName);
-
-  //     setSelectedWar(selectedDisCode);
-  //     setWard(selectedWarName);
-  //     dataWar(value);
-
-  // };
-
-  // useEffect(() => {
-  // dataCity();
-  // dataDis();
-  // dataWar();
-  // console.log("id1 real", id1)
-  // }, []);
+  
 
   const [activeTab, setActiveTab] = useState("form");
 
@@ -252,6 +226,7 @@ const UpdateCustomer = ({ isOpen, onCancel1, cusUpdate, cusAddress }) => {
     const response = await dispatch(detailCustomer(id));
     setCusDataAddress(response.payload);
     setIsModalAddAddress(true);
+    onCancel1();
   };
   const closeAddress = () => {
     setIsModalAddAddress(false);
@@ -331,7 +306,7 @@ const UpdateCustomer = ({ isOpen, onCancel1, cusUpdate, cusAddress }) => {
             </form>
           </TabPane>
           <TabPane tab="Địa chỉ">
-          <div>
+            <div>
               <Button
                 type="primary"
                 onClick={() => openAddAddress(id1)}
@@ -341,52 +316,66 @@ const UpdateCustomer = ({ isOpen, onCancel1, cusUpdate, cusAddress }) => {
               </Button>
 
               {cusAddress &&
-                cusAddress.map((b, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      fontSize: "16px",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
+                cusAddress.map((b, index) =>
+                  b.description == "" ? (
+                    ""
+                  ) : (
                     <div
+                      key={index}
                       style={{
+                        fontSize: "16px",
                         display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
+                        flexDirection: "column",
                       }}
                     >
-                      <div style={{marginTop: '20px'}}>
-                        {b.description}, {b.province}, {b.district}, {b.city}{" "}
-                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div>
+                          <div style={{ marginTop: "20px" }}>
+                            {b.description}, {b.province}, {b.district},{" "}
+                            {b.city}
+                          </div>
 
-                      <div>
-                        <EditFilled
-                          style={{ fontSize: "15px", marginLeft: "10px" }}
-                          onClick={() => openModalUpdateAddress(id1, b.id)}
-                        />
-                      </div>
-                    </div>
+                          <div>
+                            <EditFilled
+                              style={{ fontSize: "15px", marginLeft: "10px" }}
+                              onClick={() => openModalUpdateAddress(id1, b.id)}
+                            />
+                          </div>
 
-                    <div>
-                      {b.defaul === 1 && (
-                        <Button
-                          type="default"
-                          style={{ marginRight: "10px",marginTop: "10px", fontSize: "10px",height: "30px", borderColor: "#1E90FF", color: "#1E90FF" }}
-                          onClick={(e) =>
-                            handleInputChange({
-                              target: { name: "defaul", value: b.id },
-                            })
-                          }
-                        >
-                          Mặc định
-                        </Button>
-                      )}
+                          <div>
+                            {b.defaul == 1 && (
+                              <Button
+                                type="default"
+                                style={{
+                                  marginRight: "10px",
+                                  marginTop: "10px",
+                                  fontSize: "10px",
+                                  height: "30px",
+                                  borderColor: "#1E90FF",
+                                  color: "#1E90FF",
+                                }}
+                                onClick={(e) =>
+                                  handleInputChange({
+                                    target: { name: "defaul", value: b.id },
+                                  })
+                                }
+                              >
+                                Mặc định
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <hr style={{ width: "450px", marginTop: "20px" }} />
                     </div>
-                    <hr style={{ width: "450px" , marginTop: "20px"}} />
-                  </div>
-                ))}
+                  )
+                )}
             </div>
           </TabPane>
         </Tabs>
