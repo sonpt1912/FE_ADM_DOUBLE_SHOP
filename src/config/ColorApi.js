@@ -61,7 +61,7 @@ export const detailColor = createAsyncThunk(
   async (colorId) => {
     try {
       const response = await axios.get(`${API_URL}/color/get-one-by-id/${colorId}`);
-      return response.data;
+      return response.data.data;
     } catch (error) {
 
       throw error;
@@ -72,8 +72,8 @@ export const updateColor = createAsyncThunk(
   async (colorId1) => {
     try {
 
-      const response = await axios.put(`${API_URL}/color/update/${colorId1.id}`, colorId1);
 
+      const response = await axios.post(`${API_URL}/color/update/${colorId1.id}`, colorId1);
       return response.data;
 
     } catch (error) {

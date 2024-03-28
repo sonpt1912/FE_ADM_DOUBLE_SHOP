@@ -24,15 +24,56 @@ state.color.colors
 
   
   );
+  const [pageSize, setPageSize] = useState(5);
+  const [current, setCurrent] = useState(1);
   const loading = useSelector((state) => state.color.status === "loading");
   const pagination = useSelector((state) => state.color.pagination);
   const [searchParams, setSearchParams] = useState({
     name: "",
     code: "",
   });
+    //add
+    const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+
+    const openModal = async (id) => {
+      setIsModalOpenAdd(true);
   
+    };
+  
+    const closeModal = () => {
+      setIsModalOpenAdd(false);
+    };
+  
+    //detail
+    const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
+    const [colorDataDetail, setColorDataDetail] = useState();
+    const openModalDetail = async (id) => {
+      const response = await dispatch(detailColor(id));
+  
+      setColorDataDetail(response.payload);
+  
+      setIsModalOpenDetail(true);
+    };
+    const closeModalDetail = () => {
+      setIsModalOpenDetail(false);
+    };
+    //update
+  
+    const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
+    const [colorData, setColorData] = useState();
+    const openModalUpdate = async (id) => {
+      const response = await dispatch(detailColor(id));
+  
+      setColorData(response.payload);
+  
+      setIsModalOpenUpdate(true);
+    };
+    const closeModalUpdate = () => {
+      setIsModalOpenUpdate(false);
+    };
 
   useEffect(() => {
+   
     dispatch(
       fetchColors({
         page: pagination.page,
@@ -44,7 +85,9 @@ state.color.colors
 
     );
 
-  }, [dispatch]);
+}, [dispatch]);
+
+
 
   const onClickSearch = () => {
     dispatch(
@@ -151,45 +194,7 @@ state.color.colors
     },
 
   ];
-  //add
-  const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
 
-  const openModal = async (id) => {
-    setIsModalOpenAdd(true);
-
-  };
-
-  const closeModal = () => {
-    setIsModalOpenAdd(false);
-  };
-
-  //detail
-  const [isModalOpenDetail, setIsModalOpenDetail] = useState(false);
-  const [colorDataDetail, setColorDataDetail] = useState();
-  const openModalDetail = async (id) => {
-    const response = await dispatch(detailColor(id));
-
-    setColorDataDetail(response.payload);
-
-    setIsModalOpenDetail(true);
-  };
-  const closeModalDetail = () => {
-    setIsModalOpenDetail(false);
-  };
-  //update
-
-  const [isModalOpenUpdate, setIsModalOpenUpdate] = useState(false);
-  const [colorData, setColorData] = useState();
-  const openModalUpdate = async (id) => {
-    const response = await dispatch(detailColor(id));
-
-    setColorData(response.payload);
-
-    setIsModalOpenUpdate(true);
-  };
-  const closeModalUpdate = () => {
-    setIsModalOpenUpdate(false);
-  };
   const containerStyle = {
     display: 'flex',
     alignItems: 'center',
