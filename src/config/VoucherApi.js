@@ -46,6 +46,18 @@ axios.interceptors.request.use(
       throw error;
     }
   });
+
+  export const saveAllVoucher = createAsyncThunk("vouchers/saveAllVoucher", async (payload) => {
+    try {
+      const response = await axios.post(`${API_URL}/voucher/save-all`, payload);
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        message.error("Lỗi khi thêm ");
+      }
+      throw error;
+    }
+  });
   
   export const updateVoucher = createAsyncThunk(
     "vouchers/updateVoucher",

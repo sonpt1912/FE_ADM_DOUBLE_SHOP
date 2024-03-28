@@ -1,6 +1,6 @@
 // sizeSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchVouchers,updateVoucher,saveVoucher } from "../../config/VoucherApi";
+import { fetchVouchers,updateVoucher,saveVoucher,saveAllVoucher } from "../../config/VoucherApi";
 
 const initialState = {
   vouchers: [],
@@ -50,7 +50,18 @@ const voucherSlice = createSlice({
       .addCase(updateVoucher.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-      });
+      })
+      .addCase(saveAllVoucher.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(saveAllVoucher.fulfilled, (state, action) => {
+        state.status = "succeeded";
+      })
+      .addCase(saveAllVoucher.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      }) 
+      ;
   },
 });
 

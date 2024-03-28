@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Modal, Form, Input, message } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { saveCollar } from "../../../../config/CollarApi";
 
 const { TextArea } = Input;
@@ -9,14 +9,30 @@ const ModalAddCollar = ({ open, closeModal }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
+  const collars = useSelector((state) => state.collar.collars); // Danh sách cổ áo hiện tại trong trạng thái Redux
   const [payload, setPayload] = useState({
     name: "",
     description: "",
   });
-
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
+      // if (!payload.name || payload.name.trim() === "") {
+      //   message.error("Vui lòng nhập tên cổ áo.");
+      //   return;
+      // }
+      // if (!payload.description || payload.description.trim() === "") {
+      //   message.error("Vui lòng nhập mô tả cổ áo.");
+      //   return;
+      // }
+      await form.validateFields();
+      // Kiểm tra trùng tên trong danh sách cổ áo hiện tại
+      const isDuplicate = collars.some((collar) => collar.name === payload.name);
+      if (isDuplicate) {
+        message.error("Tên cổ áo đã tồn tại trong danh sách.");
+        return;
+      }
+      // Thêm cổ áo mới nếu không trùng tên
       await dispatch(saveCollar(payload));
       message.success("Collar added successfully");
       closeModal();
@@ -26,11 +42,8 @@ const ModalAddCollar = ({ open, closeModal }) => {
       });
       form.resetFields();
     } catch (error) {
-      message.error("Failed to add collar");
+      message.error("Please fill in all required fields");
     } finally {
-      closeModal();
-      form.resetFields();
-
       setConfirmLoading(false);
     }
   };
@@ -47,7 +60,7 @@ const ModalAddCollar = ({ open, closeModal }) => {
   return (
     <Modal
       title="Thêm Mới Cổ Áo"
-      open={open}
+      visible={open}
       onOk={handleOk}
       confirmLoading={confirmLoading}
       onCancel={handleCancel}
@@ -70,6 +83,12 @@ const ModalAddCollar = ({ open, closeModal }) => {
           label="Tên"
           name="name"
           onChange={(e) => setPayload({ ...payload, name: e.target.value })}
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập tên phiếu giảm giá"
+            }
+          ]}
         >
           <Input />
         </Form.Item>
@@ -79,6 +98,12 @@ const ModalAddCollar = ({ open, closeModal }) => {
           onChange={(e) =>
             setPayload({ ...payload, description: e.target.value })
           }
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập tên phiếu giảm giá"
+            }
+          ]}
         >
           <TextArea />
         </Form.Item>

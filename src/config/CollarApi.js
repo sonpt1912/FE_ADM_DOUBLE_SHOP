@@ -43,6 +43,7 @@ axios.interceptors.request.use(
       if (error.response && error.response.status === 401) {
         message.error("Unauthorized: Please log in.");
       }
+     
       throw error;
     }
   });
@@ -51,6 +52,7 @@ axios.interceptors.request.use(
     "collars/updateCollar",
     async (payload) => {
       try {
+        console.log(payload);
         const response = await axios.post(`${API_URL}/collar/update`, payload);
         return response.data;
       } catch (error) {
